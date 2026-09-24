@@ -1,0 +1,31 @@
+# Virtual environment
+.venv/
+env/
+venv/
+ENV/
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# SQLite databases & logs
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Other presentation files not part of QR Tracker web app
+generate_pptx.py
+BITQIK_Running_Jersey_Specification_Lao.pptx
+slides_assets/
