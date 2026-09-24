@@ -1,0 +1,2 @@
+# Bitqik QR Studio Tracker
+# Pure Python Standard Library (zero external pip packages required)

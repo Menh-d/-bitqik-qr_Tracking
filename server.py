@@ -20,7 +20,7 @@ import sys
 import datetime
 import database
 
-PORT = 8000
+PORT = int(os.environ.get("PORT", 8000))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def get_lan_ips():
@@ -532,5 +532,5 @@ def run_server(port=PORT):
         server.server_close()
 
 if __name__ == "__main__":
-    p = int(sys.argv[1]) if len(sys.argv) > 1 else PORT
+    p = int(sys.argv[1]) if len(sys.argv) > 1 else int(os.environ.get("PORT", PORT))
     run_server(p)
