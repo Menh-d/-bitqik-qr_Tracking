@@ -321,6 +321,37 @@
         <main>
             <!-- ================= VIEW 1: QR STUDIO & GENERATOR ================= -->
             <div id="view-page-generator" class="space-y-7 fade-in">
+                <!-- Live Production System Callout Banner -->
+                <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-blue-500/10 border border-emerald-500/30 text-[#023159] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-3.5">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 shadow-md">
+                            <i data-lucide="globe" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h3 class="font-bold text-sm sm:text-base text-[#023159]">🌐 ລະບົບ Production Cloud ສຳລັບໃຊ້ງານຈິງ (Online 24/7)</h3>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white shadow-xs">Public Ready ✅</span>
+                            </div>
+                            <p class="text-xs text-[#584437] mt-1 leading-relaxed">
+                                ສຳລັບນຳ QR Code ໄປພິມໃສ່ <b>Artwork, ເສື້ອແລ່ນ, ສິນຄ້າ (Product), Packaging, Standee</b> — ທຸກຄົນໃນໂລກສະແກນໄດ້ແທ້ 100% ຜ່ານ <b>4G / 5G / Wi-Fi</b> ທຸກເຄືອຂ່າຍ:
+                            </p>
+                            <div class="mt-2 flex flex-wrap items-center gap-2">
+                                <span class="font-mono text-xs font-bold text-emerald-900 bg-white/90 px-3 py-1 rounded-lg border border-emerald-300 select-all shadow-xs">
+                                    🔗 https://bitqik-qr-tracking.onrender.com
+                                </span>
+                                <span class="text-[11px] text-emerald-800 font-medium">✨ Dynamic Link ປ່ຽນ URL ປາຍທາງໄດ້ຕະຫຼອດ ໂດຍບໍ່ຕ້ອງພິມໃໝ່!</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0 self-start md:self-center">
+                        <a href="https://bitqik-qr-tracking.onrender.com" target="_blank" rel="noopener noreferrer" 
+                           class="soft-button btn-primary px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow-md hover:scale-[1.02] transition-transform">
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                            <span>ເປີດ Cloud Studio 🚀</span>
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Top Row: Generator Form (Left) & Preview Box (Right) -->
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
                     
@@ -385,16 +416,16 @@
                             <div>
                                 <label for="qr-base-domain" class="block text-xs font-bold uppercase tracking-wider text-[#765f50] mb-1.5 flex items-center justify-between">
                                     <span data-lang="base-domain-field">Domain ສຳລັບ QR Code (Tracking Base URL)</span>
-                                    <span id="domain-badge-type" class="text-[10px] font-bold text-[#f68a32]">📱 ສະແກນດ້ວຍມືຖື</span>
+                                    <span id="domain-badge-type" class="text-[10px] font-bold text-emerald-800 bg-emerald-200/80 px-2 py-0.5 rounded-full">🌐 Public Cloud (ພ້ອມພິມໃສ່ Artwork)</span>
                                 </label>
                                 <select id="qr-base-domain" class="soft-field text-xs sm:text-sm font-bold text-[#023159]">
-                                    <option value="auto">ກຳລັງກວດສອບ Host / IP...</option>
+                                    <option value="https://bitqik-qr-tracking.onrender.com" selected>🌐 Production Cloud: https://bitqik-qr-tracking.onrender.com [ແນະນຳ - ທຸກຄົນສະແກນໄດ້ 100%]</option>
                                 </select>
-                                <div id="localhost-warning-badge" class="hidden mt-2 p-3 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-900 text-xs flex items-start gap-2">
-                                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5"></i>
+                                <div id="localhost-warning-badge" class="hidden mt-2 p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-950 text-xs flex items-start gap-2">
+                                    <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5"></i>
                                     <div>
-                                        <p class="font-bold">⚠️ ມືຖືຈະສະແກນ localhost ບໍ່ໄດ້:</p>
-                                        <p class="text-[11px] opacity-90 mt-0.5">ກະລຸນາເລືອກ <b>Wi-Fi IP</b> (ເຊັ່ນ 10.174.75.220) ຫຼື ເປີດເວັບຜ່ານ Link <b>Render.com</b> ເພື່ອໃຫ້ກ້ອງມືຖືສະແກນໄດ້ແທ້ໆ.</p>
+                                        <p class="font-bold">🚨 ຄຳເຕືອນ: Localhost ຫ້າມນຳໄປພິມໃສ່ Artwork ຫຼື ສິນຄ້າ!</p>
+                                        <p class="text-[11px] opacity-90 mt-0.5">ຖ້າເລືອກ Localhost ມີແຕ່ຄອມເຄື່ອງນີ້ເທົ່ານັ້ນທີ່ເປີດໄດ້. ສຳລັບສິນຄ້າ, ເສື້ອ ແລະ Artwork ຕ້ອງເລືອກ <b>Production Cloud (https://bitqik-qr-tracking.onrender.com)</b> ເພື່ອໃຫ້ລູກຄ້າສະແກນໄດ້.</p>
                                     </div>
                                 </div>
                             </div>
@@ -479,10 +510,13 @@
                                     </div>
                                 </div>
 
-                                <div id="preview-meta" class="hidden text-center space-y-1 w-full max-w-[280px]">
+                                <div id="preview-meta" class="hidden text-center space-y-1.5 w-full max-w-[280px]">
                                     <p class="font-bold text-[#392719] text-sm break-words" id="preview-label-display"></p>
-                                    <p class="text-[11px] text-[#023159] font-mono break-all" id="preview-url-display"></p>
-                                    <span id="preview-badge-type" class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f68a32]/20 text-[#a24b13]"></span>
+                                    <p class="text-[11px] text-[#023159] font-mono break-all bg-white/70 px-2.5 py-1 rounded-lg border border-[#eedccb]" id="preview-url-display"></p>
+                                    <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                        <span id="preview-badge-type" class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f68a32]/20 text-[#a24b13]"></span>
+                                        <span id="preview-public-badge" class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">✅ ພ້ອມພິມໃສ່ສິນຄ້າ</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -993,31 +1027,78 @@
         </svg>`;
         const BITQIK_LOGO_DATA_URI = 'data:image/svg+xml;utf8,' + encodeURIComponent(BITQIK_LOGO_SVG);
 
+        const CLOUD_PROD_DOMAIN = 'https://bitqik-qr-tracking.onrender.com';
+
+        function getEffectiveDomain() {
+            const select = document.getElementById('qr-base-domain');
+            const val = select ? select.value : '';
+            if (val && val !== 'auto') {
+                return val;
+            }
+            // If on Render or public HTTPS, use origin
+            if (!window.location.hostname.includes('localhost') && 
+                !window.location.hostname.includes('127.0.0.1') && 
+                window.location.protocol === 'https:') {
+                return window.location.origin;
+            }
+            // Default to Cloud Production
+            return CLOUD_PROD_DOMAIN;
+        }
+
         // ================= SERVER STATUS =================
         async function checkServerStatus() {
+            const isRenderHost = window.location.hostname.includes('onrender.com');
+
             try {
                 const res = await fetch('/api/status', { cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
                     isServerOnline = true;
                     lanIPs = data.lan_ips || ['127.0.0.1'];
-                    document.getElementById('server-status-pill').innerHTML = `
-                        <span class="live-dot"></span>
-                        <span class="text-green-700 font-bold">Server Active · Port ${data.port}</span>
-                    `;
+                    
+                    if (isRenderHost) {
+                        document.getElementById('server-status-pill').innerHTML = `
+                            <span class="live-dot"></span>
+                            <span class="text-emerald-700 font-bold">🌐 Production Cloud Live · Render</span>
+                        `;
+                    } else {
+                        document.getElementById('server-status-pill').innerHTML = `
+                            <span class="live-dot"></span>
+                            <span class="text-green-700 font-bold">💻 Local Server · Port ${data.port}</span>
+                        `;
+                    }
+
                     document.getElementById('system-info-footer').textContent = 
-                        `Bitqik QR Engine v${data.version} · Connected to SQLite local backend · Server time: ${new Date(data.server_time).toLocaleTimeString()}`;
+                        `Bitqik QR Engine v${data.version} · Connected to ${isRenderHost ? 'Cloud Backend (Render)' : 'Local SQLite Backend'} · Server time: ${new Date(data.server_time).toLocaleTimeString()}`;
+                    
                     populateDomainOptions();
                     return true;
                 }
             } catch (e) {
+                // If local fetch fails, check if Cloud Render is reachable
+                try {
+                    const cloudRes = await fetch(`${CLOUD_PROD_DOMAIN}/api/status`, { cache: 'no-store' });
+                    if (cloudRes.ok) {
+                        const cloudData = await cloudRes.json();
+                        isServerOnline = false;
+                        document.getElementById('server-status-pill').innerHTML = `
+                            <span class="live-dot"></span>
+                            <span class="text-emerald-700 font-bold">🌐 Cloud Connected · Render Live</span>
+                        `;
+                        populateDomainOptions();
+                        return true;
+                    }
+                } catch (e2) {
+                    // ignore
+                }
+
                 isServerOnline = false;
                 document.getElementById('server-status-pill').innerHTML = `
                     <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
                     <span class="text-amber-800 font-bold">Offline / Standalone Mode</span>
                 `;
                 document.getElementById('system-info-footer').textContent = 
-                    `Running in Standalone Browser Mode (localStorage). Run 'python3 server.py' for live mobile phone camera tracking!`;
+                    `Running in Standalone Browser Mode. QR Codes will encode Production Cloud URL: ${CLOUD_PROD_DOMAIN}`;
                 populateDomainOptions();
             }
             return false;
@@ -1029,43 +1110,43 @@
             const currentVal = select.value;
             select.innerHTML = '';
 
-            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
             const validLanIps = lanIPs.filter(ip => ip && ip !== '127.0.0.1');
 
-            // 1. If we have a local Wi-Fi IP, add it first so phones on Wi-Fi can scan!
+            // 1. Cloud Production Domain Option (ALWAYS #1 FOR ARTWORK & REAL PRODUCTS)
+            const renderOpt = document.createElement('option');
+            renderOpt.value = CLOUD_PROD_DOMAIN;
+            renderOpt.textContent = `🌐 Production Cloud (Render): ${CLOUD_PROD_DOMAIN} [ແນະນຳ - ທຸກຄົນສະແກນໄດ້ 100%]`;
+            select.appendChild(renderOpt);
+
+            // 2. Current Host Option (if different from Cloud Prod Domain)
+            if (window.location.origin !== CLOUD_PROD_DOMAIN && window.location.protocol !== 'file:') {
+                const curOption = document.createElement('option');
+                curOption.value = window.location.origin;
+                if (isLocal) {
+                    curOption.textContent = `💻 Localhost (${window.location.origin}) - ສະເພາະເທິງຄອມ (ຫ້າມພິມໃສ່ສິນຄ້າ)`;
+                } else {
+                    curOption.textContent = `🌐 Current Host (${window.location.origin})`;
+                }
+                select.appendChild(curOption);
+            }
+
+            // 3. Local Wi-Fi IP (For development testing on same Wi-Fi only)
             if (validLanIps.length > 0) {
                 validLanIps.forEach(ip => {
                     const opt = document.createElement('option');
                     opt.value = `http://${ip}:8000`;
-                    opt.textContent = `📱 Wi-Fi IP (ກ້ອງມືຖືສະແກນໄດ້): http://${ip}:8000`;
+                    opt.textContent = `📱 Local Wi-Fi IP (http://${ip}:8000) - ສະເພາະ Wi-Fi ດຽວກັນ`;
                     select.appendChild(opt);
                 });
             }
 
-            // 2. Cloud Domain Option (Render.com)
-            const renderOpt = document.createElement('option');
-            renderOpt.value = 'https://bitqik-qr-tracking.onrender.com';
-            renderOpt.textContent = `🌐 Cloud Domain (Render): https://bitqik-qr-tracking.onrender.com`;
-            select.appendChild(renderOpt);
-
-            // 3. Current Host Option
-            const curOption = document.createElement('option');
-            curOption.value = window.location.origin;
-            if (isLocal) {
-                curOption.textContent = `💻 Localhost (${window.location.origin}) - ໃຊ້ໄດ້ສະເພາະໃນຄອມ`;
-            } else {
-                curOption.textContent = `🌐 Live Host (${window.location.origin}) - ມືຖືສະແກນໄດ້`;
-            }
-            select.appendChild(curOption);
-
-            // Default value selection:
+            // Default selection:
+            // ALWAYS DEFAULT TO CLOUD PRODUCTION DOMAIN so that any QR created is 100% ready for print/artwork!
             if (currentVal && Array.from(select.options).some(o => o.value === currentVal)) {
                 select.value = currentVal;
-            } else if (isLocal && validLanIps.length > 0) {
-                // Auto-select Wi-Fi IP so phones CAN SCAN IT immediately!
-                select.value = `http://${validLanIps[0]}:8000`;
             } else {
-                select.value = window.location.origin;
+                select.value = CLOUD_PROD_DOMAIN;
             }
 
             updateLocalhostWarning();
@@ -1079,18 +1160,26 @@
 
             const val = select.value || '';
             const isLocal = val.includes('localhost') || val.includes('127.0.0.1');
+            const isCloud = val.includes('bitqik-qr-tracking.onrender.com') || (val.startsWith('https://') && !isLocal);
 
             if (isLocal) {
                 if (warn) warn.classList.remove('hidden');
                 if (badge) {
-                    badge.textContent = '⚠️ Localhost (ມືຖືສະແກນບໍ່ໄດ້)';
-                    badge.className = 'text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded-full';
+                    badge.textContent = '🚨 Localhost (ຫ້າມພິມໃສ່ສິນຄ້າ)';
+                    badge.className = 'text-[10px] font-bold text-rose-800 bg-rose-200/80 px-2 py-0.5 rounded-full';
                 }
-            } else {
+            } else if (isCloud) {
                 if (warn) warn.classList.add('hidden');
                 if (badge) {
-                    badge.textContent = '📱 ພ້ອມສະແກນຜ່ານມືຖື ✅';
+                    badge.textContent = '🌐 Public Cloud (ພ້ອມພິມໃສ່ Artwork & Product) ✅';
                     badge.className = 'text-[10px] font-bold text-emerald-800 bg-emerald-200/80 px-2 py-0.5 rounded-full';
+                }
+            } else {
+                // Wi-Fi IP
+                if (warn) warn.classList.remove('hidden');
+                if (badge) {
+                    badge.textContent = '📱 Wi-Fi IP (ສະເພາະ Wi-Fi ດຽວກັນ)';
+                    badge.className = 'text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded-full';
                 }
             }
         }
@@ -1191,6 +1280,18 @@
                 document.getElementById('preview-badge-type').textContent = 
                     document.querySelector('input[name="qr-type"]:checked').value === 'dynamic' ? 'Dynamic Tracked' : 'Static Direct';
 
+                const pubBadge = document.getElementById('preview-public-badge');
+                if (pubBadge) {
+                    const isLocal = textToEncode.includes('localhost') || textToEncode.includes('127.0.0.1');
+                    if (isLocal) {
+                        pubBadge.textContent = '🚨 Localhost (ຫ້າມພິມໃສ່ສິນຄ້າ)';
+                        pubBadge.className = 'inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300';
+                    } else {
+                        pubBadge.textContent = '✅ ພ້ອມພິມໃສ່ Artwork & Product (ທຸກຄົນສະແກນໄດ້ 100%)';
+                        pubBadge.className = 'inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+                    }
+                }
+
                 return true;
             } catch (err) {
                 console.error("QR Generation error:", err);
@@ -1237,14 +1338,13 @@
             const destUrl = document.getElementById('qr-url').value.trim();
             const qrType = document.querySelector('input[name="qr-type"]:checked').value;
             const customCode = document.getElementById('qr-custom-code').value.trim();
-            const baseDomain = document.getElementById('qr-base-domain').value;
+            const domain = getEffectiveDomain();
 
             if (!label || !destUrl) return;
 
             let finalUrl = destUrl;
             if (qrType === 'dynamic') {
                 const code = customCode || 'bq' + Math.random().toString(36).substring(2, 8);
-                const domain = (baseDomain === 'auto' || !baseDomain) ? window.location.origin : baseDomain;
                 finalUrl = `${domain}/r/${code}`;
             }
 
@@ -1257,7 +1357,7 @@
             const destUrl = document.getElementById('qr-url').value.trim();
             const qrType = document.querySelector('input[name="qr-type"]:checked').value;
             const customCode = document.getElementById('qr-custom-code').value.trim();
-            const baseDomain = document.getElementById('qr-base-domain').value;
+            const domain = getEffectiveDomain();
 
             if (!label) {
                 alert(currentLang === 'lo' ? 'ກະລຸນາປ້ອນຊື່ແຄມເປນ' : 'Please enter a campaign label');
@@ -1271,7 +1371,9 @@
             }
 
             const btn = document.getElementById('btn-save-qr');
+            const origHtml = btn.innerHTML;
             btn.disabled = true;
+            btn.innerHTML = `<span class="animate-spin inline-block mr-1">⏳</span> ກຳລັງບັນທຶກ...`;
 
             const payload = {
                 label,
@@ -1282,6 +1384,28 @@
                 logo_data: customLogoData
             };
 
+            let savedQr = null;
+            const isCloudDomain = domain.includes('bitqik-qr-tracking.onrender.com');
+
+            // 1. If Cloud Domain is target and we are running outside Render (e.g. localhost or file://)
+            // Send directly to Render Cloud API via CORS!
+            if (isCloudDomain && !window.location.origin.includes('bitqik-qr-tracking.onrender.com')) {
+                try {
+                    const cloudRes = await fetch(`${CLOUD_PROD_DOMAIN}/api/qrs`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const cloudData = await cloudRes.json();
+                    if (cloudData.success && cloudData.qr) {
+                        savedQr = cloudData.qr;
+                    }
+                } catch (e) {
+                    console.warn("Could not reach Cloud API directly:", e);
+                }
+            }
+
+            // 2. Also save to local server if running
             if (isServerOnline) {
                 try {
                     const res = await fetch('/api/qrs', {
@@ -1290,21 +1414,18 @@
                         body: JSON.stringify(payload)
                     });
                     const data = await res.json();
-                    if (data.success && data.qr) {
-                        const domain = (baseDomain === 'auto' || !baseDomain) ? window.location.origin : baseDomain;
-                        const trackingUrl = qrType === 'dynamic' ? `${domain}/r/${data.qr.short_code}` : destUrl;
-                        generateQR(trackingUrl, label, getActiveLogoUri());
-                        await refreshAllData();
-                        alert(currentLang === 'lo' ? '✅ ບັນທຶກ ແລະ ເລີ່ມ Track ສຳເລັດ!' : '✅ Saved & tracking activated!');
-                    } else {
-                        alert("Error: " + (data.message || "Failed to save"));
+                    if (data.success && data.qr && !savedQr) {
+                        savedQr = data.qr;
                     }
                 } catch (err) {
-                    alert("Network error: " + err.message);
+                    console.warn("Local server save error:", err);
                 }
-            } else {
+            }
+
+            // 3. Fallback to localStorage if totally offline
+            if (!savedQr && !isServerOnline) {
                 const localQrs = JSON.parse(localStorage.getItem('bitqik_qrs') || '[]');
-                const newQr = {
+                savedQr = {
                     id: 'bq-' + Date.now(),
                     short_code: customCode || 'bq' + Math.random().toString(36).substring(2, 7),
                     label,
@@ -1314,13 +1435,29 @@
                     scan_count: 0,
                     created_at: new Date().toISOString()
                 };
-                localQrs.unshift(newQr);
+                localQrs.unshift(savedQr);
                 localStorage.setItem('bitqik_qrs', JSON.stringify(localQrs));
                 renderLocalData();
-                alert(currentLang === 'lo' ? '✅ ບັນທຶກລົງ localStorage ແລ້ວ!' : '✅ Saved to local storage!');
+            }
+
+            if (savedQr) {
+                const trackingUrl = qrType === 'dynamic' ? `${domain}/r/${savedQr.short_code}` : destUrl;
+                generateQR(trackingUrl, label, getActiveLogoUri());
+                if (isServerOnline) await refreshAllData();
+
+                const successMsg = isCloudDomain
+                    ? (currentLang === 'lo' 
+                        ? `✅ ບັນທຶກສຳເລັດແລ້ວ!\n\n🌐 Public Tracking URL:\n${trackingUrl}\n\n✨ QR Code ນີ້ເຊື່ອມຕໍ່ກັບ Cloud (Render) ຮຽບຮ້ອຍແລ້ວ. ພ້ອມນຳໄປພິມໃສ່ Artwork, ເສື້ອ, ສິນຄ້າ, Packaging ໄດ້ເລີຍ — ທຸກຄົນໃນໂລກສະແກນໄດ້ 100%!` 
+                        : `✅ Saved successfully!\n\n🌐 Tracking URL:\n${trackingUrl}\n\nReady to print on products and artwork for public scanning!`)
+                    : (currentLang === 'lo' ? '✅ ບັນທຶກ ແລະ ເລີ່ມ Track ສຳເລັດ!' : '✅ Saved & tracking activated!');
+                
+                alert(successMsg);
+            } else {
+                alert("Error: ບໍ່ສາມາດບັນທຶກ QR Code ໄດ້ ກະລຸນາກວດສອບການເຊື່ອມຕໍ່ອິນເຕີເນັດ");
             }
 
             btn.disabled = false;
+            btn.innerHTML = origHtml;
         });
 
         // ================= DOWNLOAD HANDLERS =================
@@ -1487,8 +1624,7 @@
                 document.getElementById('export-csv-btn-label').textContent = `ດຶງ CSV [${qr.short_code}]`;
 
                 document.getElementById('spotlight-title').textContent = qr.label;
-                const baseDomain = document.getElementById('qr-base-domain').value;
-                const domain = (baseDomain === 'auto' || !baseDomain) ? window.location.origin : baseDomain;
+                const domain = getEffectiveDomain();
                 const shortUrl = `${domain}/r/${qr.short_code}`;
 
                 document.getElementById('spotlight-shortcode-display').textContent = shortUrl;
@@ -1693,8 +1829,7 @@
             emptyEl.classList.add('hidden');
             container.innerHTML = '';
 
-            const baseDomain = document.getElementById('qr-base-domain').value;
-            const domain = (baseDomain === 'auto' || !baseDomain) ? window.location.origin : baseDomain;
+            const domain = getEffectiveDomain();
 
             list.forEach(item => {
                 const row = document.createElement('article');
@@ -1861,8 +1996,7 @@
             if (action === 'preview') {
                 switchPage('generator');
                 if (!qr) return;
-                const baseDomain = document.getElementById('qr-base-domain').value;
-                const domain = (baseDomain === 'auto' || !baseDomain) ? window.location.origin : baseDomain;
+                const domain = getEffectiveDomain();
                 const trackingUrl = qr.qr_type === 'dynamic' ? `${domain}/r/${qr.short_code}` : qr.destination_url;
                 document.getElementById('qr-label').value = qr.label;
                 document.getElementById('qr-url').value = qr.destination_url;
