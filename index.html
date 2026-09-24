@@ -127,6 +127,31 @@
             box-shadow: 4px 4px 12px #c9b09a, -2px -2px 8px #fff3e7;
         }
 
+        .tab-btn {
+            background: transparent;
+            color: #765f50;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+
+        .tab-btn:hover:not(.tab-active) {
+            color: var(--ink);
+            background: rgba(255, 255, 255, 0.45);
+        }
+
+        .tab-btn.tab-active {
+            background: var(--navy) !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(2, 49, 89, 0.28);
+        }
+
+        .tab-btn.tab-active i {
+            color: #f68a32 !important;
+        }
+
         .type-option {
             background: var(--surface);
             box-shadow: var(--raised-small);
@@ -271,333 +296,214 @@
             </div>
         </header>
 
-        <!-- ================= MAIN TWO-COLUMN LAYOUT ================= -->
-        <main class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
-            
-            <!-- LEFT COLUMN: QR CODE GENERATOR (5 Cols) -->
-            <section class="lg:col-span-5 soft-panel p-6 sm:p-7 fade-in">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-2.5">
-                        <span class="w-3.5 h-3.5 rounded-full bg-[#f68a32] shadow-[0_0_0_5px_#f9dbbf]"></span>
-                        <h2 class="text-xl font-bold text-[#392719]" data-lang="generator-title">ສ້າງ QR Code ໃໝ່</h2>
-                    </div>
-                    <span class="text-xs px-2.5 py-1 rounded-full bg-[#fdf5eb] text-[#765f50] font-semibold border border-[#edd7c2]">
-                        Bitqik Generator
-                    </span>
-                </div>
-                <p class="text-xs sm:text-sm text-[#765f50] mb-5 leading-relaxed" data-lang="generator-desc">
-                    ສ້າງ QR Code ຕິດໂລໂກ້ Bitqik ພ້ອມລິ້ງຕິດຕາມການ Scan ແບບ Dynamic ທີ່ສາມາດປ່ຽນລິ້ງປາຍທາງໄດ້ຕະຫຼອດເວລາ.
-                </p>
+        <!-- ================= NAVIGATION TABS ================= -->
+        <nav class="flex flex-wrap items-center justify-between gap-4 mb-7 fade-in">
+            <div class="flex items-center gap-2 p-1.5 soft-card rounded-2xl bg-[#ecd9c9]/60 border border-[#f3e3d5]">
+                <button type="button" id="tab-nav-generator" class="tab-btn tab-active px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2">
+                    <i data-lucide="qr-code" class="w-4 h-4"></i>
+                    <span data-lang="nav-generator">⚡ ສ້າງ QR Code (Studio)</span>
+                </button>
+                <button type="button" id="tab-nav-dashboard" class="tab-btn px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 text-[#765f50]">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4 text-[#f68a32]"></i>
+                    <span data-lang="nav-dashboard">📊 Analytics Dashboard</span>
+                </button>
+            </div>
 
-                <form id="qr-form" class="space-y-4">
-                    <!-- QR Type Selector -->
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-[#765f50] mb-2" data-lang="type-label">
-                            ປະເພດ QR Code
-                        </label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <label class="type-option flex items-start gap-2.5 rounded-2xl p-3 cursor-pointer">
-                                <input type="radio" name="qr-type" value="dynamic" checked class="mt-1">
-                                <div>
-                                    <span class="block text-xs sm:text-sm font-bold text-[#392719]" data-lang="type-dynamic">Dynamic (Tracked)</span>
-                                    <span class="block text-[11px] text-[#765f50] leading-tight" data-lang="type-dynamic-sub">ຕິດຕາມ Scan & ປ່ຽນ URL ໄດ້</span>
-                                </div>
-                            </label>
-                            <label class="type-option flex items-start gap-2.5 rounded-2xl p-3 cursor-pointer">
-                                <input type="radio" name="qr-type" value="static" class="mt-1">
-                                <div>
-                                    <span class="block text-xs sm:text-sm font-bold text-[#392719]" data-lang="type-static">Static (Direct)</span>
-                                    <span class="block text-[11px] text-[#765f50] leading-tight" data-lang="type-static-sub">ຝັງລິ້ງໂດຍກົງ ບໍ່ຜ່ານ Server</span>
-                                </div>
-                            </label>
+            <div class="flex items-center gap-2.5">
+                <button type="button" id="btn-reset-all-data" class="soft-button px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 text-rose-700 hover:bg-rose-50 border border-rose-200/60" title="ລ້າງຂໍ້ມູນ QR Code ແລະ Scan ທັງໝົດ">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5 text-rose-600"></i>
+                    <span data-lang="btn-reset-all">ລ້າງຂໍ້ມູນ (Reset Data)</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- ================= MAIN CONTAINER ================= -->
+        <main>
+            <!-- ================= VIEW 1: QR STUDIO & GENERATOR ================= -->
+            <div id="view-page-generator" class="space-y-7 fade-in">
+                <!-- Top Row: Generator Form (Left) & Preview Box (Right) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
+                    
+                    <!-- LEFT: QR CODE GENERATOR (7 Cols) -->
+                    <section class="lg:col-span-7 soft-panel p-6 sm:p-7">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-3.5 h-3.5 rounded-full bg-[#f68a32] shadow-[0_0_0_5px_#f9dbbf]"></span>
+                                <h2 class="text-xl font-bold text-[#392719]" data-lang="generator-title">ສ້າງ QR Code ໃໝ່</h2>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-[#fdf5eb] text-[#765f50] font-semibold border border-[#edd7c2]">
+                                Bitqik Generator
+                            </span>
                         </div>
-                    </div>
+                        <p class="text-xs sm:text-sm text-[#765f50] mb-5 leading-relaxed" data-lang="generator-desc">
+                            ສ້າງ QR Code ຕິດໂລໂກ້ Bitqik ພ້ອມລິ້ງຕິດຕາມການ Scan ແບບ Dynamic ທີ່ສາມາດປ່ຽນລິ້ງປາຍທາງໄດ້ຕະຫຼອດເວລາ.
+                        </p>
 
-                    <!-- Campaign Label -->
-                    <div>
-                        <label for="qr-label" class="block text-xs font-bold uppercase tracking-wider text-[#765f50] mb-1.5" data-lang="label-field">
-                            ຊື່ແຄມເປນ / ປ້າຍກຳກັບ (Campaign Label)
-                        </label>
-                        <input id="qr-label" class="soft-field text-sm font-medium" type="text" maxlength="80" 
-                            placeholder="ຕົວຢ່າງ: Bitqik App Launch, ປ້າຍໂຄສະນາຂົວມິດຕະພາບ..." required>
-                    </div>
-
-                    <!-- Destination URL -->
-                    <div>
-                        <label for="qr-url" class="block text-xs font-bold uppercase tracking-wider text-[#765f50] mb-1.5" data-lang="url-field">
-                            Destination URL (ລິ້ງປາຍທາງ)
-                        </label>
-                        <input id="qr-url" class="soft-field text-sm font-medium" type="url" 
-                            placeholder="https://bitqik.com/download" required>
-                    </div>
-
-                    <!-- Advanced: Custom Shortcode & Tracking Domain -->
-                    <div class="pt-1">
-                        <details class="group cursor-pointer">
-                            <summary class="text-xs font-semibold text-[#f68a32] flex items-center gap-1.5 select-none hover:underline">
-                                <i data-lucide="settings-2" class="w-3.5 h-3.5"></i>
-                                <span data-lang="advanced-settings-toggle">ຕັ້ງຄ່າຂັ້ນສູງ (Custom Code & Server Domain)</span>
-                            </summary>
-                            <div class="mt-3 p-3.5 rounded-2xl bg-[#fdf5eb] border border-[#eedccb] space-y-3">
-                                <div>
-                                    <label class="block text-[11px] font-bold text-[#765f50] mb-1" data-lang="custom-code-field">
-                                        ລະຫັດຫຍໍ້ກຳນົດເອງ (Custom Shortcode - ທາງເລືອກ)
+                        <form id="qr-form" class="space-y-4">
+                            <!-- QR Type Selector -->
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-[#765f50] mb-2" data-lang="type-label">
+                                    ປະເພດ QR Code
+                                </label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label class="type-option flex items-start gap-2.5 rounded-2xl p-3 cursor-pointer">
+                                        <input type="radio" name="qr-type" value="dynamic" checked class="mt-1">
+                                        <div>
+                                            <span class="block text-xs sm:text-sm font-bold text-[#392719]" data-lang="type-dynamic">Dynamic (Tracked)</span>
+                                            <span class="block text-[11px] text-[#765f50] leading-tight" data-lang="type-dynamic-sub">ຕິດຕາມ Scan & ປ່ຽນ URL ໄດ້</span>
+                                        </div>
                                     </label>
-                                    <input id="qr-custom-code" class="soft-field text-xs" type="text" placeholder="ຕົວຢ່າງ: promo2026, app-ios">
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-bold text-[#765f50] mb-1" data-lang="base-domain-field">
-                                        Domain ສຳລັບ Scan ຜ່ານມືຖື (Tracking Base URL)
+                                    <label class="type-option flex items-start gap-2.5 rounded-2xl p-3 cursor-pointer">
+                                        <input type="radio" name="qr-type" value="static" class="mt-1">
+                                        <div>
+                                            <span class="block text-xs sm:text-sm font-bold text-[#392719]" data-lang="type-static">Static (Direct)</span>
+                                            <span class="block text-[11px] text-[#765f50] leading-tight" data-lang="type-static-sub">ຝັງລິ້ງໂດຍກົງ ບໍ່ຜ່ານ Server</span>
+                                        </div>
                                     </label>
-                                    <select id="qr-base-domain" class="soft-field text-xs">
-                                        <option value="auto">ອັດຕະໂນມັດ (Auto Local/Current Host)</option>
-                                    </select>
-                                    <p class="text-[10px] text-[#765f50] mt-1" data-lang="base-domain-tip">
-                                        💡 ຫາກຕ້ອງການທົດສອບສະແກນດ້ວຍກ້ອງມືຖືແທ້ໆ ໃຫ້ເລືອກ IP ຂອງ Wi-Fi ເຄືອຂ່າຍດຽວກັນ
-                                    </p>
                                 </div>
                             </div>
-                        </details>
-                    </div>
 
-                    <!-- Logo Option -->
-                    <div class="pt-2">
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="text-xs font-bold uppercase tracking-wider text-[#765f50]" data-lang="logo-field">
-                                ໂລໂກ້ຢູ່ໃຈກາງ (Center Logo)
-                            </label>
-                            <label class="inline-flex items-center gap-2 cursor-pointer text-xs font-semibold text-[#392719]">
-                                <input type="checkbox" id="toggle-logo" checked class="accent-[#f68a32] rounded">
-                                <span data-lang="use-bitqik-logo">ຕິດໂລໂກ້ Bitqik</span>
-                            </label>
-                        </div>
-                        <input id="qr-logo-upload" class="soft-field text-xs file:mr-2 file:rounded-xl file:border-0 file:bg-[#f6b075] file:px-3 file:py-1.5 file:font-semibold file:text-[#392719]" 
-                            type="file" accept="image/png,image/jpeg,image/webp">
-                        <button id="remove-logo" type="button" class="soft-button text-xs font-semibold px-3 py-1.5 rounded-xl mt-2 text-[#a53832]" hidden data-lang="remove-custom-logo">
-                            ລຶບໂລໂກ້ທີ່ Upload
-                        </button>
-                    </div>
+                            <!-- Campaign Label -->
+                            <div>
+                                <label for="qr-label" class="block text-xs font-bold uppercase tracking-wider text-[#765f50] mb-1.5" data-lang="label-field">
+                                    ຊື່ແຄມເປນ / ປ້າຍກຳກັບ (Campaign Label)
+                                </label>
+                                <input id="qr-label" class="soft-field text-sm font-medium" type="text" maxlength="80" 
+                                    placeholder="ຕົວຢ່າງ: Bitqik App Launch, ປ້າຍໂຄສະນາຂົວມິດຕະພາບ..." required>
+                            </div>
 
-                    <!-- Form Action Buttons -->
-                    <div class="flex flex-wrap gap-2.5 pt-2">
-                        <button type="submit" id="btn-generate" class="soft-button btn-primary px-5 py-3 rounded-2xl font-bold flex-1 text-sm flex items-center justify-center gap-2">
-                            <i data-lucide="qr-code" class="w-4 h-4"></i>
-                            <span data-lang="btn-generate-qr">ສ້າງ QR Code</span>
-                        </button>
-                        <button type="button" id="btn-save-qr" class="soft-button btn-navy px-5 py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2">
-                            <i data-lucide="save" class="w-4 h-4"></i>
-                            <span data-lang="btn-save-track">ບັນທຶກ & Track</span>
-                        </button>
-                    </div>
-                </form>
+                            <!-- Destination URL -->
+                            <div>
+                                <label for="qr-url" class="block text-xs font-bold uppercase tracking-wider text-[#765f50] mb-1.5" data-lang="url-field">
+                                    Destination URL (ລິ້ງປາຍທາງ)
+                                </label>
+                                <input id="qr-url" class="soft-field text-sm font-medium" type="url" 
+                                    placeholder="https://bitqik.com/download" required>
+                            </div>
 
-                <!-- PREVIEW BOX -->
-                <div class="mt-6 pt-5 border-t border-[#dfc7b4]">
-                    <div class="flex items-center justify-between gap-2 mb-3">
-                        <h3 class="text-sm font-bold text-[#392719] flex items-center gap-1.5">
-                            <i data-lucide="eye" class="w-4 h-4 text-[#f68a32]"></i>
-                            <span data-lang="preview-title">ຕົວຢ່າງ QR Code (Preview)</span>
-                        </h3>
-                        <div class="flex items-center gap-2">
-                            <button type="button" id="download-svg" class="soft-button px-3 py-1.5 rounded-xl text-xs font-semibold text-[#392719]" disabled>
-                                SVG
-                            </button>
-                            <button type="button" id="download-png" class="soft-button px-3 py-1.5 rounded-xl text-xs font-semibold text-[#392719]" disabled>
-                                PNG (HD)
-                            </button>
-                            <button type="button" id="print-card-btn" class="soft-button px-3 py-1.5 rounded-xl text-xs font-semibold text-[#023159]" disabled title="ພິມໃບຕັ້ງໂຕະ">
-                                <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-                            </button>
-                        </div>
-                    </div>
+                            <!-- Advanced: Custom Shortcode & Tracking Domain -->
+                            <div class="pt-1">
+                                <details class="group cursor-pointer">
+                                    <summary class="text-xs font-semibold text-[#f68a32] flex items-center gap-1.5 select-none hover:underline">
+                                        <i data-lucide="settings-2" class="w-3.5 h-3.5"></i>
+                                        <span data-lang="advanced-settings-toggle">ຕັ້ງຄ່າຂັ້ນສູງ (Custom Code & Server Domain)</span>
+                                    </summary>
+                                    <div class="mt-3 p-3.5 rounded-2xl bg-[#fdf5eb] border border-[#eedccb] space-y-3">
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-[#765f50] mb-1" data-lang="custom-code-field">
+                                                ລະຫັດຫຍໍ້ກຳນົດເອງ (Custom Shortcode - ທາງເລືອກ)
+                                            </label>
+                                            <input id="qr-custom-code" class="soft-field text-xs" type="text" placeholder="ຕົວຢ່າງ: promo2026, app-ios">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-[#765f50] mb-1" data-lang="base-domain-field">
+                                                Domain ສຳລັບ Scan ຜ່ານມືຖື (Tracking Base URL)
+                                            </label>
+                                            <select id="qr-base-domain" class="soft-field text-xs">
+                                                <option value="auto">ອັດຕະໂນມັດ (Auto Local/Current Host)</option>
+                                            </select>
+                                            <p class="text-[10px] text-[#765f50] mt-1" data-lang="base-domain-tip">
+                                                💡 ຫາກຕ້ອງການທົດສອບສະແກນດ້ວຍກ້ອງມືຖືແທ້ໆ ໃຫ້ເລືອກ IP ຂອງ Wi-Fi ເຄືອຂ່າຍດຽວກັນ
+                                            </p>
+                                        </div>
+                                    </div>
+                                </details>
+                            </div>
 
-                    <div class="flex flex-col sm:flex-row items-center gap-4">
-                        <div class="preview-well flex items-center justify-center w-[210px] h-[210px] p-3 flex-shrink-0 relative overflow-hidden">
-                            <div id="qr-code" class="w-full h-full flex items-center justify-center" hidden></div>
-                            <div id="qr-empty" class="text-center p-4">
-                                <i data-lucide="qr-code" class="w-10 h-10 text-[#c2a38c] mx-auto mb-2 opacity-60"></i>
-                                <span class="text-xs text-[#765f50] leading-snug block" data-lang="preview-placeholder">
-                                    ກະລຸນາປ້ອນຂໍ້ມູນ ແລ້ວກົດ "ສ້າງ QR Code"
-                                </span>
+                            <!-- Logo Option -->
+                            <div class="pt-2">
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="text-xs font-bold uppercase tracking-wider text-[#765f50]" data-lang="logo-field">
+                                        ໂລໂກ້ຢູ່ໃຈກາງ (Center Logo)
+                                    </label>
+                                    <label class="inline-flex items-center gap-2 cursor-pointer text-xs font-semibold text-[#392719]">
+                                        <input type="checkbox" id="toggle-logo" checked class="accent-[#f68a32] rounded">
+                                        <span data-lang="use-bitqik-logo">ຕິດໂລໂກ້ Bitqik</span>
+                                    </label>
+                                </div>
+                                <input id="qr-logo-upload" class="soft-field text-xs file:mr-2 file:rounded-xl file:border-0 file:bg-[#f6b075] file:px-3 file:py-1.5 file:font-semibold file:text-[#392719]" 
+                                    type="file" accept="image/png,image/jpeg,image/webp">
+                                <button id="remove-logo" type="button" class="soft-button text-xs font-semibold px-3 py-1.5 rounded-xl mt-2 text-[#a53832]" hidden data-lang="remove-custom-logo">
+                                    ລຶບໂລໂກ້ທີ່ Upload
+                                </button>
+                            </div>
+
+                            <!-- Form Action Buttons -->
+                            <div class="flex flex-wrap gap-2.5 pt-2">
+                                <button type="submit" id="btn-generate" class="soft-button btn-primary px-5 py-3 rounded-2xl font-bold flex-1 text-sm flex items-center justify-center gap-2">
+                                    <i data-lucide="qr-code" class="w-4 h-4"></i>
+                                    <span data-lang="btn-generate-qr">ສ້າງ QR Code</span>
+                                </button>
+                                <button type="button" id="btn-save-qr" class="soft-button btn-navy px-5 py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2">
+                                    <i data-lucide="save" class="w-4 h-4"></i>
+                                    <span data-lang="btn-save-track">ບັນທຶກ & Track</span>
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- RIGHT: QR PREVIEW (5 Cols) -->
+                    <section class="lg:col-span-5 soft-panel p-6 sm:p-7 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-4">
+                                <h3 class="text-base font-bold text-[#392719] flex items-center gap-2">
+                                    <i data-lucide="eye" class="w-4 h-4 text-[#f68a32]"></i>
+                                    <span data-lang="preview-title">ຕົວຢ່າງ QR Code (Preview)</span>
+                                </h3>
+                                <div class="flex items-center gap-1.5">
+                                    <button type="button" id="download-svg" class="soft-button px-2.5 py-1.5 rounded-xl text-xs font-semibold text-[#392719]" disabled>
+                                        SVG
+                                    </button>
+                                    <button type="button" id="download-png" class="soft-button px-2.5 py-1.5 rounded-xl text-xs font-semibold text-[#392719]" disabled>
+                                        PNG
+                                    </button>
+                                    <button type="button" id="print-card-btn" class="soft-button px-2.5 py-1.5 rounded-xl text-xs font-semibold text-[#023159]" disabled title="ພິມໃບຕັ້ງໂຕະ">
+                                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col items-center justify-center py-2">
+                                <div class="preview-well flex items-center justify-center w-[230px] h-[230px] p-3 relative overflow-hidden mb-4">
+                                    <div id="qr-code" class="w-full h-full flex items-center justify-center" hidden></div>
+                                    <div id="qr-empty" class="text-center p-4">
+                                        <i data-lucide="qr-code" class="w-12 h-12 text-[#c2a38c] mx-auto mb-2 opacity-60"></i>
+                                        <span class="text-xs text-[#765f50] leading-snug block" data-lang="preview-placeholder">
+                                            ກະລຸນາປ້ອນຂໍ້ມູນ ແລ້ວກົດ "ສ້າງ QR Code"
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div id="preview-meta" class="hidden text-center space-y-1 w-full max-w-[280px]">
+                                    <p class="font-bold text-[#392719] text-sm break-words" id="preview-label-display"></p>
+                                    <p class="text-[11px] text-[#023159] font-mono break-all" id="preview-url-display"></p>
+                                    <span id="preview-badge-type" class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f68a32]/20 text-[#a24b13]"></span>
+                                </div>
                             </div>
                         </div>
-                        <div class="text-xs text-[#765f50] space-y-2">
-                            <div id="preview-meta" class="hidden space-y-1">
-                                <p class="font-bold text-[#392719] text-sm break-words" id="preview-label-display"></p>
-                                <p class="text-[11px] text-[#023159] font-mono break-all" id="preview-url-display"></p>
-                                <span id="preview-badge-type" class="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#f68a32]/20 text-[#a24b13]"></span>
-                            </div>
-                            <p class="leading-relaxed text-[11px] text-[#765f50]" data-lang="preview-quality-note">
+
+                        <div class="pt-4 border-t border-[#dfc7b4] mt-4">
+                            <p class="leading-relaxed text-[11px] text-[#765f50] text-center" data-lang="preview-quality-note">
                                 ✨ ຮອງຮັບຄວາມລະອຽດສູງ (Error Correction Level H), ພ້ອມພິມໃສ່ປ້າຍ Standee, ໃບປິວ, ເສື້ອ ຫຼື ໂຄສະນາອອນລາຍ.
                             </p>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- RIGHT COLUMN: ANALYTICS DASHBOARD & QR LIST (7 Cols) -->
-            <section class="lg:col-span-7 space-y-6 fade-in" style="animation-delay: 0.1s;">
-                
-                <!-- TOP METRICS CARDS & INDIVIDUAL CAMPAIGN DASHBOARD -->
-                <div class="soft-panel p-6" id="dashboard-top">
-                    
-                    <!-- Dashboard Header -->
-                    <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-[#392719] flex items-center gap-2" id="analytics-main-title">
-                                <i data-lucide="bar-chart-3" class="w-5 h-5 text-[#f68a32]"></i>
-                                <span id="dashboard-title-text" data-lang="analytics-title">ພາບລວມການ Scan (Analytics Dashboard)</span>
-                            </h2>
-                            <p class="text-xs text-[#765f50] mt-0.5" id="dashboard-subtitle-text" data-lang="analytics-desc">
-                                ຕິດຕາມຈຳນວນຄົນສະແກນ, ປະເພດອຸປະກອນ ແລະ ແຄມເປນທີ່ໄດ້ຮັບຄວາມນິຍົມສູງສຸດ
-                            </p>
-                        </div>
-                        <button type="button" id="btn-refresh-analytics" class="soft-button p-2 rounded-xl text-[#765f50] hover:text-[#392719]" title="Refresh">
-                            <i data-lucide="rotate-cw" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-
-                    <!-- CAMPAIGN SELECTOR / FILTER BAR -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 mb-5 rounded-2xl bg-[#fdf5eb] border border-[#eedccb]">
-                        <div class="flex items-center gap-2 flex-1 min-w-[240px]">
-                            <i data-lucide="filter" class="w-4 h-4 text-[#f68a32] flex-shrink-0"></i>
-                            <label for="select-dashboard-qr" class="text-xs font-bold text-[#765f50] whitespace-nowrap" data-lang="filter-campaign-label">
-                                ເລືອກເບິ່ງສະເພາະ QR:
-                            </label>
-                            <select id="select-dashboard-qr" class="soft-field py-1.5 px-3 text-xs flex-1 font-bold text-[#023159]">
-                                <option value="all">🌟 ພາບລວມທັງໝົດ (All Campaigns)</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <!-- Download Data Buttons -->
-                            <button type="button" id="btn-export-current-csv" class="soft-button px-3 py-1.5 rounded-xl text-xs font-bold text-[#023159] flex items-center gap-1.5" title="ດຶງຂໍ້ມູນ CSV">
-                                <i data-lucide="download" class="w-3.5 h-3.5 text-[#f68a32]"></i>
-                                <span id="export-csv-btn-label" data-lang="export-this-data">ດຶງ CSV</span>
-                            </button>
-                            <button type="button" id="btn-export-current-json" class="soft-button px-2.5 py-1.5 rounded-xl text-xs font-bold text-[#765f50] flex items-center gap-1" title="ດຶງຂໍ້ມູນ JSON">
-                                <i data-lucide="file-json" class="w-3.5 h-3.5"></i>
-                                <span>JSON</span>
-                            </button>
-                            <button type="button" id="btn-reset-campaign-filter" class="soft-button px-2.5 py-1.5 rounded-xl text-xs font-bold text-[#a53832] hidden flex items-center gap-1" title="ກັບຄືນເບິ່ງທັງໝົດ">
-                                <i data-lucide="x" class="w-3.5 h-3.5"></i>
-                                <span data-lang="btn-view-all">ເບິ່ງທັງໝົດ</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- CAMPAIGN SPOTLIGHT CARD (Appears when a specific QR is selected) -->
-                    <div id="campaign-spotlight-card" class="hidden mb-5 p-4 rounded-2xl bg-gradient-to-r from-[#023159] to-[#011c33] text-white shadow-lg fade-in">
-                        <div class="flex flex-wrap justify-between items-start gap-3">
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-2 mb-1.5">
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#f68a32] text-white uppercase tracking-wider">
-                                        Campaign Spotlight
-                                    </span>
-                                    <span id="spotlight-active-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-500/30 text-green-300 border border-green-400/30">Active</span>
-                                    <span id="spotlight-created-date" class="text-[10px] text-slate-300"></span>
-                                </div>
-                                <h3 id="spotlight-title" class="text-base sm:text-lg font-bold text-white truncate"></h3>
-                                <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-300">
-                                    <span class="text-[#f68a32] font-mono font-bold" id="spotlight-shortcode-display"></span>
-                                    <button type="button" id="btn-copy-spotlight-link" class="text-[11px] underline hover:text-white flex items-center gap-1">
-                                        <i data-lucide="copy" class="w-3 h-3"></i>
-                                        <span id="spotlight-copy-text">Copy Link</span>
-                                    </button>
-                                    <span>·</span>
-                                    <span class="truncate max-w-[320px]">Destination: <a id="spotlight-dest-link" href="#" target="_blank" class="underline text-slate-200 hover:text-[#f68a32]"></a></span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 flex-shrink-0">
-                                <button type="button" id="btn-spotlight-preview" class="bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
-                                    <i data-lucide="eye" class="w-3.5 h-3.5 text-[#f68a32]"></i>
-                                    <span>Preview QR</span>
-                                </button>
-                                <button type="button" id="btn-spotlight-test" class="bg-[#f68a32] hover:bg-[#e57a26] text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow">
-                                    <i data-lucide="scan" class="w-3.5 h-3.5"></i>
-                                    <span>Test Scan</span>
-                                </button>
-                                <button type="button" id="btn-spotlight-close" class="bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white p-1.5 rounded-xl transition" title="ກັບຄືນເບິ່ງທັງໝົດ">
-                                    <i data-lucide="x" class="w-4 h-4"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 4 Stat Counters -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-6">
-                        <div class="soft-card p-4 text-center">
-                            <p class="text-[11px] font-bold uppercase tracking-wider text-[#765f50]" id="stat-label-1" data-lang="stat-total-qrs">QR ທັງໝົດ</p>
-                            <p id="stat-codes-count" class="text-2xl sm:text-3xl font-extrabold text-[#392719] mt-1">0</p>
-                        </div>
-                        <div class="soft-card p-4 text-center">
-                            <p class="text-[11px] font-bold uppercase tracking-wider text-[#765f50]" id="stat-label-2" data-lang="stat-total-scans">Scan ທັງໝົດ</p>
-                            <p id="stat-scans-count" class="text-2xl sm:text-3xl font-extrabold text-[#f68a32] mt-1">0</p>
-                        </div>
-                        <div class="soft-card p-4 text-center">
-                            <p class="text-[11px] font-bold uppercase tracking-wider text-[#765f50]" id="stat-label-3" data-lang="stat-today-scans">Scan ມື້ນີ້</p>
-                            <p id="stat-today-count" class="text-2xl sm:text-3xl font-extrabold text-[#023159] mt-1">0</p>
-                        </div>
-                        <div class="soft-card p-4 text-center">
-                            <p class="text-[11px] font-bold uppercase tracking-wider text-[#765f50]" id="stat-label-4" data-lang="stat-avg-scans">ສະເລ່ຍ / QR</p>
-                            <p id="stat-avg-count" class="text-2xl sm:text-3xl font-extrabold text-[#765f50] mt-1">0</p>
-                        </div>
-                    </div>
-
-                    <!-- CHARTS GRID: Bar/Line Chart & Doughnut Chart -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="preview-well p-4">
-                            <h4 class="text-xs font-bold text-[#765f50] uppercase mb-2 flex items-center gap-1.5">
-                                <i data-lucide="trending-up" class="w-3.5 h-3.5 text-[#f68a32]"></i>
-                                <span id="chart-1-title" data-lang="chart-campaigns-title">ແຄມເປນທີ່ຖືກ Scan ຫຼາຍສຸດ</span>
-                            </h4>
-                            <div class="relative h-44">
-                                <canvas id="chart-top-qrs"></canvas>
-                            </div>
-                        </div>
-                        <div class="preview-well p-4">
-                            <h4 class="text-xs font-bold text-[#765f50] uppercase mb-2 flex items-center gap-1.5">
-                                <i data-lucide="smartphone" class="w-3.5 h-3.5 text-[#023159]"></i>
-                                <span id="chart-2-title" data-lang="chart-devices-title">ອຸປະກອນທີ່ Scan (Device Breakdown)</span>
-                            </h4>
-                            <div class="relative h-44">
-                                <canvas id="chart-devices"></canvas>
-                            </div>
-                        </div>
-                    </div>
+                    </section>
                 </div>
 
-                <!-- LIVE SCAN ACTIVITY FEED -->
-                <div class="soft-panel p-5">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-2">
-                            <span class="live-dot"></span>
-                            <h3 class="text-sm font-bold text-[#392719]" id="live-activity-header" data-lang="live-activity-title">
-                                Live Scan Activity Feed (ການ Scan ລ່າສຸດ)
-                            </h3>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[11px] text-[#765f50] font-medium" data-lang="auto-sync-badge">ອັບເດດ Real-time ອັດຕະໂນມັດ</span>
-                        </div>
-                    </div>
-                    <div id="live-feed-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
-                        <p class="text-xs text-[#765f50] py-3 text-center" data-lang="no-scans-yet">ຍັງບໍ່ມີຂໍ້ມູນການສະແກນ</p>
-                    </div>
-                </div>
-
-                <!-- SAVED QR CODES LIST & MANAGEMENT -->
-                <div class="soft-panel p-6">
-                    <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+                <!-- Bottom: SAVED QR CODES LIST & MANAGEMENT (Full 12 cols) -->
+                <section class="soft-panel p-6 sm:p-7">
+                    <div class="flex flex-wrap justify-between items-center gap-3 mb-5">
                         <div>
                             <h2 class="text-xl font-bold text-[#392719] flex items-center gap-2" data-lang="saved-qrs-title">
                                 <i data-lucide="folder-check" class="w-5 h-5 text-[#f68a32]"></i>
                                 <span>ລາຍການ QR Code ທັງໝົດ (Campaign List)</span>
                             </h2>
-                            <p class="text-xs text-[#765f50]" data-lang="saved-qrs-desc">
+                            <p class="text-xs text-[#765f50] mt-0.5" data-lang="saved-qrs-desc">
                                 ຈັດການ, ແກ້ໄຂລິ້ງປາຍທາງ, ເລືອກເບິ່ງ Dashboard ສະເພາະ, ແລະ ດຶງຂໍ້ມູນ
                             </p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <input id="search-qrs" type="text" class="soft-field py-1.5 px-3 text-xs w-40 sm:w-48" 
+                            <input id="search-qrs" type="text" class="soft-field py-1.5 px-3 text-xs w-48 sm:w-60" 
                                 placeholder="ຄົ້ນຫາແຄມເປນ...">
                         </div>
                     </div>
@@ -605,12 +511,167 @@
                     <!-- Records List Container -->
                     <div id="records-container" class="divide-y divide-[#dfc7b4]">
                         <p id="empty-records" class="text-center py-8 text-sm text-[#765f50]" data-lang="empty-list-text">
-                            ຍັງບໍ່ທັນມີ QR Code ທີ່ຖືກບັນທຶກ. ສ້າງ QR Code ທຳອິດຢູ່ຟາກຊ້າຍ.
+                            ຍັງບໍ່ທັນມີ QR Code ທີ່ຖືກບັນທຶກ. ສ້າງ QR Code ທຳອິດຢູ່ຟາກເທິງ.
                         </p>
                     </div>
-                </div>
+                </section>
+            </div>
 
-            </section>
+            <!-- ================= VIEW 2: DEDICATED ANALYTICS DASHBOARD ================= -->
+            <div id="view-page-dashboard" class="space-y-7 fade-in hidden">
+                
+                <!-- TOP METRICS CARDS & INDIVIDUAL CAMPAIGN DASHBOARD -->
+                <section class="soft-panel p-6 sm:p-8" id="dashboard-top">
+                    
+                    <!-- Dashboard Header -->
+                    <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-[#392719] flex items-center gap-2.5" id="analytics-main-title">
+                                <i data-lucide="bar-chart-3" class="w-6 h-6 text-[#f68a32]"></i>
+                                <span id="dashboard-title-text" data-lang="analytics-title">ພາບລວມການ Scan (Analytics Dashboard)</span>
+                            </h2>
+                            <p class="text-xs sm:text-sm text-[#765f50] mt-1" id="dashboard-subtitle-text" data-lang="analytics-desc">
+                                ຕິດຕາມຈຳນວນຄົນສະແກນ, ປະເພດອຸປະກອນ ແລະ ແຄມເປນທີ່ໄດ້ຮັບຄວາມນິຍົມສູງສຸດ
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <button type="button" id="btn-goto-generator" class="soft-button btn-primary px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5">
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                                <span data-lang="btn-goto-generator">➕ ສ້າງ QR Code ໃໝ່</span>
+                            </button>
+                            <button type="button" id="btn-refresh-analytics" class="soft-button p-2.5 rounded-xl text-[#765f50] hover:text-[#392719]" title="Refresh">
+                                <i data-lucide="rotate-cw" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CAMPAIGN SELECTOR / FILTER BAR -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 p-4 mb-6 rounded-2xl bg-[#fdf5eb] border border-[#eedccb]">
+                        <div class="flex items-center gap-2 flex-1 min-w-[260px]">
+                            <i data-lucide="filter" class="w-4 h-4 text-[#f68a32] flex-shrink-0"></i>
+                            <label for="select-dashboard-qr" class="text-xs font-bold text-[#765f50] whitespace-nowrap" data-lang="filter-campaign-label">
+                                ເລືອກເບິ່ງສະເພາະ QR:
+                            </label>
+                            <select id="select-dashboard-qr" class="soft-field py-2 px-3 text-xs sm:text-sm flex-1 font-bold text-[#023159]">
+                                <option value="all">🌟 ພາບລວມທັງໝົດ (All Campaigns & QRs)</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <!-- Download Data Buttons -->
+                            <button type="button" id="btn-export-current-csv" class="soft-button px-3.5 py-2 rounded-xl text-xs font-bold text-[#023159] flex items-center gap-1.5" title="ດຶງຂໍ້ມູນ CSV">
+                                <i data-lucide="download" class="w-3.5 h-3.5 text-[#f68a32]"></i>
+                                <span id="export-csv-btn-label" data-lang="export-this-data">ດຶງ CSV</span>
+                            </button>
+                            <button type="button" id="btn-export-current-json" class="soft-button px-3 py-2 rounded-xl text-xs font-bold text-[#765f50] flex items-center gap-1" title="ດຶງຂໍ້ມູນ JSON">
+                                <i data-lucide="file-json" class="w-3.5 h-3.5"></i>
+                                <span>JSON</span>
+                            </button>
+                            <button type="button" id="btn-reset-campaign-filter" class="soft-button px-3 py-2 rounded-xl text-xs font-bold text-[#a53832] hidden flex items-center gap-1" title="ກັບຄືນເບິ່ງທັງໝົດ">
+                                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                <span data-lang="btn-view-all">ເບິ່ງທັງໝົດ</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CAMPAIGN SPOTLIGHT CARD (Appears when a specific QR is selected) -->
+                    <div id="campaign-spotlight-card" class="hidden mb-6 p-5 rounded-2xl bg-gradient-to-r from-[#023159] to-[#011c33] text-white shadow-xl fade-in">
+                        <div class="flex flex-wrap justify-between items-start gap-4">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f68a32] text-white uppercase tracking-wider">
+                                        Campaign Spotlight
+                                    </span>
+                                    <span id="spotlight-active-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-500/30 text-green-300 border border-green-400/30">Active</span>
+                                    <span id="spotlight-created-date" class="text-[10px] text-slate-300"></span>
+                                </div>
+                                <h3 id="spotlight-title" class="text-lg sm:text-xl font-bold text-white truncate"></h3>
+                                <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-slate-300">
+                                    <span class="text-[#f68a32] font-mono font-bold text-sm" id="spotlight-shortcode-display"></span>
+                                    <button type="button" id="btn-copy-spotlight-link" class="text-xs underline hover:text-white flex items-center gap-1">
+                                        <i data-lucide="copy" class="w-3 h-3"></i>
+                                        <span id="spotlight-copy-text">Copy Link</span>
+                                    </button>
+                                    <span>·</span>
+                                    <span class="truncate max-w-[420px]">Destination: <a id="spotlight-dest-link" href="#" target="_blank" class="underline text-slate-200 hover:text-[#f68a32]"></a></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <button type="button" id="btn-spotlight-preview" class="bg-white/10 hover:bg-white/20 text-white px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+                                    <i data-lucide="eye" class="w-3.5 h-3.5 text-[#f68a32]"></i>
+                                    <span>Preview QR</span>
+                                </button>
+                                <button type="button" id="btn-spotlight-test" class="bg-[#f68a32] hover:bg-[#e57a26] text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow">
+                                    <i data-lucide="scan" class="w-3.5 h-3.5"></i>
+                                    <span>Test Scan</span>
+                                </button>
+                                <button type="button" id="btn-spotlight-close" class="bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white p-2 rounded-xl transition" title="ກັບຄືນເບິ່ງທັງໝົດ">
+                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4 Stat Counters -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div class="soft-card p-5 text-center">
+                            <p class="text-xs font-bold uppercase tracking-wider text-[#765f50]" id="stat-label-1" data-lang="stat-total-qrs">QR ທັງໝົດ</p>
+                            <p id="stat-codes-count" class="text-3xl sm:text-4xl font-extrabold text-[#392719] mt-2">0</p>
+                        </div>
+                        <div class="soft-card p-5 text-center">
+                            <p class="text-xs font-bold uppercase tracking-wider text-[#765f50]" id="stat-label-2" data-lang="stat-total-scans">Scan ທັງໝົດ</p>
+                            <p id="stat-scans-count" class="text-3xl sm:text-4xl font-extrabold text-[#f68a32] mt-2">0</p>
+                        </div>
+                        <div class="soft-card p-5 text-center">
+                            <p class="text-xs font-bold uppercase tracking-wider text-[#765f50]" id="stat-label-3" data-lang="stat-today-scans">Scan ມື້ນີ້</p>
+                            <p id="stat-today-count" class="text-3xl sm:text-4xl font-extrabold text-[#023159] mt-2">0</p>
+                        </div>
+                        <div class="soft-card p-5 text-center">
+                            <p class="text-xs font-bold uppercase tracking-wider text-[#765f50]" id="stat-label-4" data-lang="stat-avg-scans">ສະເລ່ຍ / QR</p>
+                            <p id="stat-avg-count" class="text-3xl sm:text-4xl font-extrabold text-[#765f50] mt-2">0</p>
+                        </div>
+                    </div>
+
+                    <!-- CHARTS GRID: Bar/Line Chart & Doughnut Chart -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <div class="preview-well p-5">
+                            <h4 class="text-xs font-bold text-[#765f50] uppercase mb-3 flex items-center gap-2">
+                                <i data-lucide="trending-up" class="w-4 h-4 text-[#f68a32]"></i>
+                                <span id="chart-1-title" data-lang="chart-campaigns-title">ແຄມເປນທີ່ຖືກ Scan ຫຼາຍສຸດ</span>
+                            </h4>
+                            <div class="relative h-60">
+                                <canvas id="chart-top-qrs"></canvas>
+                            </div>
+                        </div>
+                        <div class="preview-well p-5">
+                            <h4 class="text-xs font-bold text-[#765f50] uppercase mb-3 flex items-center gap-2">
+                                <i data-lucide="smartphone" class="w-4 h-4 text-[#023159]"></i>
+                                <span id="chart-2-title" data-lang="chart-devices-title">ອຸປະກອນທີ່ Scan (Device Breakdown)</span>
+                            </h4>
+                            <div class="relative h-60">
+                                <canvas id="chart-devices"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- LIVE SCAN ACTIVITY FEED -->
+                <section class="soft-panel p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="live-dot"></span>
+                            <h3 class="text-base font-bold text-[#392719]" id="live-activity-header" data-lang="live-activity-title">
+                                Live Scan Activity Feed (ການ Scan ລ່າສຸດ)
+                            </h3>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-[#765f50] font-medium" data-lang="auto-sync-badge">ອັບເດດ Real-time ອັດຕະໂນມັດ</span>
+                        </div>
+                    </div>
+                    <div id="live-feed-list" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+                        <p class="text-xs text-[#765f50] py-4 text-center" data-lang="no-scans-yet">ຍັງບໍ່ມີຂໍ້ມູນການສະແກນ</p>
+                    </div>
+                </section>
+            </div>
         </main>
 
         <!-- ================= FOOTER ================= -->
@@ -751,10 +812,18 @@
                 "or-upload-img": "ຫຼື ເລືອກໄຟລ໌ຮູບພາບ QR Code",
                 "scan-detected": "🎯 ພົບ QR Code:",
                 "open-dest-url": "ເປີດລິ້ງປາຍທາງ &rarr;",
-                "print-scan-instruction": "ສະແກນດ້ວຍກ້ອງມືຖືເພື່ອເຂົ້າສູ່ເວັບໄຊ ຫຼື ແອັບ"
+                "print-scan-instruction": "ສະແກນດ້ວຍກ້ອງມືຖືເພື່ອເຂົ້າສູ່ເວັບໄຊ ຫຼື ແອັບ",
+                "nav-generator": "⚡ ສ້າງ QR Code (Studio)",
+                "nav-dashboard": "📊 Analytics Dashboard",
+                "btn-reset-all": "ລ້າງຂໍ້ມູນ (Reset)",
+                "btn-goto-generator": "➕ ສ້າງ QR Code ໃໝ່"
             },
             en: {
                 subtitle: "Real-time Branded QR Generator & Dynamic Scan Tracking Engine",
+                "nav-generator": "⚡ QR Studio & Generator",
+                "nav-dashboard": "📊 Analytics Dashboard",
+                "btn-reset-all": "Reset All Data",
+                "btn-goto-generator": "➕ Create New QR",
                 "test-scanner-btn": "Test Scanner",
                 "export-all-csv-btn": "Export All CSV",
                 "generator-title": "Create New QR Code",
@@ -827,6 +896,73 @@
 
         document.getElementById('btn-lang-toggle').addEventListener('click', () => {
             applyLanguage(currentLang === 'lo' ? 'en' : 'lo');
+        });
+
+        // ================= PAGE NAVIGATION & TABS =================
+        const viewPageGenerator = document.getElementById('view-page-generator');
+        const viewPageDashboard = document.getElementById('view-page-dashboard');
+        const tabNavGenerator = document.getElementById('tab-nav-generator');
+        const tabNavDashboard = document.getElementById('tab-nav-dashboard');
+
+        function switchPage(page) {
+            if (page === 'dashboard') {
+                viewPageGenerator.classList.add('hidden');
+                viewPageDashboard.classList.remove('hidden');
+                tabNavDashboard.classList.add('tab-active');
+                tabNavDashboard.classList.remove('text-[#765f50]');
+                tabNavGenerator.classList.remove('tab-active');
+                tabNavGenerator.classList.add('text-[#765f50]');
+                window.location.hash = 'dashboard';
+                // Trigger chart redraw & resize
+                setTimeout(() => {
+                    if (chartTopQrs) chartTopQrs.resize();
+                    if (chartDevices) chartDevices.resize();
+                }, 60);
+            } else {
+                viewPageDashboard.classList.add('hidden');
+                viewPageGenerator.classList.remove('hidden');
+                tabNavGenerator.classList.add('tab-active');
+                tabNavGenerator.classList.remove('text-[#765f50]');
+                tabNavDashboard.classList.remove('tab-active');
+                tabNavDashboard.classList.add('text-[#765f50]');
+                window.location.hash = 'generator';
+            }
+            lucide.createIcons();
+        }
+
+        tabNavGenerator.addEventListener('click', () => switchPage('generator'));
+        tabNavDashboard.addEventListener('click', () => switchPage('dashboard'));
+        const btnGotoGen = document.getElementById('btn-goto-generator');
+        if (btnGotoGen) {
+            btnGotoGen.addEventListener('click', () => switchPage('generator'));
+        }
+
+        window.addEventListener('hashchange', () => {
+            const h = window.location.hash.replace('#', '');
+            if (h === 'dashboard') switchPage('dashboard');
+            else if (h === 'generator') switchPage('generator');
+        });
+
+        // Reset All Data button handler
+        document.getElementById('btn-reset-all-data').addEventListener('click', async () => {
+            const msg = currentLang === 'lo'
+                ? '⚠️ ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລ້າງຂໍ້ມູນ QR Code ແລະ Scan ທັງໝົດ?\n(ການກະທຳນີ້ຈະລຶບຂໍ້ມູນທຸກຢ່າງອອກຈາກ Server / LocalStorage ແລະ ບໍ່ສາມາດຍົກເລີກໄດ້)'
+                : '⚠️ Are you sure you want to reset all QR codes and scan logs?\n(This action will delete everything and cannot be undone)';
+            if (!confirm(msg)) return;
+
+            try {
+                if (isServerOnline) {
+                    const res = await fetch('/api/reset-data', { method: 'POST' });
+                    const resData = await res.json();
+                    if (!resData.success) throw new Error(resData.error || 'Reset failed');
+                }
+                localStorage.removeItem('bitqik_qrs');
+                selectedQrId = null;
+                await refreshAllData();
+                alert(currentLang === 'lo' ? '✅ ລ້າງຂໍ້ມູນທັງໝົດສຳເລັດຮຽບຮ້ອຍແລ້ວ!' : '✅ All data reset successfully!');
+            } catch (err) {
+                alert('Reset error: ' + err.message);
+            }
         });
 
         // ================= APPLICATION STATE =================
@@ -1311,6 +1447,7 @@
 
                 // Spotlight preview QR
                 document.getElementById('btn-spotlight-preview').onclick = () => {
+                    switchPage('generator');
                     document.getElementById('qr-label').value = qr.label;
                     document.getElementById('qr-url').value = qr.destination_url;
                     generateQR(shortUrl, qr.label, getActiveLogoUri());
@@ -1621,8 +1758,9 @@
             if (action === 'view-dashboard') {
                 selectedQrId = qrId;
                 campaignSelector.value = qrId;
+                switchPage('dashboard');
                 await refreshAllData();
-                document.getElementById('dashboard-top').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
                 return;
             }
 
@@ -1663,6 +1801,7 @@
 
             // 4. PREVIEW
             if (action === 'preview') {
+                switchPage('generator');
                 if (!qr) return;
                 const baseDomain = document.getElementById('qr-base-domain').value;
                 const domain = (baseDomain === 'auto' || !baseDomain) ? window.location.origin : baseDomain;
@@ -1793,17 +1932,7 @@
         // ================= STANDALONE LOCAL FALLBACK =================
         function renderLocalData() {
             const raw = localStorage.getItem('bitqik_qrs');
-            if (!raw) {
-                const initial = [
-                    { id: 'bq-1', short_code: 'bqapp', label: 'Bitqik App Download', destination_url: 'https://bitqik.com/download', qr_type: 'dynamic', scan_count: 34, created_at: new Date().toISOString() },
-                    { id: 'bq-2', short_code: 'bqtrade', label: 'Bitqik Trade Platform', destination_url: 'https://trade.bitqik.com', qr_type: 'dynamic', scan_count: 22, created_at: new Date().toISOString() },
-                    { id: 'bq-3', short_code: 'bqedu', label: 'Bitqik Academy Workshop', destination_url: 'https://bitqik.com/academy', qr_type: 'dynamic', scan_count: 15, created_at: new Date().toISOString() }
-                ];
-                localStorage.setItem('bitqik_qrs', JSON.stringify(initial));
-                activeQRs = initial;
-            } else {
-                activeQRs = JSON.parse(raw);
-            }
+            activeQRs = raw ? JSON.parse(raw) : [];
 
             updateCampaignSelector();
             renderQRList(activeQRs);

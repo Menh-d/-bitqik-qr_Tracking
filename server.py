@@ -215,6 +215,12 @@ class BitqikQRHandler(http.server.BaseHTTPRequestHandler):
                 "destination_url": qr['destination_url'],
                 "scan": scan_info
             })
+        if path == "/api/reset-data":
+            try:
+                database.clear_all_data()
+                self.send_json({"success": True, "message": "All data reset successfully"})
+            except Exception as e:
+                self.send_error_json(str(e), 500)
             return
 
         self.send_error_json("Endpoint not found", 404)
@@ -514,7 +520,7 @@ class BitqikQRHandler(http.server.BaseHTTPRequestHandler):
 
 def run_server(port=PORT):
     database.init_db()
-    database.seed_sample_data()
+    database.cleanup_sample_data()
     
     server = ThreadedHTTPServer(("0.0.0.0", port), BitqikQRHandler)
     lan_ips = get_lan_ips()

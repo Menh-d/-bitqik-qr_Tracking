@@ -122,7 +122,31 @@ def init_db(db_path=DB_FILE):
     conn.commit()
     conn.close()
 
+def cleanup_sample_data(db_path=DB_FILE):
+    """Purge test sample data so production/fresh database is clean."""
+    try:
+        conn = get_connection(db_path)
+        cur = conn.cursor()
+        cur.execute("DELETE FROM scan_logs WHERE qr_id IN ('bq-app-dl', 'bq-trade', 'bq-academy', 'bq-dca', 'bq-1', 'bq-2', 'bq-3')")
+        cur.execute("DELETE FROM qr_codes WHERE id IN ('bq-app-dl', 'bq-trade', 'bq-academy', 'bq-dca', 'bq-1', 'bq-2', 'bq-3')")
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Sample cleanup notice: {e}")
+
+def clear_all_data(db_path=DB_FILE):
+    """Reset all QR codes and scan logs completely."""
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    cur.execute("DELETE FROM scan_logs")
+    cur.execute("DELETE FROM qr_codes")
+    conn.commit()
+    conn.close()
+
 def seed_sample_data(db_path=DB_FILE):
+    # Only seed if explicitly enabled via environment variable SEED_SAMPLE_DATA=1
+    if os.environ.get("SEED_SAMPLE_DATA", "").lower() not in ("1", "true"):
+        return
     conn = get_connection(db_path)
     cur = conn.cursor()
     cur.execute("SELECT COUNT(*) AS count FROM qr_codes")
