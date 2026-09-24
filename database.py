@@ -354,57 +354,70 @@ def get_analytics(days=30, qr_id=None, db_path=DB_FILE):
     cur.execute("SELECT COUNT(*) AS active_codes FROM qr_codes WHERE is_active = 1")
     active_codes = cur.fetchone()['active_codes']
     
+    actual_qr_id = None
+    qr_info = None
+    if qr_id and str(qr_id).strip() not in ("all", "null", "undefined", ""):
+        cur.execute("SELECT * FROM qr_codes WHERE id = ? OR short_code = ?", (qr_id, qr_id))
+        row = cur.fetchone()
+        if row:
+            qr_info = dict(row)
+            actual_qr_id = qr_info['id']
+            cur.execute("SELECT COUNT(*) AS sc FROM scan_logs WHERE qr_id = ?", (actual_qr_id,))
+            qr_info['scan_count'] = cur.fetchone()['sc']
+        else:
+            actual_qr_id = qr_id
+        
     scan_filter = ""
     scan_params = []
-    if qr_id:
+    if actual_qr_id:
         scan_filter = " WHERE qr_id = ?"
-        scan_params.append(qr_id)
+        scan_params.append(actual_qr_id)
         
     cur.execute(f"SELECT COUNT(*) AS total_scans FROM scan_logs{scan_filter}", scan_params)
     total_scans = cur.fetchone()['total_scans']
     
     # Scans today
     today_start = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
-    if qr_id:
-        cur.execute("SELECT COUNT(*) AS today_scans FROM scan_logs WHERE qr_id = ? AND scanned_at >= ?", (qr_id, today_start))
+    if actual_qr_id:
+        cur.execute("SELECT COUNT(*) AS today_scans FROM scan_logs WHERE qr_id = ? AND scanned_at >= ?", (actual_qr_id, today_start))
     else:
         cur.execute("SELECT COUNT(*) AS today_scans FROM scan_logs WHERE scanned_at >= ?", (today_start,))
     today_scans = cur.fetchone()['today_scans']
     
-    # Scans by date (last 7 days)
+    # Scans by date (last 14 days)
     date_query = """
     SELECT SUBSTR(scanned_at, 1, 10) AS scan_date, COUNT(*) AS count
     FROM scan_logs
     """
-    if qr_id:
+    if actual_qr_id:
         date_query += " WHERE qr_id = ?"
     date_query += " GROUP BY scan_date ORDER BY scan_date DESC LIMIT 14"
-    cur.execute(date_query, [qr_id] if qr_id else [])
+    cur.execute(date_query, [actual_qr_id] if actual_qr_id else [])
     scans_by_date = [dict(row) for row in cur.fetchall()]
     scans_by_date.reverse()
     
     # Device breakdown
     dev_query = "SELECT device, COUNT(*) AS count FROM scan_logs"
-    if qr_id:
+    if actual_qr_id:
         dev_query += " WHERE qr_id = ?"
     dev_query += " GROUP BY device ORDER BY count DESC"
-    cur.execute(dev_query, [qr_id] if qr_id else [])
+    cur.execute(dev_query, [actual_qr_id] if actual_qr_id else [])
     device_breakdown = [dict(row) for row in cur.fetchall()]
     
     # OS breakdown
     os_query = "SELECT os, COUNT(*) AS count FROM scan_logs"
-    if qr_id:
+    if actual_qr_id:
         os_query += " WHERE qr_id = ?"
     os_query += " GROUP BY os ORDER BY count DESC LIMIT 5"
-    cur.execute(os_query, [qr_id] if qr_id else [])
+    cur.execute(os_query, [actual_qr_id] if actual_qr_id else [])
     os_breakdown = [dict(row) for row in cur.fetchall()]
     
     # Browser breakdown
     br_query = "SELECT browser, COUNT(*) AS count FROM scan_logs"
-    if qr_id:
+    if actual_qr_id:
         br_query += " WHERE qr_id = ?"
     br_query += " GROUP BY browser ORDER BY count DESC LIMIT 5"
-    cur.execute(br_query, [qr_id] if qr_id else [])
+    cur.execute(br_query, [actual_qr_id] if actual_qr_id else [])
     browser_breakdown = [dict(row) for row in cur.fetchall()]
     
     # Hourly breakdown
@@ -412,21 +425,15 @@ def get_analytics(days=30, qr_id=None, db_path=DB_FILE):
     SELECT CAST(SUBSTR(scanned_at, 12, 2) AS INTEGER) AS hour, COUNT(*) AS count
     FROM scan_logs
     """
-    if qr_id:
+    if actual_qr_id:
         hour_query += " WHERE qr_id = ?"
     hour_query += " GROUP BY hour ORDER BY hour ASC"
-    cur.execute(hour_query, [qr_id] if qr_id else [])
+    cur.execute(hour_query, [actual_qr_id] if actual_qr_id else [])
     scans_by_hour = [dict(row) for row in cur.fetchall()]
 
     # Top QRs by scan (if viewing all) or single QR scan details
     top_qrs = []
-    qr_info = None
-    if qr_id:
-        cur.execute("SELECT * FROM qr_codes WHERE id = ?", (qr_id,))
-        row = cur.fetchone()
-        if row:
-            qr_info = dict(row)
-    else:
+    if not actual_qr_id:
         cur.execute("""
         SELECT q.id, q.label, q.short_code, COUNT(s.id) AS scan_count
         FROM qr_codes q
@@ -439,10 +446,10 @@ def get_analytics(days=30, qr_id=None, db_path=DB_FILE):
     
     conn.close()
     
-    avg_scans = round(total_scans / total_codes, 1) if (total_codes > 0 and not qr_id) else (total_scans if qr_id else 0)
+    avg_scans = round(total_scans / total_codes, 1) if (total_codes > 0 and not actual_qr_id) else (total_scans if actual_qr_id else 0)
     
     return {
-        "qr_id": qr_id,
+        "qr_id": actual_qr_id or qr_id,
         "qr_info": qr_info,
         "total_codes": total_codes,
         "active_codes": active_codes,
@@ -461,15 +468,24 @@ def get_recent_logs(limit=30, qr_id=None, db_path=DB_FILE):
     conn = get_connection(db_path)
     cur = conn.cursor()
     
+    actual_qr_id = qr_id
+    if qr_id and str(qr_id).strip() not in ("all", "null", "undefined", ""):
+        cur.execute("SELECT id FROM qr_codes WHERE id = ? OR short_code = ?", (qr_id, qr_id))
+        row = cur.fetchone()
+        if row:
+            actual_qr_id = row['id']
+    else:
+        actual_qr_id = None
+
     query = """
     SELECT s.*, q.label AS qr_label, q.short_code, q.destination_url
     FROM scan_logs s
     JOIN qr_codes q ON s.qr_id = q.id
     """
     params = []
-    if qr_id:
+    if actual_qr_id:
         query += " WHERE s.qr_id = ?"
-        params.append(qr_id)
+        params.append(actual_qr_id)
         
     query += " ORDER BY s.scanned_at DESC LIMIT ?"
     params.append(limit)

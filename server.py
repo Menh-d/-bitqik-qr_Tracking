@@ -147,7 +147,8 @@ class BitqikQRHandler(http.server.BaseHTTPRequestHandler):
             return
 
         if path == "/api/analytics":
-            qr_id = query.get("qr_id", [None])[0]
+            raw_id = query.get("qr_id", [None])[0]
+            qr_id = None if (not raw_id or raw_id in ("all", "null", "undefined", "")) else raw_id
             days = int(query.get("days", [30])[0])
             data = database.get_analytics(days=days, qr_id=qr_id)
             self.send_json(data)
@@ -155,18 +156,21 @@ class BitqikQRHandler(http.server.BaseHTTPRequestHandler):
 
         if path == "/api/logs":
             limit = int(query.get("limit", [50])[0])
-            qr_id = query.get("qr_id", [None])[0]
+            raw_id = query.get("qr_id", [None])[0]
+            qr_id = None if (not raw_id or raw_id in ("all", "null", "undefined", "")) else raw_id
             logs = database.get_recent_logs(limit=limit, qr_id=qr_id)
             self.send_json({"logs": logs, "count": len(logs)})
             return
 
         if path == "/api/export":
-            qr_id = query.get("qr_id", [None])[0]
+            raw_id = query.get("qr_id", [None])[0]
+            qr_id = None if (not raw_id or raw_id in ("all", "null", "undefined", "")) else raw_id
             self.handle_csv_export(qr_id=qr_id)
             return
 
         if path == "/api/export-json":
-            qr_id = query.get("qr_id", [None])[0]
+            raw_id = query.get("qr_id", [None])[0]
+            qr_id = None if (not raw_id or raw_id in ("all", "null", "undefined", "")) else raw_id
             logs = database.get_recent_logs(limit=5000, qr_id=qr_id)
             analytics = database.get_analytics(qr_id=qr_id)
             self.send_json({"qr_id": qr_id, "analytics": analytics, "logs": logs})
@@ -227,6 +231,7 @@ class BitqikQRHandler(http.server.BaseHTTPRequestHandler):
                 "destination_url": qr['destination_url'],
                 "scan": scan_info
             })
+            return
         if path == "/api/reset-data":
             try:
                 database.clear_all_data()
@@ -452,6 +457,8 @@ class BitqikQRHandler(http.server.BaseHTTPRequestHandler):
     def handle_csv_export(self, qr_id=None):
         logs = database.get_recent_logs(limit=10000, qr_id=qr_id)
         qr_obj = database.get_qr_by_id(qr_id) if qr_id else None
+        if not qr_obj and qr_id:
+            qr_obj = database.get_qr_by_code(qr_id)
         tag = qr_obj['short_code'] if qr_obj else 'all_campaigns'
         
         output = io.StringIO()
