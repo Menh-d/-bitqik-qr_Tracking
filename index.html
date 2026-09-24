@@ -381,31 +381,36 @@
                                     placeholder="https://bitqik.com/download" required>
                             </div>
 
-                            <!-- Advanced: Custom Shortcode & Tracking Domain -->
+                            <!-- Tracking Domain / Server Host Selector -->
+                            <div>
+                                <label for="qr-base-domain" class="block text-xs font-bold uppercase tracking-wider text-[#765f50] mb-1.5 flex items-center justify-between">
+                                    <span data-lang="base-domain-field">Domain ສຳລັບ QR Code (Tracking Base URL)</span>
+                                    <span id="domain-badge-type" class="text-[10px] font-bold text-[#f68a32]">📱 ສະແກນດ້ວຍມືຖື</span>
+                                </label>
+                                <select id="qr-base-domain" class="soft-field text-xs sm:text-sm font-bold text-[#023159]">
+                                    <option value="auto">ກຳລັງກວດສອບ Host / IP...</option>
+                                </select>
+                                <div id="localhost-warning-badge" class="hidden mt-2 p-3 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-900 text-xs flex items-start gap-2">
+                                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5"></i>
+                                    <div>
+                                        <p class="font-bold">⚠️ ມືຖືຈະສະແກນ localhost ບໍ່ໄດ້:</p>
+                                        <p class="text-[11px] opacity-90 mt-0.5">ກະລຸນາເລືອກ <b>Wi-Fi IP</b> (ເຊັ່ນ 10.174.75.220) ຫຼື ເປີດເວັບຜ່ານ Link <b>Render.com</b> ເພື່ອໃຫ້ກ້ອງມືຖືສະແກນໄດ້ແທ້ໆ.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Advanced: Custom Shortcode -->
                             <div class="pt-1">
                                 <details class="group cursor-pointer">
                                     <summary class="text-xs font-semibold text-[#f68a32] flex items-center gap-1.5 select-none hover:underline">
                                         <i data-lucide="settings-2" class="w-3.5 h-3.5"></i>
-                                        <span data-lang="advanced-settings-toggle">ຕັ້ງຄ່າຂັ້ນສູງ (Custom Code & Server Domain)</span>
+                                        <span data-lang="advanced-settings-toggle">ລະຫັດຫຍໍ້ກຳນົດເອງ (Custom Shortcode - ທາງເລືອກ)</span>
                                     </summary>
-                                    <div class="mt-3 p-3.5 rounded-2xl bg-[#fdf5eb] border border-[#eedccb] space-y-3">
-                                        <div>
-                                            <label class="block text-[11px] font-bold text-[#765f50] mb-1" data-lang="custom-code-field">
-                                                ລະຫັດຫຍໍ້ກຳນົດເອງ (Custom Shortcode - ທາງເລືອກ)
-                                            </label>
-                                            <input id="qr-custom-code" class="soft-field text-xs" type="text" placeholder="ຕົວຢ່າງ: promo2026, app-ios">
-                                        </div>
-                                        <div>
-                                            <label class="block text-[11px] font-bold text-[#765f50] mb-1" data-lang="base-domain-field">
-                                                Domain ສຳລັບ Scan ຜ່ານມືຖື (Tracking Base URL)
-                                            </label>
-                                            <select id="qr-base-domain" class="soft-field text-xs">
-                                                <option value="auto">ອັດຕະໂນມັດ (Auto Local/Current Host)</option>
-                                            </select>
-                                            <p class="text-[10px] text-[#765f50] mt-1" data-lang="base-domain-tip">
-                                                💡 ຫາກຕ້ອງການທົດສອບສະແກນດ້ວຍກ້ອງມືຖືແທ້ໆ ໃຫ້ເລືອກ IP ຂອງ Wi-Fi ເຄືອຂ່າຍດຽວກັນ
-                                            </p>
-                                        </div>
+                                    <div class="mt-2.5 p-3 rounded-2xl bg-[#fdf5eb] border border-[#eedccb]">
+                                        <label class="block text-[11px] font-bold text-[#765f50] mb-1" data-lang="custom-code-field">
+                                            Custom Shortcode:
+                                        </label>
+                                        <input id="qr-custom-code" class="soft-field text-xs" type="text" placeholder="ຕົວຢ່າງ: promo2026, app-ios">
                                     </div>
                                 </details>
                             </div>
@@ -1020,32 +1025,85 @@
 
         function populateDomainOptions() {
             const select = document.getElementById('qr-base-domain');
+            if (!select) return;
             const currentVal = select.value;
             select.innerHTML = '';
 
-            const curOption = document.createElement('option');
-            curOption.value = window.location.origin;
-            curOption.textContent = `Current Host (${window.location.origin})`;
-            select.appendChild(curOption);
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const validLanIps = lanIPs.filter(ip => ip && ip !== '127.0.0.1');
 
-            lanIPs.forEach(ip => {
-                if (ip !== '127.0.0.1') {
+            // 1. If we have a local Wi-Fi IP, add it first so phones on Wi-Fi can scan!
+            if (validLanIps.length > 0) {
+                validLanIps.forEach(ip => {
                     const opt = document.createElement('option');
                     opt.value = `http://${ip}:8000`;
-                    opt.textContent = `📱 Wi-Fi Mobile Scan: http://${ip}:8000`;
+                    opt.textContent = `📱 Wi-Fi IP (ກ້ອງມືຖືສະແກນໄດ້): http://${ip}:8000`;
                     select.appendChild(opt);
-                }
-            });
+                });
+            }
 
-            const localOpt = document.createElement('option');
-            localOpt.value = 'http://localhost:8000';
-            localOpt.textContent = 'http://localhost:8000 (Local Machine Only)';
-            select.appendChild(localOpt);
+            // 2. Cloud Domain Option (Render.com)
+            const renderOpt = document.createElement('option');
+            renderOpt.value = 'https://bitqik-qr-tracking.onrender.com';
+            renderOpt.textContent = `🌐 Cloud Domain (Render): https://bitqik-qr-tracking.onrender.com`;
+            select.appendChild(renderOpt);
 
+            // 3. Current Host Option
+            const curOption = document.createElement('option');
+            curOption.value = window.location.origin;
+            if (isLocal) {
+                curOption.textContent = `💻 Localhost (${window.location.origin}) - ໃຊ້ໄດ້ສະເພາະໃນຄອມ`;
+            } else {
+                curOption.textContent = `🌐 Live Host (${window.location.origin}) - ມືຖືສະແກນໄດ້`;
+            }
+            select.appendChild(curOption);
+
+            // Default value selection:
             if (currentVal && Array.from(select.options).some(o => o.value === currentVal)) {
                 select.value = currentVal;
+            } else if (isLocal && validLanIps.length > 0) {
+                // Auto-select Wi-Fi IP so phones CAN SCAN IT immediately!
+                select.value = `http://${validLanIps[0]}:8000`;
+            } else {
+                select.value = window.location.origin;
+            }
+
+            updateLocalhostWarning();
+        }
+
+        function updateLocalhostWarning() {
+            const select = document.getElementById('qr-base-domain');
+            const warn = document.getElementById('localhost-warning-badge');
+            const badge = document.getElementById('domain-badge-type');
+            if (!select) return;
+
+            const val = select.value || '';
+            const isLocal = val.includes('localhost') || val.includes('127.0.0.1');
+
+            if (isLocal) {
+                if (warn) warn.classList.remove('hidden');
+                if (badge) {
+                    badge.textContent = '⚠️ Localhost (ມືຖືສະແກນບໍ່ໄດ້)';
+                    badge.className = 'text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded-full';
+                }
+            } else {
+                if (warn) warn.classList.add('hidden');
+                if (badge) {
+                    badge.textContent = '📱 ພ້ອມສະແກນຜ່ານມືຖື ✅';
+                    badge.className = 'text-[10px] font-bold text-emerald-800 bg-emerald-200/80 px-2 py-0.5 rounded-full';
+                }
             }
         }
+
+        document.getElementById('qr-base-domain').addEventListener('change', () => {
+            updateLocalhostWarning();
+            // Re-generate if fields are already filled
+            const label = document.getElementById('qr-label').value.trim();
+            const dest = document.getElementById('qr-url').value.trim();
+            if (label && dest) {
+                document.getElementById('btn-generate').click();
+            }
+        });
 
         // ================= POPULATE CAMPAIGN FILTER SELECTOR =================
         function updateCampaignSelector() {

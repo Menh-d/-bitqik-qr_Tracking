@@ -19,6 +19,8 @@ import io
 import sys
 import datetime
 import database
+import re
+import subprocess
 
 PORT = int(os.environ.get("PORT", 8000))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -26,6 +28,16 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 def get_lan_ips():
     """Find all local network IP addresses for phone testing."""
     ips = []
+    try:
+        import subprocess
+        output = subprocess.check_output(['ifconfig'], stderr=subprocess.DEVNULL).decode('utf-8', errors='ignore')
+        matches = re.findall(r'inet\s+([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)', output)
+        for ip in matches:
+            if not ip.startswith("127.") and ip not in ips:
+                ips.append(ip)
+    except Exception:
+        pass
+
     try:
         hostname = socket.gethostname()
         for ip in socket.gethostbyname_ex(hostname)[2]:
