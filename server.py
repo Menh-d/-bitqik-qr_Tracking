@@ -240,6 +240,35 @@ class BitqikQRHandler(http.server.BaseHTTPRequestHandler):
                 self.send_error_json(str(e), 500)
             return
 
+        if path == "/api/login":
+            try:
+                data = self.read_json_body()
+                username = str(data.get("username", "")).strip()
+                password = str(data.get("password", "")).strip()
+
+                valid_creds = (
+                    (username.lower() in ("admin", "bitqik") and password == "bitqik2026") or
+                    (username.lower() == "admin" and password == "admin")
+                )
+
+                if valid_creds:
+                    import time
+                    token = f"bq_auth_{int(time.time())}"
+                    self.send_json({
+                        "success": True,
+                        "token": token,
+                        "user": {
+                            "username": username or "admin",
+                            "role": "admin",
+                            "display_name": "Bitqik Administrator"
+                        }
+                    })
+                else:
+                    self.send_error_json("ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ (Invalid username or password)", 401)
+            except Exception as e:
+                self.send_error_json(str(e), 500)
+            return
+
         self.send_error_json("Endpoint not found", 404)
 
     # ==========================================
