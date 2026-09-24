@@ -1,5 +1,7 @@
 # Bitqik QR Studio · ລະບົບສ້າງ ແລະ ຕິດຕາມການ Scan QR Code (QR Tracking WebApp)
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Menh-d/-bitqik-qr_Tracking)
+
 ລະບົບ Web Application ສໍາລັບສ້າງ QR Code ຕິດແບຣນ **Bitqik** (ໂລໂກ້ Bitqik ໃຈກາງ, ສີສັນ Neumorphic Warm Orange & Navy) ພ້ອມລະບົບ **Dynamic Redirect & Real-time Scan Tracking** ຕິດຕາມສະຖິຕິການ Scan ຜ່ານກ້ອງມືຖືແທ້ໆ!
 
 ---
