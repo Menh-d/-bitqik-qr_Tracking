@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>Bitqik QR Studio · Planet Jumping Edition</title>
+    <title>Bitqik QR Studio · Cyber IDE Terminal [v2.4.0-quantum]</title>
 
     <!-- Dependencies: QRCode, Chart.js, Lucide Icons, Tailwind CSS, Html5Qrcode -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -13,42 +13,33 @@
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
-    <!-- Fonts: SF Pro / Poppins / Noto Sans Lao -->
+    <!-- Google Fonts: JetBrains Mono (Code/Terminal) + Plus Jakarta Sans + Noto Sans Lao -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Noto+Sans+Lao:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        @font-face {
-            font-family: 'SF Pro';
-            font-weight: 400;
-            src: local('SF Pro'), local('SF Pro Text'), local('-apple-system'), local('BlinkMacSystemFont');
-        }
-        @font-face {
-            font-family: 'SF Pro';
-            font-weight: 700;
-            src: local('SF Pro Bold'), local('SF Pro Text Bold');
-        }
-
         :root {
-            --bg-space: #090807;
-            --bg-surface: rgba(18, 16, 15, 0.72);
-            --bg-card: rgba(26, 23, 22, 0.6);
-            --bg-card-hover: rgba(35, 31, 29, 0.75);
-            --border-subtle: rgba(255, 255, 255, 0.12);
-            --border-hover: rgba(255, 255, 255, 0.28);
-            --accent-orange: #f68a32;
-            --accent-orange-glow: rgba(246, 138, 50, 0.35);
-            --accent-teal: #00f2fe;
-            --accent-emerald: #10b981;
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.72);
-            --text-muted: rgba(255, 255, 255, 0.45);
+            --bg-void: #06080d;
+            --bg-editor: #0c1017;
+            --bg-surface: rgba(13, 17, 26, 0.85);
+            --bg-card: rgba(18, 24, 38, 0.7);
+            --bg-card-hover: rgba(24, 33, 52, 0.85);
+            --border-cyan: rgba(0, 240, 255, 0.18);
+            --border-cyan-bright: rgba(0, 240, 255, 0.45);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --cyan-glow: #00f0ff;
+            --orange-bitqik: #f68a32;
+            --orange-glow: rgba(246, 138, 50, 0.4);
+            --green-matrix: #00ff88;
+            --purple-cyber: #b026ff;
+            --font-code: 'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+            --font-ui: 'Plus Jakarta Sans', 'Noto Sans Lao', -apple-system, sans-serif;
         }
 
         * {
             box-sizing: border-box;
-            cursor: none; /* Controlled by custom cursor on desktop */
+            cursor: none; /* Managed by Cyber Reticle on desktop */
         }
 
         html, body {
@@ -56,901 +47,939 @@
             padding: 0;
             width: 100%;
             min-height: 100%;
-            background-color: var(--bg-space);
-            color: var(--text-primary);
-            font-family: 'Plus Jakarta Sans', 'SF Pro', 'Noto Sans Lao', -apple-system, sans-serif;
+            background-color: var(--bg-void);
+            color: #d8e2ed;
+            font-family: var(--font-ui);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Ambient Cosmic Background */
-        .cosmic-bg-layer {
+        /* Futuristic Background Matrix Grid */
+        .cyber-grid-layer {
             position: fixed;
             inset: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
             pointer-events: none;
             z-index: 0;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.035) 1px, transparent 1px);
+            background-size: 36px 36px;
         }
-        .cosmic-video {
+        .cyber-grid-glow {
             position: absolute;
             inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.38;
-            filter: contrast(1.1) saturate(1.2);
-            transition: opacity 1s ease;
-        }
-        .cosmic-shade {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 20%, rgba(246, 138, 50, 0.08) 0%, transparent 60%),
-                        linear-gradient(to bottom, rgba(9,8,7,0.4) 0%, rgba(9,8,7,0.75) 50%, #090807 90%);
+            background: 
+                radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.07) 0%, transparent 45%),
+                radial-gradient(circle at 85% 20%, rgba(246, 138, 50, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 85%, rgba(176, 38, 255, 0.05) 0%, transparent 60%);
         }
 
-        /* Glassmorphism Containers */
-        .glass-panel {
+        /* Scanlines Overlay */
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            opacity: 0.35;
+        }
+
+        /* IDE Window Chassis */
+        .ide-window {
             background: var(--bg-surface);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-subtle);
-            border-radius: 28px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid var(--border-cyan);
+            border-radius: 18px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 30px rgba(0, 240, 255, 0.06);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
-        .glass-panel:hover {
-            border-color: var(--border-hover);
-        }
-
-        .glass-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-subtle);
-            border-radius: 20px;
-            transition: all 0.25s ease;
-        }
-        .glass-card:hover {
-            background: var(--bg-card-hover);
-            border-color: rgba(255, 255, 255, 0.22);
-            transform: translateY(-2px);
+        .ide-window:hover {
+            border-color: var(--border-cyan-bright);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(0, 240, 255, 0.12);
         }
 
-        /* Capsule Nav Bar */
-        .nav-capsule {
-            display: inline-flex;
+        /* HUD Caliper Brackets */
+        .hud-corner-tl { position: absolute; top: -1px; left: -1px; width: 14px; height: 14px; border-top: 2px solid var(--cyan-glow); border-left: 2px solid var(--cyan-glow); pointer-events: none; }
+        .hud-corner-tr { position: absolute; top: -1px; right: -1px; width: 14px; height: 14px; border-top: 2px solid var(--cyan-glow); border-right: 2px solid var(--cyan-glow); pointer-events: none; }
+        .hud-corner-bl { position: absolute; bottom: -1px; left: -1px; width: 14px; height: 14px; border-bottom: 2px solid var(--cyan-glow); border-left: 2px solid var(--cyan-glow); pointer-events: none; }
+        .hud-corner-br { position: absolute; bottom: -1px; right: -1px; width: 14px; height: 14px; border-bottom: 2px solid var(--cyan-glow); border-right: 2px solid var(--cyan-glow); pointer-events: none; }
+
+        /* Window Header / Title Bar */
+        .ide-header-bar {
+            background: rgba(8, 12, 18, 0.85);
+            border-bottom: 1px solid var(--border-cyan);
+            padding: 8px 16px;
+            display: flex;
             align-items: center;
-            padding: 4px 6px;
-            border: 1px solid rgba(255, 255, 255, 0.22);
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-radius: 999px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            justify-content: space-between;
         }
-        .nav-pill-btn {
-            color: rgba(255, 255, 255, 0.72);
-            text-decoration: none;
-            padding: 9px 20px;
-            border-radius: 999px;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+        /* Terminal Window Dots */
+        .dot-control {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 6px currentColor;
+        }
+
+        /* IDE Tabs Navigation */
+        .ide-tab-bar {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: rgba(6, 9, 14, 0.9);
+            border-bottom: 1px solid var(--border-cyan);
+            padding: 0 12px;
+            overflow-x: auto;
+        }
+        .ide-tab-item {
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-        .nav-pill-btn:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .nav-pill-btn.tab-active {
-            background: #ffffff !important;
-            color: #000000 !important;
-            font-weight: 700;
-            box-shadow: 0 4px 18px rgba(255, 255, 255, 0.3);
-        }
-
-        /* Buttons */
-        .btn-portal-white {
-            background: #ffffff;
-            color: #000000;
-            font-weight: 700;
-            border-radius: 999px;
-            padding: 10px 22px;
-            font-size: 13px;
-            border: none;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25);
-        }
-        .btn-portal-white:hover {
-            background: #f0f0f0;
-            transform: scale(1.02);
-            box-shadow: 0 6px 24px rgba(255, 255, 255, 0.4);
-        }
-
-        .btn-portal-amber {
-            background: linear-gradient(135deg, #f68a32, #ff7200);
-            color: #ffffff;
-            font-weight: 700;
-            border-radius: 999px;
-            padding: 10px 22px;
-            font-size: 13px;
-            border: none;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 24px var(--accent-orange-glow);
-        }
-        .btn-portal-amber:hover {
-            filter: brightness(1.08);
-            transform: scale(1.02);
-            box-shadow: 0 6px 30px rgba(246, 138, 50, 0.5);
-        }
-
-        .btn-portal-glass {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            font-weight: 600;
-            border-radius: 999px;
-            padding: 8px 18px;
+            padding: 10px 18px;
+            font-family: var(--font-code);
             font-size: 12px;
+            color: #7d8b9d;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 2px solid transparent;
+            background: transparent;
+            transition: all 0.18s ease;
+            white-space: nowrap;
+        }
+        .ide-tab-item:hover {
+            color: #d8e2ed;
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .ide-tab-item.tab-active {
+            color: #ffffff;
+            background: rgba(14, 20, 32, 0.95);
+            border-top: 2px solid var(--cyan-glow);
+            box-shadow: inset 0 2px 8px rgba(0, 240, 255, 0.15);
+        }
+
+        /* Code Line Number Gutter */
+        .code-gutter {
+            font-family: var(--font-code);
+            font-size: 11px;
+            color: #3b4656;
+            user-select: none;
+            padding-right: 14px;
+            border-right: 1px solid rgba(255, 255, 255, 0.07);
+            text-align: right;
+            line-height: 2.1;
+        }
+
+        /* Syntax Highlight Code Tokens */
+        .token-keyword { color: #ff7b72; font-weight: 600; }
+        .token-const { color: #79c0ff; font-weight: 600; }
+        .token-string { color: #a5d6ff; }
+        .token-comment { color: #8b949e; font-style: italic; }
+        .token-type { color: #ffa657; }
+        .token-func { color: #d2a8ff; font-weight: 600; }
+        .token-bool { color: #ff7b72; }
+
+        /* Terminal Input Box */
+        .cyber-input {
+            width: 100%;
+            padding: 11px 16px;
+            background: rgba(9, 13, 20, 0.95);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 10px;
+            color: #00f0ff;
+            font-family: var(--font-code);
+            font-size: 13px;
+            outline: none;
             transition: all 0.2s ease;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+        }
+        .cyber-input:focus {
+            border-color: var(--cyan-glow);
+            box-shadow: 0 0 16px rgba(0, 240, 255, 0.35), inset 0 2px 6px rgba(0, 0, 0, 0.5);
+            background: rgba(12, 17, 28, 0.98);
+        }
+        .cyber-input::placeholder {
+            color: #435061;
+            font-family: var(--font-code);
+        }
+
+        /* Cyber Buttons */
+        .btn-cyber-primary {
+            background: linear-gradient(135deg, #00f0ff, #0099ff);
+            color: #000000;
+            font-family: var(--font-code);
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 10px 22px;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.45);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-cyber-primary:hover {
+            filter: brightness(1.15);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.7);
+            transform: translateY(-1px);
+        }
+
+        .btn-cyber-amber {
+            background: linear-gradient(135deg, #f68a32, #ff5500);
+            color: #ffffff;
+            font-family: var(--font-code);
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 10px 22px;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 0 20px rgba(246, 138, 50, 0.45);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-cyber-amber:hover {
+            filter: brightness(1.15);
+            box-shadow: 0 0 30px rgba(246, 138, 50, 0.7);
+            transform: translateY(-1px);
+        }
+
+        .btn-cyber-ghost {
+            background: rgba(0, 240, 255, 0.06);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            color: #00f0ff;
+            font-family: var(--font-code);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.18s ease;
             display: inline-flex;
             align-items: center;
             gap: 6px;
         }
-        .btn-portal-glass:hover {
-            background: rgba(255, 255, 255, 0.16);
-            border-color: rgba(255, 255, 255, 0.35);
-            transform: translateY(-1px);
-        }
-
-        /* Inputs */
-        .portal-input {
-            width: 100%;
-            padding: 12px 18px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .btn-cyber-ghost:hover {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--cyan-glow);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
             color: #ffffff;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-        .portal-input:focus {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--accent-orange);
-            box-shadow: 0 0 18px var(--accent-orange-glow);
-        }
-        .portal-input::placeholder {
-            color: rgba(255, 255, 255, 0.35);
         }
 
-        /* 3D QR Portal Preview Card */
-        .portal-3d-wrap {
-            perspective: 900px;
-            transform-style: preserve-3d;
-        }
-        .portal-3d-card {
-            border-radius: 40px;
-            background: linear-gradient(145deg, rgba(28, 25, 24, 0.85), rgba(12, 11, 10, 0.95));
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 50px rgba(246, 138, 50, 0.15);
-            transition: transform 0.15s ease-out, border-color 0.3s ease;
+        /* Quantum QR Display Well with Scanning Laser */
+        .quantum-qr-well {
             position: relative;
+            width: 250px;
+            height: 250px;
+            border-radius: 16px;
+            background: #ffffff;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.25), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .portal-3d-card::before {
-            content: '';
+        .laser-sweep {
             position: absolute;
-            inset: -1px;
-            border-radius: 40px;
-            background: linear-gradient(135deg, rgba(246, 138, 50, 0.4), transparent 50%, rgba(255, 255, 255, 0.15));
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00f0ff 40%, #f68a32 60%, transparent);
+            box-shadow: 0 0 10px #00f0ff, 0 0 15px #f68a32;
             pointer-events: none;
-            z-index: 1;
-            opacity: 0.6;
+            z-index: 10;
+            animation: laserScan 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
-        .portal-3d-card:hover {
-            border-color: rgba(246, 138, 50, 0.4);
-            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 0 60px rgba(246, 138, 50, 0.25);
-        }
-
-        /* Fact / Spec definitions (like prompt) */
-        .fact-row {
-            display: grid;
-            grid-template-columns: 120px 1fr;
-            gap: 16px;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 13px;
-        }
-        .fact-row:last-child {
-            border-bottom: 0;
-        }
-        .fact-row dt {
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.9);
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.08em;
-        }
-        .fact-row dd {
-            margin: 0;
-            color: rgba(255, 255, 255, 0.75);
-            word-break: break-all;
+        @keyframes laserScan {
+            0% { top: 0%; opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
         }
 
-        /* Custom Cursor from Prompt Section 9 */
-        .custom-cursor {
+        /* Interactive Cyber Reticle Cursor */
+        .cyber-cursor {
             position: fixed;
             left: 0;
             top: 0;
-            z-index: 9999;
+            z-index: 99999;
             pointer-events: none;
             transform: translate3d(-100px, -100px, 0);
             transition: opacity 0.2s ease;
         }
-        .cursor-orbit {
+        .cyber-cursor-ring {
             position: absolute;
-            left: -18px;
-            top: -18px;
-            width: 36px;
-            height: 36px;
+            left: -16px;
+            top: -16px;
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--cyan-glow);
             border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(2px);
-            transition: width .22s cubic-bezier(0.16, 1, 0.3, 1),
-                        height .22s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform .22s cubic-bezier(0.16, 1, 0.3, 1),
-                        border-color .22s ease, background-color .22s ease;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+            transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                        height 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                        left 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                        top 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.2s ease;
         }
-        .cursor-dot {
+        .cyber-cursor-crosshair-h {
             position: absolute;
-            left: -4px;
-            top: -4px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #ffffff;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-            transition: transform .22s cubic-bezier(0.16, 1, 0.3, 1), background-color .22s ease;
+            left: -8px;
+            top: 0;
+            width: 16px;
+            height: 1px;
+            background: var(--cyan-glow);
         }
-        .cursor-label {
+        .cyber-cursor-crosshair-v {
             position: absolute;
-            left: 24px;
-            top: -7px;
-            font-size: 10px;
+            left: 0;
+            top: -8px;
+            width: 1px;
+            height: 16px;
+            background: var(--cyan-glow);
+        }
+        .cyber-cursor-badge {
+            position: absolute;
+            left: 22px;
+            top: -8px;
+            font-family: var(--font-code);
+            font-size: 9px;
             font-weight: 700;
-            letter-spacing: .12em;
-            text-transform: uppercase;
             color: #000;
-            background: #fff;
-            padding: 2px 7px;
-            border-radius: 999px;
+            background: var(--cyan-glow);
+            padding: 1px 6px;
+            border-radius: 4px;
             opacity: 0;
-            pointer-events: none;
-            transition: opacity .18s ease;
+            letter-spacing: 0.08em;
+            transition: opacity 0.15s ease;
             white-space: nowrap;
         }
-        .custom-cursor.is-enter .cursor-orbit {
-            width: 48px;
-            height: 48px;
-            left: -24px;
-            top: -24px;
+        .cyber-cursor.is-hover .cyber-cursor-ring {
+            width: 44px;
+            height: 44px;
+            left: -22px;
+            top: -22px;
             border-color: #f68a32;
-            background: rgba(246, 138, 50, 0.12);
+            box-shadow: 0 0 14px rgba(246, 138, 50, 0.7);
         }
-        .custom-cursor.is-enter .cursor-dot {
+        .cyber-cursor.is-hover .cyber-cursor-crosshair-h,
+        .cyber-cursor.is-hover .cyber-cursor-crosshair-v {
             background: #f68a32;
-            transform: scale(1.4);
-            box-shadow: 0 0 12px #f68a32;
         }
-        .custom-cursor.is-enter .cursor-label {
+        .cyber-cursor.is-hover .cyber-cursor-badge {
             opacity: 1;
-        }
-
-        /* Pulsing indicator */
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #10b981;
-            box-shadow: 0 0 10px #10b981;
-            display: inline-block;
-            animation: pulseGlow 2s infinite ease-in-out;
-        }
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #10b981; }
-            50% { opacity: 0.4; transform: scale(0.85); box-shadow: 0 0 4px #10b981; }
-        }
-
-        /* Selection styling */
-        ::selection {
-            background: rgba(246, 138, 50, 0.35);
+            background: #f68a32;
             color: #ffffff;
         }
 
-        /* Hide scrollbars elegantly */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        /* Pulsing Matrix Glow */
+        .status-dot-active {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green-matrix);
+            box-shadow: 0 0 8px var(--green-matrix);
+            display: inline-block;
+            animation: pulseSignal 1.8s infinite ease-in-out;
         }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.2);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.18);
-            border-radius: 999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.35);
+        @keyframes pulseSignal {
+            0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px var(--green-matrix); }
+            50% { opacity: 0.35; transform: scale(0.8); box-shadow: 0 0 3px var(--green-matrix); }
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
             * { cursor: auto !important; }
-            .custom-cursor { display: none !important; }
+            .cyber-cursor { display: none !important; }
         }
     </style>
 </head>
 
 <body>
-    <!-- 1. Ambient Cosmic Background (Exact prompt video asset) -->
-    <div class="cosmic-bg-layer" aria-hidden="true">
-        <video class="cosmic-video" src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/3c83091e-4046-4fd6-adbb-2edb728be79a.mp4" autoplay loop muted playsinline></video>
-        <div class="cosmic-shade"></div>
+    <!-- Background Layers: Matrix Grid + Scanlines -->
+    <div class="cyber-grid-layer" aria-hidden="true">
+        <div class="cyber-grid-glow"></div>
+    </div>
+    <div class="scanlines" aria-hidden="true"></div>
+
+    <!-- Interactive Cyber Reticle Cursor -->
+    <div class="cyber-cursor" id="cyber-cursor" aria-hidden="true">
+        <div class="cyber-cursor-ring"></div>
+        <div class="cyber-cursor-crosshair-h"></div>
+        <div class="cyber-cursor-crosshair-v"></div>
+        <span class="cyber-cursor-badge" id="cursor-badge">EXE</span>
     </div>
 
-    <!-- 2. Interactive Custom Cursor -->
-    <div class="custom-cursor" id="custom-cursor" aria-hidden="true">
-        <span class="cursor-orbit"></span>
-        <span class="cursor-dot"></span>
-        <span class="cursor-label" id="cursor-label">Select</span>
-    </div>
+    <!-- Main IDE Interface Container -->
+    <div class="relative z-10 w-full max-w-[1440px] mx-auto px-3 sm:px-6 py-4 pb-20">
 
-    <!-- 3. Main Experience Container -->
-    <div class="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20">
-
-        <!-- ================= TOP CINEMATIC HEADER ================= -->
-        <header class="flex flex-wrap items-center justify-between gap-4 mb-8">
-            <!-- Brand Identity -->
-            <div class="flex items-center gap-3.5">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#023159] to-[#011c33] border border-white/20 flex items-center justify-center shadow-lg shadow-black/50">
-                    <svg class="w-7 h-7" viewBox="0 0 64 64" fill="none">
-                        <circle cx="32" cy="32" r="31" fill="#023159" stroke="#f68a32" stroke-width="2"/>
-                        <path d="M19 16C17.3431 16 16 17.3431 16 19V45C16 46.6569 17.3431 48 19 48H35C42.732 48 48 42.732 48 35C48 27.268 42.732 22 35 22H25V19C25 17.3431 23.6569 16 22 16H19Z" fill="#F68A32"/>
-                        <path d="M25 29H35C38.3137 29 41 31.6863 41 35C41 38.3137 38.3137 41 35 41H25V29Z" fill="#FFFFFF"/>
-                        <circle cx="43" cy="21" r="5" fill="#F68A32"/>
-                    </svg>
+        <!-- ================= TOP OS CHASSIS / STATUS BAR ================= -->
+        <header class="flex flex-wrap items-center justify-between gap-3 mb-4 px-2">
+            <!-- IDE Brand & Repository Route -->
+            <div class="flex items-center gap-3">
+                <!-- Mac/Linux Window Control Indicators -->
+                <div class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-black/40 border border-white/5">
+                    <span class="dot-control bg-rose-500 text-rose-500"></span>
+                    <span class="dot-control bg-amber-500 text-amber-500"></span>
+                    <span class="dot-control bg-emerald-500 text-emerald-500"></span>
                 </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-2xl font-black tracking-tight text-white uppercase">bit<span class="text-[#f68a32]">qik</span></span>
-                        <span class="text-[10px] font-mono tracking-widest uppercase px-2 py-0.5 rounded-full bg-white/10 text-white/90 border border-white/20">PORTAL v2.0</span>
-                    </div>
-                    <p class="text-xs text-white/60 font-medium" data-lang="subtitle">
-                        ລະບົບສ້າງ ແລະ ຕິດຕາມສະຖິຕິການ Scan QR Code ແບບ Real-time
-                    </p>
+
+                <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold text-white tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="terminal" class="w-4 h-4 text-[#00f0ff]"></i>
+                        <span>BITQIK://<span class="text-[#f68a32]">QR_STUDIO</span></span>
+                    </span>
+                    <span class="font-mono text-[10px] text-cyan-400/90 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-500/30">
+                        v2.4.0-quantum
+                    </span>
+                    <span class="hidden md:inline font-mono text-[11px] text-white/40">
+                        git:(main) • cluster_ready
+                    </span>
                 </div>
             </div>
 
-            <!-- Header Controls: Server Badge, Test Scanner, Language -->
-            <div class="flex flex-wrap items-center gap-2.5">
-                <div id="server-status-pill" class="btn-portal-glass text-xs font-semibold py-2">
-                    <span class="live-dot"></span>
-                    <span id="server-status-text">ກຳລັງເຊື່ອມຕໍ່ Server...</span>
+            <!-- IDE Control Actions -->
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+                <!-- Server Status Pill -->
+                <div id="server-status-pill" class="btn-cyber-ghost py-1 px-3">
+                    <span class="status-dot-active"></span>
+                    <span id="server-status-text" class="font-mono">CONNECTING...</span>
                 </div>
 
-                <!-- Test Scanner Modal Trigger -->
-                <button type="button" id="btn-open-scanner" class="btn-portal-glass">
-                    <i data-lucide="scan" class="w-4 h-4 text-[#f68a32]"></i>
-                    <span data-lang="test-scanner-btn">ທົດສອບ Scan</span>
+                <!-- Test Scanner HUD Button -->
+                <button type="button" id="btn-open-scanner" class="btn-cyber-ghost py-1 px-3">
+                    <i data-lucide="scan" class="w-3.5 h-3.5 text-[#f68a32]"></i>
+                    <span data-lang="test-scanner-btn">RUN: SCANNER</span>
                 </button>
 
-                <!-- CSV Export Trigger -->
-                <a href="/api/export" id="btn-global-export-csv" class="btn-portal-glass">
-                    <i data-lucide="download" class="w-4 h-4 text-white"></i>
-                    <span data-lang="export-all-csv-btn">Export All CSV</span>
+                <!-- CSV Dump Button -->
+                <a href="/api/export" id="btn-global-export-csv" class="btn-cyber-ghost py-1 px-3">
+                    <i data-lucide="download" class="w-3.5 h-3.5 text-white"></i>
+                    <span data-lang="export-all-csv-btn">DUMP: CSV</span>
                 </a>
 
                 <!-- Language Toggle Button -->
-                <button type="button" id="btn-lang-toggle" class="btn-portal-glass text-[#f68a32] border-[#f68a32]/40">
+                <button type="button" id="btn-lang-toggle" class="btn-cyber-ghost py-1 px-3 text-[#f68a32] border-[#f68a32]/40">
                     <span id="lang-current">ພາສາລາວ (LA)</span>
                 </button>
             </div>
         </header>
 
-        <!-- ================= CAPSULE NAVIGATION TABS ================= -->
-        <nav class="flex flex-wrap items-center justify-between gap-4 mb-8">
-            <div class="nav-capsule">
-                <button type="button" id="tab-nav-generator" class="nav-pill-btn tab-active">
-                    <i data-lucide="qr-code" class="w-4 h-4"></i>
-                    <span data-lang="nav-generator">⚡ ສ້າງ QR Code (Studio)</span>
-                </button>
-                <button type="button" id="tab-nav-dashboard" class="nav-pill-btn">
-                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-                    <span data-lang="nav-dashboard">📊 Analytics Dashboard</span>
-                </button>
-            </div>
+        <!-- ================= MAIN IDE WORKSPACE WINDOW ================= -->
+        <div class="ide-window">
+            <div class="hud-corner-tl"></div>
+            <div class="hud-corner-tr"></div>
+            <div class="hud-corner-bl"></div>
+            <div class="hud-corner-br"></div>
 
-            <div class="flex items-center gap-2.5">
-                <button type="button" id="btn-reset-all-data" class="btn-portal-glass text-rose-400 hover:text-rose-300 border-rose-500/30 hover:border-rose-500/60" title="ລ້າງຂໍ້ມູນ QR Code ແລະ Scan ທັງໝົດ">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5 text-rose-400"></i>
-                    <span data-lang="btn-reset-all">ລ້າງຂໍ້ມູນ (Reset)</span>
-                </button>
-            </div>
-        </nav>
-
-        <!-- ================= MAIN CONTENT VIEWS ================= -->
-        <main>
-            <!-- ================= VIEW 1: QR STUDIO & GENERATOR ================= -->
-            <div id="view-page-generator" class="space-y-8">
-                <!-- Production Cloud Banner -->
-                <div class="glass-card p-4 sm:p-5 border-emerald-500/30 bg-emerald-950/20 text-white flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="flex items-start gap-3.5">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center flex-shrink-0">
-                            <i data-lucide="globe" class="w-5 h-5"></i>
-                        </div>
-                        <div>
-                            <div class="flex flex-wrap items-center gap-2">
-                                <h3 class="font-bold text-sm sm:text-base text-white">🌐 ລະບົບ Production Cloud ສຳລັບໃຊ້ງານຈິງ (Online 24/7)</h3>
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-black">Public Ready ✅</span>
-                            </div>
-                            <p class="text-xs text-white/70 mt-1 leading-relaxed">
-                                ສຳລັບນຳ QR Code ໄປພິມໃສ່ <b>Artwork, ເສື້ອແລ່ນ, ສິນຄ້າ (Product), Packaging, Standee</b> — ທຸກຄົນໃນໂລກສະແກນໄດ້ແທ້ 100% ຜ່ານ <b>4G / 5G / Wi-Fi</b> ທຸກເຄືອຂ່າຍ:
-                            </p>
-                            <div class="mt-2 flex flex-wrap items-center gap-2">
-                                <span class="font-mono text-xs font-bold text-emerald-300 bg-white/5 px-3 py-1 rounded-lg border border-emerald-500/40 select-all">
-                                    🔗 https://bitqik-qr-tracking.onrender.com
-                                </span>
-                                <span class="text-[11px] text-emerald-400/90 font-medium">✨ Dynamic Link ປ່ຽນ URL ປາຍທາງໄດ້ຕະຫຼອດ ໂດຍບໍ່ຕ້ອງພິມໃໝ່!</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2 flex-shrink-0 self-start md:self-center">
-                        <a href="https://bitqik-qr-tracking.onrender.com" target="_blank" rel="noopener noreferrer" 
-                           class="btn-portal-white text-xs">
-                            <i data-lucide="external-link" class="w-4 h-4"></i>
-                            <span>ເປີດ Cloud Studio 🚀</span>
-                        </a>
-                    </div>
+            <!-- Window Title & Breadcrumb Bar -->
+            <div class="ide-header-bar text-xs font-mono text-white/50">
+                <div class="flex items-center gap-2 truncate">
+                    <span class="text-[#00f0ff]">workspace</span>
+                    <span>&gt;</span>
+                    <span class="text-[#f68a32]">bitqik_qr_engine</span>
+                    <span>&gt;</span>
+                    <span class="text-white" id="current-file-crumb">generator.tsx</span>
                 </div>
+                <div class="flex items-center gap-4 text-[11px] text-white/40">
+                    <span class="hidden sm:inline">UTF-8</span>
+                    <span class="hidden sm:inline">TypeScript React</span>
+                    <span class="text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> LIVE SYNC</span>
+                </div>
+            </div>
 
-                <!-- Top Row: Generator Form (Left) & 3D Portal Preview (Right) -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    
-                    <!-- LEFT COLUMN: GENERATOR FORM (7 cols) -->
-                    <section class="lg:col-span-7 glass-panel p-6 sm:p-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center gap-3">
-                                <span class="w-3 h-3 rounded-full bg-[#f68a32] shadow-[0_0_10px_#f68a32]"></span>
-                                <h2 class="text-xl font-bold text-white tracking-wide" data-lang="generator-title">ສ້າງ QR Code ໃໝ່</h2>
+            <!-- Workspace Tab Bar -->
+            <div class="ide-tab-bar">
+                <button type="button" id="tab-nav-generator" class="ide-tab-item tab-active">
+                    <i data-lucide="code-2" class="w-3.5 h-3.5 text-[#00f0ff]"></i>
+                    <span data-lang="nav-generator">⚡ generator.tsx (Studio)</span>
+                </button>
+                <button type="button" id="tab-nav-dashboard" class="ide-tab-item">
+                    <i data-lucide="activity" class="w-3.5 h-3.5 text-[#f68a32]"></i>
+                    <span data-lang="nav-dashboard">📊 analytics_telemetry.py</span>
+                </button>
+                <div class="ml-auto flex items-center gap-2 py-1 pr-2">
+                    <button type="button" id="btn-reset-all-data" class="font-mono text-[11px] text-rose-400 hover:text-rose-300 px-2.5 py-1 rounded bg-rose-950/30 border border-rose-500/30 hover:border-rose-500/60 transition" title="Reset all data">
+                        <i data-lucide="trash-2" class="w-3 h-3 inline mr-1"></i>
+                        <span data-lang="btn-reset-all">FLUSH_DATA</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Workspace Body -->
+            <div class="p-4 sm:p-6 lg:p-7">
+
+                <!-- ================= VIEW 1: QR STUDIO & COMPILER ================= -->
+                <div id="view-page-generator" class="space-y-6">
+
+                    <!-- Cloud Cluster Production Docstring Banner -->
+                    <div class="p-4 rounded-xl bg-[#090e17] border border-cyan-500/30 font-mono text-xs text-white/80 space-y-2 relative overflow-hidden">
+                        <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-cyan-500/5 rounded-full blur-2xl pointer-events-none"></div>
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-cyan-500/20 pb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[#00f0ff] font-bold">/** CLOUD_DEPLOYMENT_PROFILE: PRODUCTION_READY */</span>
+                                <span class="px-2 py-0.2 rounded text-[10px] font-bold bg-emerald-500 text-black">ONLINE 24/7</span>
                             </div>
-                            <span class="text-xs font-mono px-3 py-1 rounded-full bg-white/5 text-white/80 border border-white/10">
-                                [01] CONFIGURATION
-                            </span>
+                            <a href="https://bitqik-qr-tracking.onrender.com" target="_blank" rel="noopener noreferrer" 
+                               class="btn-cyber-primary py-1 px-3 text-[11px]">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                <span>OPEN_PROD_CLUSTER 🚀</span>
+                            </a>
                         </div>
-                        <p class="text-xs sm:text-sm text-white/60 mb-6 leading-relaxed" data-lang="generator-desc">
-                            ສ້າງ QR Code ຕິດໂລໂກ້ Bitqik ພ້ອມລິ້ງຕິດຕາມການ Scan ແບບ Dynamic ທີ່ສາມາດປ່ຽນລິ້ງປາຍທາງໄດ້ຕະຫຼອດເວລາ.
-                        </p>
+                        <div class="text-[11px] text-white/60 leading-relaxed">
+                            <span class="token-comment">// ສຳລັບນຳ QR Code ໄປພິມໃສ່ Artwork, ເສື້ອແລ່ນ, ສິນຄ້າ (Product), Packaging, Standee:</span>
+                            <div class="mt-1 flex flex-wrap items-center gap-2">
+                                <span class="text-white/40">HOST:</span>
+                                <span class="text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30 select-all font-bold">
+                                    https://bitqik-qr-tracking.onrender.com
+                                </span>
+                                <span class="text-cyan-300"># 4G / 5G / Wi-Fi ສະແກນໄດ້ແທ້ 100% ທຸກເຄືອຂ່າຍ</span>
+                            </div>
+                        </div>
+                    </div>
 
-                        <form id="qr-form" class="space-y-5">
-                            <!-- QR Type Selector (Pill / Cards) -->
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-white/70 mb-2.5" data-lang="type-label">
-                                    ປະເພດ QR Code
-                                </label>
-                                <div class="grid grid-cols-2 gap-3.5">
-                                    <label class="glass-card p-3.5 flex items-start gap-3 cursor-pointer hover:border-[#f68a32]/50 transition-colors">
-                                        <input type="radio" name="qr-type" value="dynamic" checked class="mt-1 accent-[#f68a32]">
-                                        <div>
-                                            <span class="block text-xs sm:text-sm font-bold text-white" data-lang="type-dynamic">Dynamic (Tracked)</span>
-                                            <span class="block text-[11px] text-white/50 leading-tight mt-0.5" data-lang="type-dynamic-sub">ຕິດຕາມ Scan & ປ່ຽນ URL ໄດ້</span>
-                                        </div>
-                                    </label>
-                                    <label class="glass-card p-3.5 flex items-start gap-3 cursor-pointer hover:border-[#f68a32]/50 transition-colors">
-                                        <input type="radio" name="qr-type" value="static" class="mt-1 accent-[#f68a32]">
-                                        <div>
-                                            <span class="block text-xs sm:text-sm font-bold text-white" data-lang="type-static">Static (Direct)</span>
-                                            <span class="block text-[11px] text-white/50 leading-tight mt-0.5" data-lang="type-static-sub">ຝັງລິ້ງໂດຍກົງ ບໍ່ຜ່ານ Server</span>
-                                        </div>
-                                    </label>
+                    <!-- Top 2-Column Grid: Code Editor Gutter + Generator (Left) & Quantum QR Well (Right) -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+                        <!-- LEFT: COMPILER & PARAMETER EDITOR (7 cols) -->
+                        <section class="lg:col-span-7 p-5 sm:p-6 rounded-xl bg-[#090d15] border border-white/10 relative">
+                            <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
+                                <div class="flex items-center gap-2 font-mono">
+                                    <span class="text-[#00f0ff] font-bold text-sm">//</span>
+                                    <h2 class="text-base font-bold text-white tracking-wide" data-lang="generator-title">ສ້າງ QR Code ໃໝ່</h2>
                                 </div>
+                                <span class="font-mono text-[10px] text-white/50 bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                                    MODULE: QR_COMPILER
+                                </span>
                             </div>
 
-                            <!-- Campaign Label -->
-                            <div>
-                                <label for="qr-label" class="block text-xs font-bold uppercase tracking-wider text-white/70 mb-2" data-lang="label-field">
-                                    ຊື່ແຄມເປນ / ປ້າຍກຳກັບ (Campaign Label)
-                                </label>
-                                <input id="qr-label" class="portal-input" type="text" maxlength="80" 
-                                    placeholder="ຕົວຢ່າງ: Bitqik App Launch, ປ້າຍໂຄສະນາ, ເສື້ອແລ່ນ..." required>
-                            </div>
-
-                            <!-- Destination URL -->
-                            <div>
-                                <label for="qr-url" class="block text-xs font-bold uppercase tracking-wider text-white/70 mb-2" data-lang="url-field">
-                                    Destination URL (ລິ້ງປາຍທາງ)
-                                </label>
-                                <input id="qr-url" class="portal-input" type="url" 
-                                    placeholder="https://bitqik.com/download" required>
-                            </div>
-
-                            <!-- Tracking Domain / Server Host Selector -->
-                            <div>
-                                <label for="qr-base-domain" class="block text-xs font-bold uppercase tracking-wider text-white/70 mb-2 flex items-center justify-between">
-                                    <span data-lang="base-domain-field">Domain ສຳລັບ QR Code (Tracking Base URL)</span>
-                                    <span id="domain-badge-type" class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-500/30">🌐 Public Cloud</span>
-                                </label>
-                                <select id="qr-base-domain" class="portal-input font-bold text-emerald-400 bg-[#141210]">
-                                    <option value="https://bitqik-qr-tracking.onrender.com" selected>🌐 Production Cloud: https://bitqik-qr-tracking.onrender.com [ແນະນຳ - ທຸກຄົນສະແກນໄດ້ 100%]</option>
-                                </select>
-                                <div id="localhost-warning-badge" class="hidden mt-2.5 p-3 rounded-2xl bg-rose-950/40 border border-rose-500/40 text-rose-200 text-xs flex items-start gap-2">
-                                    <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5"></i>
-                                    <div>
-                                        <p class="font-bold">🚨 ຄຳເຕືອນ: Localhost ຫ້າມນຳໄປພິມໃສ່ Artwork ຫຼື ສິນຄ້າ!</p>
-                                        <p class="text-[11px] opacity-90 mt-0.5">ຖ້າເລືອກ Localhost ມີແຕ່ຄອມເຄື່ອງນີ້ເທົ່ານັ້ນທີ່ເປີດໄດ້. ສຳລັບສິນຄ້າ, ເສື້ອ ແລະ Artwork ຕ້ອງເລືອກ <b>Production Cloud (https://bitqik-qr-tracking.onrender.com)</b> ເພື່ອໃຫ້ລູກຄ້າສະແກນໄດ້.</p>
+                            <form id="qr-form" class="space-y-4">
+                                <!-- Type Selector -->
+                                <div>
+                                    <div class="font-mono text-xs text-white/70 mb-2 flex items-center gap-1.5">
+                                        <span class="token-keyword">const</span>
+                                        <span class="token-const">qr_type</span>:
+                                        <span class="token-type">"dynamic" | "static"</span> =
                                     </div>
-                                </div>
-                            </div>
-
-                            <!-- Advanced: Custom Shortcode -->
-                            <div class="pt-1">
-                                <details class="group cursor-pointer">
-                                    <summary class="text-xs font-semibold text-[#f68a32] flex items-center gap-1.5 select-none hover:underline">
-                                        <i data-lucide="settings-2" class="w-3.5 h-3.5"></i>
-                                        <span data-lang="advanced-settings-toggle">ລະຫັດຫຍໍ້ກຳນົດເອງ (Custom Shortcode - ທາງເລືອກ)</span>
-                                    </summary>
-                                    <div class="mt-2.5 p-3 rounded-2xl glass-card">
-                                        <label class="block text-[11px] font-bold text-white/70 mb-1" data-lang="custom-code-field">
-                                            Custom Shortcode:
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <label class="p-3 rounded-lg bg-black/40 border border-white/10 flex items-start gap-2.5 cursor-pointer hover:border-[#00f0ff]/50 transition">
+                                            <input type="radio" name="qr-type" value="dynamic" checked class="mt-1 accent-[#00f0ff]">
+                                            <div>
+                                                <span class="font-mono text-xs font-bold text-white block" data-lang="type-dynamic">Dynamic (Tracked)</span>
+                                                <span class="text-[11px] text-white/50 leading-tight block mt-0.5" data-lang="type-dynamic-sub">ຕິດຕາມ Scan & ປ່ຽນ URL ໄດ້</span>
+                                            </div>
                                         </label>
-                                        <input id="qr-custom-code" class="portal-input text-xs" type="text" placeholder="ຕົວຢ່າງ: promo2026, app-ios">
+                                        <label class="p-3 rounded-lg bg-black/40 border border-white/10 flex items-start gap-2.5 cursor-pointer hover:border-[#00f0ff]/50 transition">
+                                            <input type="radio" name="qr-type" value="static" class="mt-1 accent-[#00f0ff]">
+                                            <div>
+                                                <span class="font-mono text-xs font-bold text-white block" data-lang="type-static">Static (Direct)</span>
+                                                <span class="text-[11px] text-white/50 leading-tight block mt-0.5" data-lang="type-static-sub">ຝັງລິ້ງໂດຍກົງ ບໍ່ຜ່ານ Server</span>
+                                            </div>
+                                        </label>
                                     </div>
-                                </details>
-                            </div>
-
-                            <!-- Logo Option -->
-                            <div class="pt-2">
-                                <div class="flex items-center justify-between mb-2">
-                                    <label class="text-xs font-bold uppercase tracking-wider text-white/70" data-lang="logo-field">
-                                        ໂລໂກ້ຢູ່ໃຈກາງ (Center Logo)
-                                    </label>
-                                    <label class="inline-flex items-center gap-2 cursor-pointer text-xs font-semibold text-white/80">
-                                        <input type="checkbox" id="toggle-logo" checked class="accent-[#f68a32] rounded">
-                                        <span data-lang="use-bitqik-logo">ຕິດໂລໂກ້ Bitqik</span>
-                                    </label>
                                 </div>
-                                <input id="qr-logo-upload" class="portal-input text-xs file:mr-2 file:rounded-xl file:border-0 file:bg-white/20 file:px-3 file:py-1.5 file:font-semibold file:text-white" 
-                                    type="file" accept="image/png,image/jpeg,image/webp">
-                                <button id="remove-logo" type="button" class="btn-portal-glass text-xs font-semibold mt-2 text-rose-400" hidden data-lang="remove-custom-logo">
-                                    ລຶບໂລໂກ້ທີ່ Upload
-                                </button>
-                            </div>
 
-                            <!-- Form Action Buttons -->
-                            <div class="flex flex-wrap gap-3 pt-3">
-                                <button type="submit" id="btn-generate" class="btn-portal-amber flex-1 py-3.5 text-sm">
-                                    <i data-lucide="qr-code" class="w-4 h-4"></i>
-                                    <span data-lang="btn-generate-qr">ສ້າງ QR Code</span>
-                                </button>
-                                <button type="button" id="btn-save-qr" class="btn-portal-white px-6 py-3.5 text-sm">
-                                    <i data-lucide="save" class="w-4 h-4 text-[#023159]"></i>
-                                    <span data-lang="btn-save-track">ບັນທຶກ & Track</span>
-                                </button>
-                            </div>
-                        </form>
-                    </section>
+                                <!-- Campaign Label -->
+                                <div>
+                                    <label for="qr-label" class="font-mono text-xs text-white/70 mb-1.5 block">
+                                        <span class="token-keyword">let</span> <span class="token-const">campaign_label</span>: <span class="token-type">string</span> =
+                                    </label>
+                                    <input id="qr-label" class="cyber-input" type="text" maxlength="80" 
+                                        placeholder="ຕົວຢ່າງ: Bitqik App Launch, ປ້າຍໂຄສະນາ, ເສື້ອແລ່ນ..." required>
+                                </div>
 
-                    <!-- RIGHT COLUMN: THE 3D QR PORTAL (5 cols) -->
-                    <section class="lg:col-span-5 portal-3d-wrap">
-                        <div class="portal-3d-card p-6 sm:p-7 flex flex-col justify-between" id="portal-card-element">
+                                <!-- Destination URL -->
+                                <div>
+                                    <label for="qr-url" class="font-mono text-xs text-white/70 mb-1.5 block">
+                                        <span class="token-keyword">let</span> <span class="token-const">destination_url</span>: <span class="token-type">URL</span> =
+                                    </label>
+                                    <input id="qr-url" class="cyber-input" type="url" 
+                                        placeholder="https://bitqik.com/download" required>
+                                </div>
+
+                                <!-- Tracking Host Selector -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-1.5">
+                                        <label for="qr-base-domain" class="font-mono text-xs text-white/70 block">
+                                            <span class="token-keyword">const</span> <span class="token-const">tracking_cluster</span>: <span class="token-type">Host</span> =
+                                        </label>
+                                        <span id="domain-badge-type" class="font-mono text-[10px] text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">🌐 Public Cloud</span>
+                                    </div>
+                                    <select id="qr-base-domain" class="cyber-input font-bold text-emerald-400">
+                                        <option value="https://bitqik-qr-tracking.onrender.com" selected>🌐 Production Cloud: https://bitqik-qr-tracking.onrender.com [100% Public Access]</option>
+                                    </select>
+                                    <div id="localhost-warning-badge" class="hidden mt-2 p-3 rounded-lg bg-rose-950/40 border border-rose-500/40 text-rose-200 text-xs flex items-start gap-2">
+                                        <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5"></i>
+                                        <div class="font-mono text-[11px]">
+                                            <p class="font-bold text-rose-300">🚨 WARNING: Localhost ຫ້າມນຳໄປພິມໃສ່ Artwork ຫຼື ສິນຄ້າ!</p>
+                                            <p class="opacity-80 mt-0.5">ສຳລັບສິນຄ້າ, ເສື້ອ ແລະ Artwork ຕ້ອງເລືອກ <b>Production Cloud (https://bitqik-qr-tracking.onrender.com)</b> ເພື່ອໃຫ້ລູກຄ້າສະແກນໄດ້.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Advanced Custom Shortcode -->
+                                <div class="pt-1">
+                                    <details class="group cursor-pointer">
+                                        <summary class="font-mono text-xs text-[#f68a32] flex items-center gap-1.5 select-none hover:underline">
+                                            <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+                                            <span data-lang="advanced-settings-toggle">OPTIONAL_CONFIG: Custom Shortcode</span>
+                                        </summary>
+                                        <div class="mt-2.5 p-3 rounded-lg bg-black/50 border border-white/10 font-mono">
+                                            <label class="block text-[11px] text-white/60 mb-1" data-lang="custom-code-field">
+                                                custom_shortcode:
+                                            </label>
+                                            <input id="qr-custom-code" class="cyber-input text-xs" type="text" placeholder="e.g. promo2026, app-ios">
+                                        </div>
+                                    </details>
+                                </div>
+
+                                <!-- Center Logo Option -->
+                                <div class="pt-1">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <label class="font-mono text-xs text-white/70" data-lang="logo-field">
+                                            <span class="token-keyword">include</span> <span class="token-const">branding_logo</span>:
+                                        </label>
+                                        <label class="inline-flex items-center gap-2 cursor-pointer font-mono text-xs text-white/80">
+                                            <input type="checkbox" id="toggle-logo" checked class="accent-[#00f0ff] rounded">
+                                            <span data-lang="use-bitqik-logo">BITQIK_VECTOR_SVG</span>
+                                        </label>
+                                    </div>
+                                    <input id="qr-logo-upload" class="cyber-input text-xs file:mr-2 file:rounded file:border-0 file:bg-cyan-500/20 file:px-3 file:py-1 file:font-mono file:text-cyan-300" 
+                                        type="file" accept="image/png,image/jpeg,image/webp">
+                                    <button id="remove-logo" type="button" class="btn-cyber-ghost text-xs mt-2 text-rose-400 border-rose-500/30" hidden data-lang="remove-custom-logo">
+                                        REMOVE_CUSTOM_LOGO
+                                    </button>
+                                </div>
+
+                                <!-- Compiler Execution Bar -->
+                                <div class="flex flex-wrap gap-3 pt-3">
+                                    <button type="submit" id="btn-generate" class="btn-cyber-primary flex-1 py-3 text-xs">
+                                        <i data-lucide="cpu" class="w-4 h-4"></i>
+                                        <span data-lang="btn-generate-qr">COMPILE: GENERATE_QR</span>
+                                    </button>
+                                    <button type="button" id="btn-save-qr" class="btn-cyber-amber px-6 py-3 text-xs">
+                                        <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+                                        <span data-lang="btn-save-track">DEPLOY & TRACK</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </section>
+
+                        <!-- RIGHT: QUANTUM QR WELL & HUD TELEMETRY (5 cols) -->
+                        <section class="lg:col-span-5 p-5 sm:p-6 rounded-xl bg-[#090d15] border border-white/10 flex flex-col justify-between relative overflow-hidden">
                             <div>
-                                <!-- Portal Heading Bar -->
-                                <div class="flex items-center justify-between gap-2 mb-5">
+                                <!-- HUD Diagnostic Header -->
+                                <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-5 font-mono text-xs">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-xs font-mono uppercase text-white/50">Next:</span>
-                                        <span class="text-xs font-mono font-bold text-[#f68a32]">[01] DESTINATION</span>
+                                        <span class="text-[#00f0ff]">&lt;OpticalMatrix /&gt;</span>
                                     </div>
                                     <div class="flex items-center gap-1.5">
-                                        <button type="button" id="download-svg" class="btn-portal-glass py-1 px-2.5 text-xs" disabled>
-                                            SVG
+                                        <button type="button" id="download-svg" class="btn-cyber-ghost py-1 px-2.5 text-[11px]" disabled>
+                                            .SVG
                                         </button>
-                                        <button type="button" id="download-png" class="btn-portal-glass py-1 px-2.5 text-xs" disabled>
-                                            PNG
+                                        <button type="button" id="download-png" class="btn-cyber-ghost py-1 px-2.5 text-[11px]" disabled>
+                                            .PNG
                                         </button>
-                                        <button type="button" id="print-card-btn" class="btn-portal-glass py-1 px-2 text-xs" disabled title="ພິມໃບຕັ້ງໂຕະ">
-                                            <i data-lucide="printer" class="w-3.5 h-3.5 text-white"></i>
+                                        <button type="button" id="print-card-btn" class="btn-cyber-ghost py-1 px-2 text-[11px]" disabled title="Print Standee">
+                                            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
                                         </button>
                                     </div>
                                 </div>
 
-                                <!-- Center QR Well (Portal Portal Core) -->
+                                <!-- Center QR Display Well -->
                                 <div class="flex flex-col items-center justify-center py-2">
-                                    <div class="relative w-[240px] h-[240px] p-3 rounded-3xl bg-white flex items-center justify-center shadow-[0_0_40px_rgba(255,255,255,0.15)] mb-5 overflow-hidden">
+                                    <div class="quantum-qr-well mb-5 relative">
+                                        <div class="laser-sweep" id="laser-sweep-line"></div>
                                         <div id="qr-code" class="w-full h-full flex items-center justify-center" hidden></div>
                                         <div id="qr-empty" class="text-center p-4">
                                             <i data-lucide="qr-code" class="w-12 h-12 text-slate-400 mx-auto mb-2 opacity-60"></i>
-                                            <span class="text-xs text-slate-600 font-medium leading-snug block" data-lang="preview-placeholder">
-                                                ກະລຸນາປ້ອນຂໍ້ມູນ ແລ້ວກົດ "ສ້າງ QR Code"
+                                            <span class="font-mono text-xs text-slate-600 block" data-lang="preview-placeholder">
+                                                AWAITING_COMPILATION...
                                             </span>
                                         </div>
                                     </div>
 
-                                    <!-- Portal Metadata Spec / Fact List (Prompt Section 7/8 Style) -->
-                                    <div id="preview-meta" class="hidden w-full text-left space-y-1">
-                                        <dl class="space-y-0 text-xs">
-                                            <div class="fact-row">
-                                                <dt>Campaign:</dt>
-                                                <dd id="preview-label-display" class="font-bold text-white"></dd>
+                                    <!-- HUD Matrix Telemetry Spec List -->
+                                    <div id="preview-meta" class="hidden w-full space-y-1 font-mono text-xs">
+                                        <div class="p-3 rounded-lg bg-black/60 border border-white/10 space-y-2">
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-white/40">IDENTIFIER:</span>
+                                                <span id="preview-label-display" class="text-white font-bold truncate max-w-[200px]"></span>
                                             </div>
-                                            <div class="fact-row">
-                                                <dt>Tracking Link:</dt>
-                                                <dd id="preview-url-display" class="font-mono text-[#f68a32] text-[11px]"></dd>
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-white/40">ENDPOINT:</span>
+                                                <span id="preview-url-display" class="text-[#00f0ff] truncate max-w-[200px]"></span>
                                             </div>
-                                            <div class="fact-row">
-                                                <dt>Mode:</dt>
-                                                <dd><span id="preview-badge-type" class="text-emerald-400 font-bold"></span></dd>
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-white/40">DISPATCH:</span>
+                                                <span id="preview-badge-type" class="text-emerald-400 font-bold"></span>
                                             </div>
-                                            <div class="fact-row">
-                                                <dt>Readiness:</dt>
-                                                <dd><span id="preview-public-badge" class="text-emerald-300 font-semibold text-[11px]"></span></dd>
+                                            <div class="flex justify-between items-center text-[11px]">
+                                                <span class="text-white/40">READINESS:</span>
+                                                <span id="preview-public-badge" class="text-cyan-300"></span>
                                             </div>
-                                        </dl>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="pt-4 border-t border-white/10 mt-4">
-                                <p class="leading-relaxed text-[11px] text-white/50 text-center" data-lang="preview-quality-note">
-                                    ✨ ຮອງຮັບຄວາມລະອຽດສູງ (Error Correction Level H), ພ້ອມພິມໃສ່ປ້າຍ Standee, ໃບປິວ, ເສື້ອ ຫຼື ໂຄສະນາອອນລາຍ.
+                            <div class="pt-4 border-t border-white/10 mt-4 font-mono text-[10px] text-white/40 text-center" data-lang="preview-quality-note">
+                                ECC_LEVEL: HIGH [30%] • 1024x1024 OPTICAL RASTER • CMYK SAFE
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Bottom: ALL CAMPAIGNS DATABASE EXPLORER -->
+                    <section class="p-5 sm:p-6 rounded-xl bg-[#090d15] border border-white/10">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-5 border-b border-white/10 pb-3">
+                            <div>
+                                <div class="flex items-center gap-2 font-mono">
+                                    <span class="text-[#00f0ff] font-bold text-sm">&lt;db_inspector /&gt;</span>
+                                    <h2 class="text-base font-bold text-white" data-lang="saved-qrs-title">
+                                        ລາຍການ QR Code ທັງໝົດ (Campaign Database)
+                                    </h2>
+                                </div>
+                                <p class="font-mono text-xs text-white/50 mt-1" data-lang="saved-qrs-desc">
+                                    SELECT * FROM campaigns ORDER BY scan_count DESC;
                                 </p>
                             </div>
+                            <div class="flex items-center gap-2">
+                                <input id="search-qrs" type="text" class="cyber-input py-1.5 px-3 text-xs w-48 sm:w-64" 
+                                    placeholder="WHERE label LIKE '%term%'...">
+                            </div>
+                        </div>
+
+                        <!-- Records List Container -->
+                        <div id="records-container" class="divide-y divide-white/5">
+                            <p id="empty-records" class="font-mono text-center py-10 text-xs text-white/40" data-lang="empty-list-text">
+                                [EMPTY_RESULTSET]: ຍັງບໍ່ທັນມີ QR Code ທີ່ຖືກບັນທຶກ. ສ້າງ QR ທຳອິດດ້ານເທິງ.
+                            </p>
                         </div>
                     </section>
                 </div>
 
-                <!-- Bottom: SAVED QR CODES LIST & MANAGEMENT -->
-                <section class="glass-panel p-6 sm:p-8">
-                    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#00f2fe] shadow-[0_0_8px_#00f2fe]"></span>
-                                <h2 class="text-xl font-bold text-white" data-lang="saved-qrs-title">
-                                    ລາຍການ QR Code ທັງໝົດ (Campaign List)
-                                </h2>
+                <!-- ================= VIEW 2: DEDICATED ANALYTICS TELEMETRY ================= -->
+                <div id="view-page-dashboard" class="space-y-6 hidden">
+                    <section class="p-5 sm:p-6 rounded-xl bg-[#090d15] border border-white/10" id="dashboard-top">
+                        <!-- Dashboard Header -->
+                        <div class="flex flex-wrap justify-between items-center gap-4 mb-6 border-b border-white/10 pb-4">
+                            <div>
+                                <div class="flex items-center gap-2.5 font-mono">
+                                    <span class="text-[#f68a32] font-bold text-sm">&lt;telemetry_stream /&gt;</span>
+                                    <h2 class="text-xl font-bold text-white tracking-wide" id="analytics-main-title">
+                                        <span id="dashboard-title-text" data-lang="analytics-title">ພາບລວມການ Scan (Analytics Dashboard)</span>
+                                    </h2>
+                                </div>
+                                <p class="font-mono text-xs text-white/50 mt-1" id="dashboard-subtitle-text" data-lang="analytics-desc">
+                                    Real-time socket telemetry: packet count, device signatures, and conversion heuristics.
+                                </p>
                             </div>
-                            <p class="text-xs text-white/60 mt-1" data-lang="saved-qrs-desc">
-                                ຈັດການ, ແກ້ໄຂລິ້ງປາຍທາງ, ເລືອກເບິ່ງ Dashboard ສະເພາະ, ແລະ ດຶງຂໍ້ມູນ
-                            </p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <input id="search-qrs" type="text" class="portal-input py-2 px-3 text-xs w-48 sm:w-64" 
-                                placeholder="ຄົ້ນຫາແຄມເປນ...">
-                        </div>
-                    </div>
-
-                    <!-- Records List Container -->
-                    <div id="records-container" class="divide-y divide-white/10">
-                        <p id="empty-records" class="text-center py-10 text-sm text-white/40" data-lang="empty-list-text">
-                            ຍັງບໍ່ທັນມີ QR Code ທີ່ຖືກບັນທຶກ. ສ້າງ QR Code ທຳອິດຢູ່ຟາກເທິງ.
-                        </p>
-                    </div>
-                </section>
-            </div>
-
-            <!-- ================= VIEW 2: DEDICATED ANALYTICS DASHBOARD ================= -->
-            <div id="view-page-dashboard" class="space-y-8 hidden">
-                <section class="glass-panel p-6 sm:p-8" id="dashboard-top">
-                    <!-- Dashboard Header -->
-                    <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
-                        <div>
                             <div class="flex items-center gap-2.5">
-                                <span class="w-3 h-3 rounded-full bg-[#f68a32] shadow-[0_0_10px_#f68a32]"></span>
-                                <h2 class="text-2xl font-bold text-white tracking-wide" id="analytics-main-title">
-                                    <span id="dashboard-title-text" data-lang="analytics-title">ພາບລວມການ Scan (Analytics Dashboard)</span>
-                                </h2>
+                                <button type="button" id="btn-goto-generator" class="btn-cyber-amber text-xs py-2 px-3.5">
+                                    <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                                    <span data-lang="btn-goto-generator">NEW_CAMPAIGN</span>
+                                </button>
+                                <button type="button" id="btn-refresh-analytics" class="btn-cyber-ghost p-2" title="Refresh">
+                                    <i data-lucide="rotate-cw" class="w-4 h-4 text-white"></i>
+                                </button>
                             </div>
-                            <p class="text-xs sm:text-sm text-white/60 mt-1" id="dashboard-subtitle-text" data-lang="analytics-desc">
-                                ຕິດຕາມຈຳນວນຄົນສະແກນ, ປະເພດອຸປະກອນ ແລະ ແຄມເປນທີ່ໄດ້ຮັບຄວາມນິຍົມສູງສຸດ
-                            </p>
                         </div>
-                        <div class="flex items-center gap-2.5">
-                            <button type="button" id="btn-goto-generator" class="btn-portal-amber text-xs py-2 px-4">
-                                <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                                <span data-lang="btn-goto-generator">➕ ສ້າງ QR Code ໃໝ່</span>
-                            </button>
-                            <button type="button" id="btn-refresh-analytics" class="btn-portal-glass p-2.5" title="Refresh">
-                                <i data-lucide="rotate-cw" class="w-4 h-4 text-white"></i>
-                            </button>
-                        </div>
-                    </div>
 
-                    <!-- CAMPAIGN SELECTOR / FILTER BAR -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 p-4 mb-6 rounded-2xl glass-card">
-                        <div class="flex items-center gap-2.5 flex-1 min-w-[260px]">
-                            <i data-lucide="filter" class="w-4 h-4 text-[#f68a32] flex-shrink-0"></i>
-                            <label for="select-dashboard-qr" class="text-xs font-bold text-white/70 whitespace-nowrap" data-lang="filter-campaign-label">
-                                ເລືອກເບິ່ງສະເພາະ QR:
-                            </label>
-                            <select id="select-dashboard-qr" class="portal-input py-2 px-3 text-xs sm:text-sm flex-1 font-bold text-white bg-[#141210]">
-                                <option value="all">🌟 ພາບລວມທັງໝົດ (All Campaigns & QRs)</option>
-                            </select>
+                        <!-- FILTER BAR -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 mb-6 rounded-lg bg-black/50 border border-white/10 font-mono text-xs">
+                            <div class="flex items-center gap-2.5 flex-1 min-w-[260px]">
+                                <i data-lucide="filter" class="w-4 h-4 text-[#00f0ff] flex-shrink-0"></i>
+                                <label for="select-dashboard-qr" class="text-white/60 whitespace-nowrap" data-lang="filter-campaign-label">
+                                    QUERY_CAMPAIGN:
+                                </label>
+                                <select id="select-dashboard-qr" class="cyber-input py-1.5 px-3 text-xs flex-1 font-bold text-[#00f0ff] bg-[#0c1017]">
+                                    <option value="all">SELECT * (All Campaigns & QRs)</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <button type="button" id="btn-export-current-csv" class="btn-cyber-ghost text-xs py-1.5" title="Export CSV">
+                                    <i data-lucide="download" class="w-3.5 h-3.5 text-[#f68a32]"></i>
+                                    <span id="export-csv-btn-label" data-lang="export-this-data">DUMP: CSV</span>
+                                </button>
+                                <button type="button" id="btn-export-current-json" class="btn-cyber-ghost text-xs py-1.5" title="Export JSON">
+                                    <i data-lucide="file-json" class="w-3.5 h-3.5 text-white/70"></i>
+                                    <span>JSON</span>
+                                </button>
+                                <button type="button" id="btn-reset-campaign-filter" class="btn-cyber-ghost text-xs py-1.5 text-rose-400 hidden" title="View all">
+                                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                    <span data-lang="btn-view-all">CLEAR_FILTER</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <button type="button" id="btn-export-current-csv" class="btn-portal-glass text-xs" title="ດຶງຂໍ້ມູນ CSV">
-                                <i data-lucide="download" class="w-3.5 h-3.5 text-[#f68a32]"></i>
-                                <span id="export-csv-btn-label" data-lang="export-this-data">ດຶງ CSV</span>
-                            </button>
-                            <button type="button" id="btn-export-current-json" class="btn-portal-glass text-xs" title="ດຶງຂໍ້ມູນ JSON">
-                                <i data-lucide="file-json" class="w-3.5 h-3.5 text-white/70"></i>
-                                <span>JSON</span>
-                            </button>
-                            <button type="button" id="btn-reset-campaign-filter" class="btn-portal-glass text-xs text-rose-400 hidden" title="ກັບຄືນເບິ່ງທັງໝົດ">
-                                <i data-lucide="x" class="w-3.5 h-3.5"></i>
-                                <span data-lang="btn-view-all">ເບິ່ງທັງໝົດ</span>
-                            </button>
-                        </div>
-                    </div>
 
-                    <!-- CAMPAIGN SPOTLIGHT CARD -->
-                    <div id="campaign-spotlight-card" class="hidden mb-6 p-5 rounded-2xl bg-gradient-to-r from-[#023159]/80 to-[#011c33]/90 border border-white/20 text-white shadow-xl">
-                        <div class="flex flex-wrap justify-between items-start gap-4">
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f68a32] text-white uppercase tracking-wider">
-                                        Campaign Spotlight
-                                    </span>
-                                    <span id="spotlight-active-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-500/20 text-green-300 border border-green-400/30">Active</span>
-                                    <span id="spotlight-created-date" class="text-[10px] text-white/60"></span>
+                        <!-- CAMPAIGN SPOTLIGHT CARD -->
+                        <div id="campaign-spotlight-card" class="hidden mb-6 p-4 rounded-xl bg-cyan-950/20 border border-cyan-500/30 text-white font-mono">
+                            <div class="flex flex-wrap justify-between items-start gap-4">
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#f68a32] text-black uppercase">
+                                            ACTIVE_INSPECTION
+                                        </span>
+                                        <span id="spotlight-active-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/20 text-green-300 border border-green-500/30">ONLINE</span>
+                                        <span id="spotlight-created-date" class="text-[10px] text-white/50"></span>
+                                    </div>
+                                    <h3 id="spotlight-title" class="text-base font-bold text-white truncate"></h3>
+                                    <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/70">
+                                        <span class="text-[#00f0ff] font-bold" id="spotlight-shortcode-display"></span>
+                                        <button type="button" id="btn-copy-spotlight-link" class="text-xs text-[#f68a32] hover:underline flex items-center gap-1">
+                                            <i data-lucide="copy" class="w-3 h-3"></i>
+                                            <span id="spotlight-copy-text">Copy Link</span>
+                                        </button>
+                                        <span>·</span>
+                                        <span class="truncate max-w-[380px]">Target: <a id="spotlight-dest-link" href="#" target="_blank" class="underline text-white/80 hover:text-[#00f0ff]"></a></span>
+                                    </div>
                                 </div>
-                                <h3 id="spotlight-title" class="text-lg sm:text-xl font-bold text-white truncate"></h3>
-                                <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-white/70">
-                                    <span class="text-[#f68a32] font-mono font-bold text-sm" id="spotlight-shortcode-display"></span>
-                                    <button type="button" id="btn-copy-spotlight-link" class="text-xs underline hover:text-white flex items-center gap-1">
-                                        <i data-lucide="copy" class="w-3 h-3"></i>
-                                        <span id="spotlight-copy-text">Copy Link</span>
+                                <div class="flex items-center gap-2 flex-shrink-0">
+                                    <button type="button" id="btn-spotlight-preview" class="btn-cyber-ghost text-xs">
+                                        <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                        <span>Preview</span>
                                     </button>
-                                    <span>·</span>
-                                    <span class="truncate max-w-[420px]">Destination: <a id="spotlight-dest-link" href="#" target="_blank" class="underline text-white hover:text-[#f68a32]"></a></span>
+                                    <button type="button" id="btn-spotlight-test" class="btn-cyber-primary text-xs py-1.5 px-3">
+                                        <i data-lucide="scan" class="w-3.5 h-3.5"></i>
+                                        <span>Test Scan</span>
+                                    </button>
+                                    <button type="button" id="btn-spotlight-close" class="btn-cyber-ghost p-1.5" title="Close">
+                                        <i data-lucide="x" class="w-4 h-4"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2 flex-shrink-0">
-                                <button type="button" id="btn-spotlight-preview" class="btn-portal-glass text-xs">
-                                    <i data-lucide="eye" class="w-3.5 h-3.5 text-[#f68a32]"></i>
-                                    <span>Preview QR</span>
-                                </button>
-                                <button type="button" id="btn-spotlight-test" class="btn-portal-amber text-xs py-2 px-3.5">
-                                    <i data-lucide="scan" class="w-3.5 h-3.5"></i>
-                                    <span>Test Scan</span>
-                                </button>
-                                <button type="button" id="btn-spotlight-close" class="btn-portal-glass p-2" title="ກັບຄືນເບິ່ງທັງໝົດ">
-                                    <i data-lucide="x" class="w-4 h-4"></i>
-                                </button>
+                        </div>
+
+                        <!-- 4 Quantum Metric Counters -->
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <div class="p-4 rounded-xl bg-black/40 border border-white/10 text-center font-mono">
+                                <p class="text-[11px] text-white/50 uppercase" id="stat-label-1" data-lang="stat-total-qrs">TOTAL_DEPLOYED_QRS</p>
+                                <p id="stat-codes-count" class="text-3xl font-black text-white mt-1.5">0</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-black/40 border border-white/10 text-center font-mono">
+                                <p class="text-[11px] text-white/50 uppercase" id="stat-label-2" data-lang="stat-total-scans">INTERCEPTIONS_TOTAL</p>
+                                <p id="stat-scans-count" class="text-3xl font-black text-[#00f0ff] mt-1.5">0</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-black/40 border border-white/10 text-center font-mono">
+                                <p class="text-[11px] text-white/50 uppercase" id="stat-label-3" data-lang="stat-today-scans">SCANS_TODAY</p>
+                                <p id="stat-today-count" class="text-3xl font-black text-[#f68a32] mt-1.5">0</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-black/40 border border-white/10 text-center font-mono">
+                                <p class="text-[11px] text-white/50 uppercase" id="stat-label-4" data-lang="stat-avg-scans">CONVERSION_AVG</p>
+                                <p id="stat-avg-count" class="text-3xl font-black text-emerald-400 mt-1.5">0</p>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- 4 Metric Counters -->
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                        <div class="glass-card p-5 text-center">
-                            <p class="text-xs font-mono font-bold uppercase tracking-wider text-white/50" id="stat-label-1" data-lang="stat-total-qrs">QR ທັງໝົດ</p>
-                            <p id="stat-codes-count" class="text-3xl sm:text-4xl font-black text-white mt-2">0</p>
-                        </div>
-                        <div class="glass-card p-5 text-center">
-                            <p class="text-xs font-mono font-bold uppercase tracking-wider text-white/50" id="stat-label-2" data-lang="stat-total-scans">Scan ທັງໝົດ</p>
-                            <p id="stat-scans-count" class="text-3xl sm:text-4xl font-black text-[#f68a32] mt-2">0</p>
-                        </div>
-                        <div class="glass-card p-5 text-center">
-                            <p class="text-xs font-mono font-bold uppercase tracking-wider text-white/50" id="stat-label-3" data-lang="stat-today-scans">Scan ມື້ນີ້</p>
-                            <p id="stat-today-count" class="text-3xl sm:text-4xl font-black text-[#00f2fe] mt-2">0</p>
-                        </div>
-                        <div class="glass-card p-5 text-center">
-                            <p class="text-xs font-mono font-bold uppercase tracking-wider text-white/50" id="stat-label-4" data-lang="stat-avg-scans">ສະເລ່ຍ / QR</p>
-                            <p id="stat-avg-count" class="text-3xl sm:text-4xl font-black text-emerald-400 mt-2">0</p>
-                        </div>
-                    </div>
-
-                    <!-- CHARTS GRID -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="glass-card p-5">
-                            <h4 class="text-xs font-bold text-white/70 uppercase mb-3 flex items-center gap-2">
-                                <i data-lucide="trending-up" class="w-4 h-4 text-[#f68a32]"></i>
-                                <span id="chart-1-title" data-lang="chart-campaigns-title">ແຄມເປນທີ່ຖືກ Scan ຫຼາຍສຸດ</span>
-                            </h4>
-                            <div class="relative h-60">
-                                <canvas id="chart-top-qrs"></canvas>
+                        <!-- CHARTS GRID -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 font-mono">
+                            <div class="p-4 rounded-xl bg-black/40 border border-white/10">
+                                <h4 class="text-xs font-bold text-white/80 uppercase mb-3 flex items-center gap-2">
+                                    <i data-lucide="trending-up" class="w-4 h-4 text-[#00f0ff]"></i>
+                                    <span id="chart-1-title" data-lang="chart-campaigns-title">TOP_CAMPAIGNS_RANKING</span>
+                                </h4>
+                                <div class="relative h-60">
+                                    <canvas id="chart-top-qrs"></canvas>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-black/40 border border-white/10">
+                                <h4 class="text-xs font-bold text-white/80 uppercase mb-3 flex items-center gap-2">
+                                    <i data-lucide="cpu" class="w-4 h-4 text-[#f68a32]"></i>
+                                    <span id="chart-2-title" data-lang="chart-devices-title">CLIENT_ARCHITECTURE_BREAKDOWN</span>
+                                </h4>
+                                <div class="relative h-60">
+                                    <canvas id="chart-devices"></canvas>
+                                </div>
                             </div>
                         </div>
-                        <div class="glass-card p-5">
-                            <h4 class="text-xs font-bold text-white/70 uppercase mb-3 flex items-center gap-2">
-                                <i data-lucide="smartphone" class="w-4 h-4 text-[#00f2fe]"></i>
-                                <span id="chart-2-title" data-lang="chart-devices-title">ອຸປະກອນທີ່ Scan (Device Breakdown)</span>
-                            </h4>
-                            <div class="relative h-60">
-                                <canvas id="chart-devices"></canvas>
+                    </section>
+
+                    <!-- LIVE PACKET INSPECTOR / FEED -->
+                    <section class="p-5 sm:p-6 rounded-xl bg-[#090d15] border border-white/10 font-mono">
+                        <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="status-dot-active"></span>
+                                <h3 class="text-sm font-bold text-white" id="live-activity-header" data-lang="live-activity-title">
+                                    tail -f /var/log/bitqik_scans.stream
+                                </h3>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-cyan-400/80 font-mono" data-lang="auto-sync-badge">STREAM_ACTIVE (WebSocket)</span>
                             </div>
                         </div>
-                    </div>
-                </section>
+                        <div id="live-feed-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
+                            <p class="text-xs text-white/40 py-6 text-center" data-lang="no-scans-yet">AWAITING_INCOMING_PACKETS...</p>
+                        </div>
+                    </section>
+                </div>
 
-                <!-- LIVE SCAN ACTIVITY FEED -->
-                <section class="glass-panel p-6 sm:p-8">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2.5">
-                            <span class="live-dot"></span>
-                            <h3 class="text-base font-bold text-white" id="live-activity-header" data-lang="live-activity-title">
-                                Live Scan Activity Feed (ການ Scan ລ່າສຸດ)
-                            </h3>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-white/50 font-medium" data-lang="auto-sync-badge">ອັບເດດ Real-time ອັດຕະໂນມັດ</span>
-                        </div>
-                    </div>
-                    <div id="live-feed-list" class="space-y-2.5 max-h-72 overflow-y-auto pr-1">
-                        <p class="text-xs text-white/40 py-6 text-center" data-lang="no-scans-yet">ຍັງບໍ່ມີຂໍ້ມູນການສະແກນ</p>
-                    </div>
-                </section>
             </div>
-        </main>
+        </div>
 
-        <!-- ================= FOOTER ================= -->
-        <footer class="mt-14 text-center text-xs text-white/40 space-y-2">
+        <!-- ================= SYSTEM FOOTER ================= -->
+        <footer class="mt-8 text-center font-mono text-xs text-white/30 space-y-1.5">
             <p data-lang="footer-notice">
                 © 2026 Bitqik Co., Ltd. Laos' Leading Digital Asset Platform · All Rights Reserved.
             </p>
-            <p id="system-info-footer" class="text-[11px] font-mono text-white/30"></p>
+            <p id="system-info-footer" class="text-[11px] text-[#00f0ff]/50"></p>
         </footer>
     </div>
 
-    <!-- ================= SCANNER HUD MODAL ================= -->
-    <div id="scanner-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="glass-panel bg-[#141210]/95 max-w-md w-full p-6 relative border-white/20">
-            <button type="button" id="close-scanner-modal" class="absolute top-4 right-4 btn-portal-glass p-2">
+    <!-- ================= SCANNER HUD MODAL (CYBER VIEWPORT) ================= -->
+    <div id="scanner-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="ide-window max-w-md w-full p-6 relative border-cyan-500/50">
+            <div class="hud-corner-tl"></div>
+            <div class="hud-corner-tr"></div>
+            <div class="hud-corner-bl"></div>
+            <div class="hud-corner-br"></div>
+
+            <button type="button" id="close-scanner-modal" class="absolute top-4 right-4 btn-cyber-ghost p-1.5">
                 <i data-lucide="x" class="w-4 h-4 text-white"></i>
             </button>
-            <h3 class="text-lg font-bold text-white mb-1 flex items-center gap-2" data-lang="modal-scanner-title">
-                <i data-lucide="camera" class="w-5 h-5 text-[#f68a32]"></i>
-                <span>ກ້ອງສະແກນ QR Code (Camera Scanner)</span>
+            <h3 class="font-mono text-base font-bold text-white mb-1 flex items-center gap-2" data-lang="modal-scanner-title">
+                <i data-lucide="camera" class="w-4 h-4 text-[#00f0ff]"></i>
+                <span>VISION_HUD: OPTICAL_RECOGNITION</span>
             </h3>
             <p class="text-xs text-white/60 mb-4" data-lang="modal-scanner-desc">
                 ໃຊ້ກ້ອງ Webcam/ມືຖື ຫຼື Upload ຮູບ QR ເພື່ອທົດສອບລະບົບຕິດຕາມການ Scan
             </p>
 
-            <div id="camera-reader" class="rounded-2xl overflow-hidden bg-black/90 aspect-square max-w-[320px] mx-auto relative mb-4 border border-white/20"></div>
+            <div id="camera-reader" class="rounded-xl overflow-hidden bg-black/90 aspect-square max-w-[320px] mx-auto relative mb-4 border border-cyan-500/30"></div>
 
-            <div class="space-y-3">
+            <div class="space-y-3 font-mono">
                 <div class="flex gap-2">
-                    <button type="button" id="btn-start-camera" class="btn-portal-amber flex-1 py-2.5 text-xs" data-lang="start-camera-btn">
-                        ເປີດກ້ອງ (Start Camera)
+                    <button type="button" id="btn-start-camera" class="btn-cyber-primary flex-1 py-2 text-xs" data-lang="start-camera-btn">
+                        START_CAMERA
                     </button>
-                    <button type="button" id="btn-stop-camera" class="btn-portal-glass flex-1 py-2.5 text-xs text-white/50" disabled data-lang="stop-camera-btn">
-                        ປິດກ້ອງ (Stop)
+                    <button type="button" id="btn-stop-camera" class="btn-cyber-ghost flex-1 py-2 text-xs text-white/40" disabled data-lang="stop-camera-btn">
+                        STOP_CAMERA
                     </button>
                 </div>
                 <div class="text-center">
-                    <span class="text-xs text-white/60 font-semibold" data-lang="or-upload-img">ຫຼື ເລືອກໄຟລ໌ຮູບພາບ QR Code</span>
-                    <input type="file" id="scan-file-input" accept="image/*" class="portal-input mt-1.5 text-xs">
+                    <span class="text-xs text-white/50" data-lang="or-upload-img">IMAGE_BUFFER_INPUT:</span>
+                    <input type="file" id="scan-file-input" accept="image/*" class="cyber-input mt-1.5 text-xs">
                 </div>
-                <div id="scan-result-card" class="hidden p-3.5 rounded-xl glass-card text-xs">
-                    <p class="font-bold text-white mb-1" data-lang="scan-detected">🎯 ພົບ QR Code:</p>
-                    <p id="scan-result-text" class="font-mono text-[11px] text-[#f68a32] break-all"></p>
+                <div id="scan-result-card" class="hidden p-3 rounded-lg bg-cyan-950/40 border border-cyan-500/40 text-xs">
+                    <p class="font-bold text-[#00f0ff] mb-1" data-lang="scan-detected">TARGET_ACQUIRED:</p>
+                    <p id="scan-result-text" class="text-white break-all text-[11px]"></p>
                     <div class="mt-2.5 flex items-center justify-between">
-                        <span id="scan-status-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-500/20 text-green-300 border border-green-500/30">ບັນທຶກ Scan ແລ້ວ</span>
-                        <a id="scan-open-link" href="#" target="_blank" class="text-xs font-bold text-[#f68a32] hover:underline" data-lang="open-dest-url">
-                            ເປີດລິ້ງປາຍທາງ &rarr;
+                        <span id="scan-status-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/20 text-green-300 border border-green-500/30">LOGGED</span>
+                        <a id="scan-open-link" href="#" target="_blank" class="text-xs text-[#f68a32] hover:underline" data-lang="open-dest-url">
+                            EXECUTE_TARGET &rarr;
                         </a>
                     </div>
                 </div>
@@ -959,8 +988,8 @@
     </div>
 
     <!-- ================= PRINT STAND-CARD MODAL ================= -->
-    <div id="print-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white max-w-sm w-full p-8 rounded-3xl text-center shadow-2xl relative border-4 border-[#023159]">
+    <div id="print-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white max-w-sm w-full p-8 rounded-2xl text-center shadow-2xl relative border-4 border-[#023159]">
             <button type="button" id="close-print-modal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 p-1">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
@@ -975,24 +1004,24 @@
             </div>
             <h4 id="print-label" class="text-base font-bold text-gray-800 mb-1"></h4>
             <p class="text-xs text-gray-500 mb-4 font-medium" data-lang="print-scan-instruction">ສະແກນດ້ວຍກ້ອງມືຖືເພື່ອເຂົ້າສູ່ເວັບໄຊ ຫຼື ແອັບ</p>
-            <div id="print-qr-placeholder" class="w-52 h-52 mx-auto border-2 border-dashed border-gray-200 p-2 rounded-2xl flex items-center justify-center"></div>
+            <div id="print-qr-placeholder" class="w-52 h-52 mx-auto border-2 border-dashed border-gray-200 p-2 rounded-xl flex items-center justify-center"></div>
             <p id="print-footer-tip" class="text-[10px] text-gray-400 mt-4">www.bitqik.com · Regulated Digital Asset Exchange</p>
             <div class="mt-5 flex gap-2 no-print">
-                <button type="button" onclick="window.print()" class="flex-1 bg-[#023159] text-white py-2 rounded-xl text-xs font-bold">
-                    ພິມ (Print)
+                <button type="button" onclick="window.print()" class="flex-1 bg-[#023159] text-white py-2 rounded-xl text-xs font-bold font-mono">
+                    PRINT_STANDEE
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ================= SCRIPT LOGIC ================= -->
+    <!-- ================= JAVASCRIPT APPLICATION LOGIC ================= -->
     <script>
         // Language Dictionary
         const I18N = {
             lo: {
                 subtitle: "ລະບົບສ້າງ ແລະ ຕິດຕາມສະຖິຕິການ Scan QR Code ແບບ Real-time",
-                "test-scanner-btn": "ທົດສອບ Scan",
-                "export-all-csv-btn": "Export All CSV",
+                "test-scanner-btn": "RUN: SCANNER",
+                "export-all-csv-btn": "DUMP: CSV",
                 "generator-title": "ສ້າງ QR Code ໃໝ່",
                 "generator-desc": "ສ້າງ QR Code ຕິດໂລໂກ້ Bitqik ພ້ອມລິ້ງຕິດຕາມການ Scan ແບບ Dynamic ທີ່ສາມາດປ່ຽນລິ້ງປາຍທາງໄດ້ຕະຫຼອດເວລາ.",
                 "type-label": "ປະເພດ QR Code",
@@ -1002,62 +1031,62 @@
                 "type-static-sub": "ຝັງລິ້ງໂດຍກົງ ບໍ່ຜ່ານ Server",
                 "label-field": "ຊື່ແຄມເປນ / ປ້າຍກຳກັບ (Campaign Label)",
                 "url-field": "Destination URL (ລິ້ງປາຍທາງ)",
-                "advanced-settings-toggle": "ຕັ້ງຄ່າຂັ້ນສູງ (Custom Code & Server Domain)",
-                "custom-code-field": "ລະຫັດຫຍໍ້ກຳນົດເອງ (Custom Shortcode - ທາງເລືອກ)",
+                "advanced-settings-toggle": "OPTIONAL_CONFIG: Custom Shortcode",
+                "custom-code-field": "custom_shortcode:",
                 "base-domain-field": "Domain ສຳລັບ Scan ຜ່ານມືຖື (Tracking Base URL)",
                 "base-domain-tip": "💡 ຫາກຕ້ອງການທົດສອບສະແກນດ້ວຍກ້ອງມືຖືແທ້ໆ ໃຫ້ເລືອກ IP ຂອງ Wi-Fi ເຄືອຂ່າຍດຽວກັນ",
                 "logo-field": "ໂລໂກ້ຢູ່ໃຈກາງ (Center Logo)",
-                "use-bitqik-logo": "ຕິດໂລໂກ້ Bitqik",
-                "remove-custom-logo": "ລຶບໂລໂກ້ທີ່ Upload",
-                "btn-generate-qr": "ສ້າງ QR Code",
-                "btn-save-track": "ບັນທຶກ & Track",
+                "use-bitqik-logo": "BITQIK_VECTOR_SVG",
+                "remove-custom-logo": "REMOVE_CUSTOM_LOGO",
+                "btn-generate-qr": "COMPILE: GENERATE_QR",
+                "btn-save-track": "DEPLOY & TRACK",
                 "preview-title": "ຕົວຢ່າງ QR Code (Preview)",
-                "preview-placeholder": "ກະລຸນາປ້ອນຂໍ້ມູນ ແລ້ວກົດ 'ສ້າງ QR Code'",
-                "preview-quality-note": "✨ ຮອງຮັບຄວາມລະອຽດສູງ (Error Correction Level H), ພ້ອມພິມໃສ່ປ້າຍ Standee, ໃບປິວ, ເສື້ອ ຫຼື ໂຄສະນາອອນລາຍ.",
+                "preview-placeholder": "AWAITING_COMPILATION...",
+                "preview-quality-note": "ECC_LEVEL: HIGH [30%] • 1024x1024 OPTICAL RASTER • CMYK SAFE",
                 "analytics-title": "ພາບລວມການ Scan (Analytics Dashboard)",
-                "analytics-desc": "ຕິດຕາມຈຳນວນຄົນສະແກນ, ປະເພດອຸປະກອນ ແລະ ແຄມເປນທີ່ໄດ້ຮັບຄວາມນິຍົມສູງສຸດ",
-                "filter-campaign-label": "ເລືອກເບິ່ງສະເພາະ QR:",
-                "export-this-data": "ດຶງ CSV",
-                "btn-view-all": "ເບິ່ງທັງໝົດ",
-                "stat-total-qrs": "QR ທັງໝົດ",
-                "stat-total-scans": "Scan ທັງໝົດ",
-                "stat-today-scans": "Scan ມື້ນີ້",
-                "stat-avg-scans": "ສະເລ່ຍ / QR",
-                "stat-campaign-status": "ສະຖານະແຄມເປນ",
-                "stat-link-type": "ປະເພດລິ້ງ",
-                "chart-campaigns-title": "ແຄມເປນທີ່ຖືກ Scan ຫຼາຍສຸດ",
-                "chart-devices-title": "ອຸປະກອນທີ່ Scan (Device Breakdown)",
-                "chart-trend-title": "ແນວໂນ້ມການ Scan ແຕ່ລະມື້ (Daily Scan Trend)",
-                "chart-campaign-devices": "ອຸປະກອນ & OS ຂອງແຄມເປນນີ້",
-                "live-activity-title": "Live Scan Activity Feed (ການ Scan ລ່າສຸດ)",
-                "auto-sync-badge": "ອັບເດດ Real-time ອັດຕະໂນມັດ",
-                "no-scans-yet": "ຍັງບໍ່ມີຂໍ້ມູນການສະແກນ",
-                "saved-qrs-title": "ລາຍການ QR Code ທັງໝົດ (Campaign List)",
-                "saved-qrs-desc": "ຈັດການ, ແກ້ໄຂລິ້ງປາຍທາງ, ເລືອກເບິ່ງ Dashboard ສະເພາະ, ແລະ ດຶງຂໍ້ມູນ",
-                "empty-list-text": "ຍັງບໍ່ທັນມີ QR Code ທີ່ຖືກບັນທຶກ. ສ້າງ QR Code ທຳອິດຢູ່ຟາກເທິງ.",
+                "analytics-desc": "Real-time socket telemetry: packet count, device signatures, and conversion heuristics.",
+                "filter-campaign-label": "QUERY_CAMPAIGN:",
+                "export-this-data": "DUMP: CSV",
+                "btn-view-all": "CLEAR_FILTER",
+                "stat-total-qrs": "TOTAL_DEPLOYED_QRS",
+                "stat-total-scans": "INTERCEPTIONS_TOTAL",
+                "stat-today-scans": "SCANS_TODAY",
+                "stat-avg-scans": "CONVERSION_AVG",
+                "stat-campaign-status": "STATUS",
+                "stat-link-type": "TYPE",
+                "chart-campaigns-title": "TOP_CAMPAIGNS_RANKING",
+                "chart-devices-title": "CLIENT_ARCHITECTURE_BREAKDOWN",
+                "chart-trend-title": "DAILY_SCAN_TELEMETRY",
+                "chart-campaign-devices": "DEVICES_FOR_THIS_NODE",
+                "live-activity-title": "tail -f /var/log/bitqik_scans.stream",
+                "auto-sync-badge": "STREAM_ACTIVE (WebSocket)",
+                "no-scans-yet": "AWAITING_INCOMING_PACKETS...",
+                "saved-qrs-title": "ລາຍການ QR Code ທັງໝົດ (Campaign Database)",
+                "saved-qrs-desc": "SELECT * FROM campaigns ORDER BY scan_count DESC;",
+                "empty-list-text": "[EMPTY_RESULTSET]: ຍັງບໍ່ທັນມີ QR Code ທີ່ຖືກບັນທຶກ. ສ້າງ QR ທຳອິດດ້ານເທິງ.",
                 "footer-notice": "© 2026 Bitqik Co., Ltd. Laos' Leading Digital Asset Platform · All Rights Reserved.",
-                "modal-scanner-title": "ກ້ອງສະແກນ QR Code (Camera Scanner)",
+                "modal-scanner-title": "VISION_HUD: OPTICAL_RECOGNITION",
                 "modal-scanner-desc": "ໃຊ້ກ້ອງ Webcam/ມືຖື ຫຼື Upload ຮູບ QR ເພື່ອທົດສອບລະບົບຕິດຕາມການ Scan",
-                "start-camera-btn": "ເປີດກ້ອງ (Start Camera)",
-                "stop-camera-btn": "ປິດກ້ອງ (Stop)",
-                "or-upload-img": "ຫຼື ເລືອກໄຟລ໌ຮູບພາບ QR Code",
-                "scan-detected": "🎯 ພົບ QR Code:",
-                "open-dest-url": "ເປີດລິ້ງປາຍທາງ &rarr;",
+                "start-camera-btn": "START_CAMERA",
+                "stop-camera-btn": "STOP_CAMERA",
+                "or-upload-img": "IMAGE_BUFFER_INPUT:",
+                "scan-detected": "TARGET_ACQUIRED:",
+                "open-dest-url": "EXECUTE_TARGET &rarr;",
                 "print-scan-instruction": "ສະແກນດ້ວຍກ້ອງມືຖືເພື່ອເຂົ້າສູ່ເວັບໄຊ ຫຼື ແອັບ",
-                "nav-generator": "⚡ ສ້າງ QR Code (Studio)",
-                "nav-dashboard": "📊 Analytics Dashboard",
-                "btn-reset-all": "ລ້າງຂໍ້ມູນ (Reset)",
-                "btn-goto-generator": "➕ ສ້າງ QR Code ໃໝ່"
+                "nav-generator": "⚡ generator.tsx (Studio)",
+                "nav-dashboard": "📊 analytics_telemetry.py",
+                "btn-reset-all": "FLUSH_DATA",
+                "btn-goto-generator": "NEW_CAMPAIGN"
             },
             en: {
                 subtitle: "Real-time Branded QR Generator & Dynamic Scan Tracking Engine",
-                "nav-generator": "⚡ QR Studio & Generator",
-                "nav-dashboard": "📊 Analytics Dashboard",
-                "btn-reset-all": "Reset All Data",
-                "btn-goto-generator": "➕ Create New QR",
-                "test-scanner-btn": "Test Scanner",
-                "export-all-csv-btn": "Export All CSV",
-                "generator-title": "Create New QR Code",
+                "nav-generator": "⚡ generator.tsx (Studio)",
+                "nav-dashboard": "📊 analytics_telemetry.py",
+                "btn-reset-all": "FLUSH_DATA",
+                "btn-goto-generator": "NEW_CAMPAIGN",
+                "test-scanner-btn": "RUN: SCANNER",
+                "export-all-csv-btn": "DUMP: CSV",
+                "generator-title": "Compile New QR Code",
                 "generator-desc": "Generate high-res QR codes with Bitqik branding and dynamic redirect links that can be updated anytime without reprinting.",
                 "type-label": "QR Code Type",
                 "type-dynamic": "Dynamic (Tracked)",
@@ -1066,47 +1095,47 @@
                 "type-static-sub": "Direct link, no server redirect",
                 "label-field": "Campaign Label",
                 "url-field": "Destination URL",
-                "advanced-settings-toggle": "Advanced Settings (Custom Shortcode & Domain)",
-                "custom-code-field": "Custom Shortcode (Optional)",
+                "advanced-settings-toggle": "OPTIONAL_CONFIG: Custom Shortcode",
+                "custom-code-field": "custom_shortcode:",
                 "base-domain-field": "Tracking Host / Domain",
                 "base-domain-tip": "💡 For testing with a real smartphone, select your local Wi-Fi IP address.",
                 "logo-field": "Center Logo",
-                "use-bitqik-logo": "Include Bitqik Logo",
-                "remove-custom-logo": "Remove Custom Logo",
-                "btn-generate-qr": "Generate QR",
-                "btn-save-track": "Save & Track",
+                "use-bitqik-logo": "BITQIK_VECTOR_SVG",
+                "remove-custom-logo": "REMOVE_CUSTOM_LOGO",
+                "btn-generate-qr": "COMPILE: GENERATE_QR",
+                "btn-save-track": "DEPLOY & TRACK",
                 "preview-title": "QR Code Preview",
-                "preview-placeholder": "Enter campaign details and click 'Generate QR'",
-                "preview-quality-note": "✨ High-resolution vector output (Error Correction H), perfect for print standees, flyers, jerseys, or digital ads.",
+                "preview-placeholder": "AWAITING_COMPILATION...",
+                "preview-quality-note": "ECC_LEVEL: HIGH [30%] • 1024x1024 OPTICAL RASTER • CMYK SAFE",
                 "analytics-title": "Scan Analytics Dashboard",
-                "analytics-desc": "Monitor scan volume, devices, browsers, and top-performing campaigns.",
-                "filter-campaign-label": "Filter Specific QR:",
-                "export-this-data": "Export CSV",
-                "btn-view-all": "View All",
-                "stat-total-qrs": "Total QR Codes",
-                "stat-total-scans": "Total Scans",
-                "stat-today-scans": "Scans Today",
-                "stat-avg-scans": "Avg / Code",
-                "stat-campaign-status": "Campaign Status",
-                "stat-link-type": "Link Type",
-                "chart-campaigns-title": "Top Performing Campaigns",
-                "chart-devices-title": "Device Breakdown",
-                "chart-trend-title": "Daily Scan Trend (Last 14 Days)",
-                "chart-campaign-devices": "Devices for this Campaign",
-                "live-activity-title": "Live Scan Activity Feed",
-                "auto-sync-badge": "Auto-syncs live",
-                "no-scans-yet": "No scans recorded yet",
-                "saved-qrs-title": "All Saved Campaigns",
-                "saved-qrs-desc": "Manage campaigns, view isolated dashboards, and export scan logs.",
-                "empty-list-text": "No saved QR codes yet. Create your first QR code above.",
+                "analytics-desc": "Real-time socket telemetry: packet count, device signatures, and conversion heuristics.",
+                "filter-campaign-label": "QUERY_CAMPAIGN:",
+                "export-this-data": "DUMP: CSV",
+                "btn-view-all": "CLEAR_FILTER",
+                "stat-total-qrs": "TOTAL_DEPLOYED_QRS",
+                "stat-total-scans": "INTERCEPTIONS_TOTAL",
+                "stat-today-scans": "SCANS_TODAY",
+                "stat-avg-scans": "CONVERSION_AVG",
+                "stat-campaign-status": "STATUS",
+                "stat-link-type": "TYPE",
+                "chart-campaigns-title": "TOP_CAMPAIGNS_RANKING",
+                "chart-devices-title": "CLIENT_ARCHITECTURE_BREAKDOWN",
+                "chart-trend-title": "DAILY_SCAN_TELEMETRY",
+                "chart-campaign-devices": "DEVICES_FOR_THIS_NODE",
+                "live-activity-title": "tail -f /var/log/bitqik_scans.stream",
+                "auto-sync-badge": "STREAM_ACTIVE (WebSocket)",
+                "no-scans-yet": "AWAITING_INCOMING_PACKETS...",
+                "saved-qrs-title": "Campaign Database Explorer",
+                "saved-qrs-desc": "SELECT * FROM campaigns ORDER BY scan_count DESC;",
+                "empty-list-text": "[EMPTY_RESULTSET]: No saved QR codes yet. Create your first QR code above.",
                 "footer-notice": "© 2026 Bitqik Co., Ltd. Laos' Leading Digital Asset Platform · All Rights Reserved.",
-                "modal-scanner-title": "QR Code Camera Scanner",
+                "modal-scanner-title": "VISION_HUD: OPTICAL_RECOGNITION",
                 "modal-scanner-desc": "Use your webcam or mobile camera to test scan tracking and redirection live.",
-                "start-camera-btn": "Start Camera",
-                "stop-camera-btn": "Stop Camera",
-                "or-upload-img": "Or select an image file of a QR code",
-                "scan-detected": "🎯 QR Code Detected:",
-                "open-dest-url": "Open Destination &rarr;",
+                "start-camera-btn": "START_CAMERA",
+                "stop-camera-btn": "STOP_CAMERA",
+                "or-upload-img": "IMAGE_BUFFER_INPUT:",
+                "scan-detected": "TARGET_ACQUIRED:",
+                "open-dest-url": "EXECUTE_TARGET &rarr;",
                 "print-scan-instruction": "Scan with your phone camera to visit"
             }
         };
@@ -1129,9 +1158,9 @@
             applyLanguage(currentLang === 'lo' ? 'en' : 'lo');
         });
 
-        // ================= INTERACTIVE CUSTOM CURSOR =================
-        const cursorEl = document.getElementById('custom-cursor');
-        const cursorLabel = document.getElementById('cursor-label');
+        // ================= INTERACTIVE CYBER RETICLE CURSOR =================
+        const cursorEl = document.getElementById('cyber-cursor');
+        const cursorBadge = document.getElementById('cursor-badge');
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
         let curX = mouseX;
@@ -1143,8 +1172,8 @@
         });
 
         function cursorLoop() {
-            curX += (mouseX - curX) * 0.22;
-            curY += (mouseY - curY) * 0.22;
+            curX += (mouseX - curX) * 0.25;
+            curY += (mouseY - curY) * 0.25;
             if (cursorEl) {
                 cursorEl.style.transform = `translate3d(${curX}px, ${curY}px, 0)`;
             }
@@ -1153,38 +1182,20 @@
         requestAnimationFrame(cursorLoop);
 
         function bindCursorHover() {
-            document.querySelectorAll('button, a, input, select, .glass-card, .portal-3d-card, .nav-pill-btn').forEach(el => {
+            document.querySelectorAll('button, a, input, select, .quantum-qr-well, .ide-tab-item').forEach(el => {
                 el.addEventListener('pointerenter', () => {
-                    cursorEl.classList.add('is-enter');
+                    cursorEl.classList.add('is-hover');
                     if (el.tagName === 'BUTTON' || el.tagName === 'A') {
-                        cursorLabel.textContent = el.textContent.trim().slice(0, 10) || 'Action';
+                        cursorBadge.textContent = 'EXEC';
                     } else if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
-                        cursorLabel.textContent = 'Edit';
+                        cursorBadge.textContent = 'INPUT';
                     } else {
-                        cursorLabel.textContent = 'Explore';
+                        cursorBadge.textContent = 'SCAN';
                     }
                 });
                 el.addEventListener('pointerleave', () => {
-                    cursorEl.classList.remove('is-enter');
+                    cursorEl.classList.remove('is-hover');
                 });
-            });
-        }
-
-        // ================= 3D CARD PERSPECTIVE TILT =================
-        const portalCardEl = document.getElementById('portal-card-element');
-        if (portalCardEl) {
-            window.addEventListener('pointermove', (e) => {
-                const rect = portalCardEl.getBoundingClientRect();
-                const cardCx = rect.left + rect.width / 2;
-                const cardCy = rect.top + rect.height / 2;
-                const dx = (e.clientX - cardCx) / (window.innerWidth / 2);
-                const dy = (e.clientY - cardCy) / (window.innerHeight / 2);
-                const tiltX = Math.max(-15, Math.min(15, -dy * 14));
-                const tiltY = Math.max(-15, Math.min(15, dx * 14));
-                portalCardEl.style.transform = `perspective(900px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
-            });
-            document.addEventListener('pointerleave', () => {
-                portalCardEl.style.transform = `perspective(900px) rotateX(0deg) rotateY(0deg)`;
             });
         }
 
@@ -1193,6 +1204,7 @@
         const viewPageDashboard = document.getElementById('view-page-dashboard');
         const tabNavGenerator = document.getElementById('tab-nav-generator');
         const tabNavDashboard = document.getElementById('tab-nav-dashboard');
+        const currentFileCrumb = document.getElementById('current-file-crumb');
 
         function switchPage(page) {
             if (page === 'dashboard') {
@@ -1200,6 +1212,7 @@
                 viewPageDashboard.classList.remove('hidden');
                 tabNavDashboard.classList.add('tab-active');
                 tabNavGenerator.classList.remove('tab-active');
+                if (currentFileCrumb) currentFileCrumb.textContent = 'analytics_telemetry.py';
                 window.location.hash = 'dashboard';
                 setTimeout(() => {
                     if (chartTopQrs) chartTopQrs.resize();
@@ -1210,6 +1223,7 @@
                 viewPageGenerator.classList.remove('hidden');
                 tabNavGenerator.classList.add('tab-active');
                 tabNavDashboard.classList.remove('tab-active');
+                if (currentFileCrumb) currentFileCrumb.textContent = 'generator.tsx';
                 window.location.hash = 'generator';
             }
             lucide.createIcons();
@@ -1229,11 +1243,11 @@
             else if (h === 'generator') switchPage('generator');
         });
 
-        // Reset All Data button handler
+        // FLUSH DATA (RESET)
         document.getElementById('btn-reset-all-data').addEventListener('click', async () => {
             const msg = currentLang === 'lo'
-                ? '⚠️ ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລ້າງຂໍ້ມູນ QR Code ແລະ Scan ທັງໝົດ?\n(ການກະທຳນີ້ຈະລຶບຂໍ້ມູນທຸກຢ່າງອອກຈາກ Server / LocalStorage ແລະ ບໍ່ສາມາດຍົກເລີກໄດ້)'
-                : '⚠️ Are you sure you want to reset all QR codes and scan logs?\n(This action will delete everything and cannot be undone)';
+                ? '⚠️ ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການ FLUSH_DATA (ລ້າງຂໍ້ມູນ QR Code ແລະ Scan ທັງໝົດ)?'
+                : '⚠️ Are you sure you want to flush all QR codes and telemetry logs?';
             if (!confirm(msg)) return;
 
             try {
@@ -1247,7 +1261,7 @@
                 localStorage.removeItem('bitqik_qrs');
                 selectedQrId = null;
                 await refreshAllData();
-                alert(currentLang === 'lo' ? '✅ ລ້າງຂໍ້ມູນທັງໝົດສຳເລັດຮຽບຮ້ອຍແລ້ວ!' : '✅ All data reset successfully!');
+                alert(currentLang === 'lo' ? '✅ FLUSH_DATA: ລ້າງຂໍ້ມູນສຳເລັດແລ້ວ!' : '✅ FLUSH_DATA: Complete!');
             } catch (err) {
                 alert('Reset error: ' + err.message);
             }
@@ -1317,18 +1331,18 @@
                     
                     if (isRenderHost) {
                         document.getElementById('server-status-pill').innerHTML = `
-                            <span class="live-dot"></span>
-                            <span class="text-emerald-400 font-bold">🌐 Production Cloud · Live</span>
+                            <span class="status-dot-active"></span>
+                            <span class="text-emerald-400 font-bold font-mono">NODE_ONLINE: CLUSTER_PROD</span>
                         `;
                     } else {
                         document.getElementById('server-status-pill').innerHTML = `
-                            <span class="live-dot"></span>
-                            <span class="text-emerald-400 font-bold">💻 Local Server · Port ${data.port}</span>
+                            <span class="status-dot-active"></span>
+                            <span class="text-emerald-400 font-bold font-mono">NODE_ONLINE: PORT_${data.port}</span>
                         `;
                     }
 
                     document.getElementById('system-info-footer').textContent = 
-                        `Bitqik QR Engine v${data.version} · Connected to ${isRenderHost ? 'Cloud Backend (Render)' : 'Local SQLite Backend'} · Server time: ${new Date(data.server_time).toLocaleTimeString()}`;
+                        `Bitqik QR Core Engine v${data.version} • [RUNTIME: Python/AsyncIO] • Server time: ${new Date(data.server_time).toLocaleTimeString()}`;
                     
                     populateDomainOptions();
                     return true;
@@ -1340,11 +1354,11 @@
                         const cloudData = await cloudRes.json();
                         isServerOnline = true;
                         document.getElementById('server-status-pill').innerHTML = `
-                            <span class="live-dot"></span>
-                            <span class="text-emerald-400 font-bold">🌐 Cloud Connected · Render Live</span>
+                            <span class="status-dot-active"></span>
+                            <span class="text-emerald-400 font-bold font-mono">RENDER_CLOUD: OK</span>
                         `;
                         document.getElementById('system-info-footer').textContent = 
-                            `Bitqik QR Engine v${cloudData.version} · Cloud Mode (Render API)`;
+                            `Bitqik QR Core Engine v${cloudData.version} • Cloud Cluster (Render API)`;
                         populateDomainOptions();
                         return true;
                     }
@@ -1352,10 +1366,10 @@
 
                 document.getElementById('server-status-pill').innerHTML = `
                     <span class="w-2 h-2 rounded-full bg-amber-400 inline-block shadow-[0_0_8px_#f59e0b]"></span>
-                    <span class="text-amber-300 font-medium">Standalone / Cloud API</span>
+                    <span class="text-amber-300 font-medium font-mono">OFFLINE_CACHE</span>
                 `;
                 document.getElementById('system-info-footer').textContent = 
-                    `Bitqik QR Engine · Local Cache Active`;
+                    `Bitqik QR Core • Local Storage Fallback`;
                 populateDomainOptions();
                 return false;
             }
@@ -1372,7 +1386,7 @@
             // 1. Production Cloud Domain
             const optCloud = document.createElement('option');
             optCloud.value = CLOUD_PROD_DOMAIN;
-            optCloud.textContent = `🌐 Production Cloud: ${CLOUD_PROD_DOMAIN} [ແນະນຳ - ທຸກຄົນສະແກນໄດ້ 100%]`;
+            optCloud.textContent = `🌐 Production Cloud: ${CLOUD_PROD_DOMAIN} [100% Public Access]`;
             optCloud.selected = true;
             select.appendChild(optCloud);
 
@@ -1380,7 +1394,7 @@
             if (!isRenderHost && window.location.origin.startsWith('http') && !window.location.origin.includes('bitqik-qr-tracking.onrender.com')) {
                 const optOrigin = document.createElement('option');
                 optOrigin.value = window.location.origin;
-                optOrigin.textContent = `💻 Current Localhost Origin (${window.location.origin}) [ສຳລັບ Dev ເທົ່ານັ້ນ]`;
+                optOrigin.textContent = `💻 Localhost Origin: ${window.location.origin} [Dev Only]`;
                 select.appendChild(optOrigin);
             }
 
@@ -1390,7 +1404,7 @@
                     if (ip !== '127.0.0.1' && !ip.startsWith('127.')) {
                         const optLan = document.createElement('option');
                         optLan.value = `http://${ip}:8000`;
-                        optLan.textContent = `📱 Wi-Fi LAN IP: http://${ip}:8000 [ທົດສອບສະແກນໃນ Wi-Fi ດຽວກັນ]`;
+                        optLan.textContent = `📱 Wi-Fi LAN IP: http://${ip}:8000 [Wi-Fi Network Test]`;
                         select.appendChild(optLan);
                     }
                 });
@@ -1415,16 +1429,16 @@
 
             if (isLocal) {
                 warningEl.classList.remove('hidden');
-                badgeType.textContent = '🚨 Localhost ເຄື່ອງນີ້ (ຫ້າມພິມໃສ່ສິນຄ້າ)';
-                badgeType.className = 'text-[10px] font-bold text-rose-300 bg-rose-950/60 px-2 py-0.5 rounded-full border border-rose-500/40';
+                badgeType.textContent = '🚨 LOCALHOST';
+                badgeType.className = 'font-mono text-[10px] text-rose-300 bg-rose-950/60 px-2 py-0.5 rounded border border-rose-500/40';
             } else if (isLan) {
                 warningEl.classList.add('hidden');
-                badgeType.textContent = '📱 Wi-Fi LAN (ສະແກນໄດ້ສະເພາະ Wi-Fi ນີ້)';
-                badgeType.className = 'text-[10px] font-bold text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-500/40';
+                badgeType.textContent = '📱 WI-FI LAN';
+                badgeType.className = 'font-mono text-[10px] text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/40';
             } else {
                 warningEl.classList.add('hidden');
-                badgeType.textContent = '🌐 Public Cloud (ພ້ອມພິມໃສ່ Artwork)';
-                badgeType.className = 'text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-500/30';
+                badgeType.textContent = '🌐 CLOUD_PROD';
+                badgeType.className = 'font-mono text-[10px] text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30';
             }
         }
 
@@ -1437,15 +1451,15 @@
             }
         });
 
-        // ================= POPULATE CAMPAIGN FILTER SELECTOR =================
+        // ================= POPULATE CAMPAIGN SELECTOR =================
         function updateCampaignSelector() {
             const selector = document.getElementById('select-dashboard-qr');
-            selector.innerHTML = `<option value="all">🌟 ພາບລວມທັງໝົດ (All Campaigns & QRs)</option>`;
+            selector.innerHTML = `<option value="all">SELECT * (All Campaigns & QRs)</option>`;
 
             activeQRs.forEach(q => {
                 const opt = document.createElement('option');
                 opt.value = q.id;
-                opt.textContent = `📌 [${q.short_code}] ${q.label} (${q.scan_count || 0} scans)`;
+                opt.textContent = `[${q.short_code}] ${q.label} (${q.scan_count || 0} scans)`;
                 selector.appendChild(opt);
             });
 
@@ -1520,16 +1534,16 @@
                 document.getElementById('preview-label-display').textContent = label;
                 document.getElementById('preview-url-display').textContent = textToEncode;
                 document.getElementById('preview-badge-type').textContent = 
-                    document.querySelector('input[name="qr-type"]:checked').value === 'dynamic' ? 'Dynamic Tracked' : 'Static Direct';
+                    document.querySelector('input[name="qr-type"]:checked').value === 'dynamic' ? 'DYNAMIC_TRACKED' : 'STATIC_DIRECT';
 
                 const pubBadge = document.getElementById('preview-public-badge');
                 if (pubBadge) {
                     const isLocal = textToEncode.includes('localhost') || textToEncode.includes('127.0.0.1');
                     if (isLocal) {
-                        pubBadge.textContent = '🚨 Localhost (ຫ້າມພິມໃສ່ສິນຄ້າ)';
+                        pubBadge.textContent = 'LOCAL_DEV_ONLY';
                         pubBadge.className = 'text-rose-400 font-bold';
                     } else {
-                        pubBadge.textContent = '✅ ພ້ອມພິມໃສ່ Artwork & Product (ທຸກຄົນສະແກນໄດ້ 100%)';
+                        pubBadge.textContent = 'PRODUCTION_READY [100%]';
                         pubBadge.className = 'text-emerald-400 font-bold';
                     }
                 }
@@ -1616,7 +1630,7 @@
             const btn = document.getElementById('btn-save-qr');
             const origHtml = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = `<span class="animate-spin inline-block mr-1">⏳</span> ກຳລັງບັນທຶກ...`;
+            btn.innerHTML = `<span class="animate-spin inline-block mr-1">⏳</span> DEPLOYING...`;
 
             const payload = {
                 label,
@@ -1630,7 +1644,7 @@
             let savedQr = null;
             const isCloudDomain = domain.includes('bitqik-qr-tracking.onrender.com');
 
-            // 1. Direct Cloud API call if cloud domain is target
+            // 1. Direct Cloud API call
             if (isCloudDomain && !window.location.origin.includes('bitqik-qr-tracking.onrender.com')) {
                 try {
                     const cloudRes = await fetch(`${CLOUD_PROD_DOMAIN}/api/qrs`, {
@@ -1689,8 +1703,8 @@
 
                 const successMsg = isCloudDomain
                     ? (currentLang === 'lo' 
-                        ? `✅ ບັນທຶກສຳເລັດແລ້ວ!\n\n🌐 Public Tracking URL:\n${trackingUrl}\n\n✨ QR Code ນີ້ເຊື່ອມຕໍ່ກັບ Cloud (Render) ຮຽບຮ້ອຍແລ້ວ. ພ້ອມນຳໄປພິມໃສ່ Artwork, ເສື້ອ, ສິນຄ້າ, Packaging ໄດ້ເລີຍ — ທຸກຄົນໃນໂລກສະແກນໄດ້ 100%!` 
-                        : `✅ Saved successfully!\n\n🌐 Tracking URL:\n${trackingUrl}\n\nReady to print on products and artwork for public scanning!`)
+                        ? `✅ DEPLOYED_SUCCESS!\n\n🌐 Public Tracking URL:\n${trackingUrl}\n\n✨ QR Code ເຊື່ອມຕໍ່ກັບ Cloud (Render) ຮຽບຮ້ອຍແລ້ວ. ພ້ອມນຳໄປພິມໃສ່ Artwork, ເສື້ອ, ສິນຄ້າ, Packaging ໄດ້ເລີຍ — ທຸກຄົນໃນໂລກສະແກນໄດ້ 100%!` 
+                        : `✅ DEPLOYED_SUCCESS!\n\n🌐 Tracking URL:\n${trackingUrl}\n\nReady to print on products and artwork for public scanning!`)
                     : (currentLang === 'lo' ? '✅ ບັນທຶກ ແລະ ເລີ່ມ Track ສຳເລັດ!' : '✅ Saved & tracking activated!');
                 
                 alert(successMsg);
@@ -1885,7 +1899,7 @@
             if (isSingle && qr) {
                 spotlightCard.classList.remove('hidden');
                 resetFilterBtn.classList.remove('hidden');
-                document.getElementById('export-csv-btn-label').textContent = `ດຶງ CSV [${qr.short_code}]`;
+                document.getElementById('export-csv-btn-label').textContent = `DUMP: CSV [${qr.short_code}]`;
 
                 document.getElementById('spotlight-title').textContent = qr.label;
                 const domain = getEffectiveDomain();
@@ -1894,7 +1908,7 @@
                 document.getElementById('spotlight-shortcode-display').textContent = shortUrl;
                 document.getElementById('spotlight-dest-link').textContent = qr.destination_url;
                 document.getElementById('spotlight-dest-link').href = qr.destination_url;
-                document.getElementById('spotlight-created-date').textContent = `ສ້າງເມື່ອ: ${new Date(qr.created_at).toLocaleDateString()}`;
+                document.getElementById('spotlight-created-date').textContent = `CREATED: ${new Date(qr.created_at).toLocaleDateString()}`;
 
                 document.getElementById('btn-copy-spotlight-link').onclick = () => {
                     navigator.clipboard.writeText(shortUrl);
@@ -1932,12 +1946,12 @@
                     ? data.today_scans
                     : (singleTotal > 0 ? Math.min(singleTotal, Math.max(1, Math.round(singleTotal * 0.5))) : 0);
 
-                document.getElementById('dashboard-title-text').textContent = `ສະຖິຕິສະເພາະ: ${qr.label}`;
-                document.getElementById('dashboard-subtitle-text').textContent = `ຕິດຕາມການ Scan ແລະ ປະສິດທິພາບຂອງລິ້ງ /r/${qr.short_code}`;
+                document.getElementById('dashboard-title-text').textContent = `INSPECT: ${qr.label}`;
+                document.getElementById('dashboard-subtitle-text').textContent = `Node telemetry for route: /r/${qr.short_code}`;
 
                 document.getElementById('stat-label-1').textContent = I18N[currentLang]["stat-campaign-status"];
-                document.getElementById('stat-codes-count').textContent = qr.is_active ? 'Active 🟢' : 'Paused ⏸️';
-                document.getElementById('stat-codes-count').className = "text-xl sm:text-2xl font-black text-emerald-400 mt-1";
+                document.getElementById('stat-codes-count').textContent = qr.is_active ? 'ACTIVE' : 'PAUSED';
+                document.getElementById('stat-codes-count').className = "text-xl sm:text-2xl font-black text-emerald-400 mt-1.5";
 
                 document.getElementById('stat-label-2').textContent = I18N[currentLang]["stat-total-scans"];
                 document.getElementById('stat-scans-count').textContent = singleTotal;
@@ -1946,16 +1960,16 @@
                 document.getElementById('stat-today-count').textContent = singleToday;
 
                 document.getElementById('stat-label-4').textContent = I18N[currentLang]["stat-link-type"];
-                document.getElementById('stat-avg-count').textContent = qr.qr_type === 'dynamic' ? 'Dynamic ⚡' : 'Static 🔗';
-                document.getElementById('stat-avg-count').className = "text-xl sm:text-2xl font-black text-[#00f2fe] mt-1";
+                document.getElementById('stat-avg-count').textContent = qr.qr_type === 'dynamic' ? 'DYNAMIC' : 'STATIC';
+                document.getElementById('stat-avg-count').className = "text-xl sm:text-2xl font-black text-[#00f0ff] mt-1.5";
 
                 document.getElementById('chart-1-title').textContent = I18N[currentLang]["chart-trend-title"];
                 document.getElementById('chart-2-title').textContent = I18N[currentLang]["chart-campaign-devices"];
-                document.getElementById('live-activity-header').textContent = `ບັນທຶກການ Scan ສະເພາະ: ${qr.label}`;
+                document.getElementById('live-activity-header').textContent = `tail -f /var/log/scans_${qr.short_code}.log`;
             } else {
                 spotlightCard.classList.add('hidden');
                 resetFilterBtn.classList.add('hidden');
-                document.getElementById('export-csv-btn-label').textContent = currentLang === 'lo' ? 'ດຶງ CSV ທັງໝົດ' : 'Export All CSV';
+                document.getElementById('export-csv-btn-label').textContent = currentLang === 'lo' ? 'DUMP: CSV' : 'Export All CSV';
 
                 document.getElementById('dashboard-title-text').textContent = I18N[currentLang]["analytics-title"];
                 document.getElementById('dashboard-subtitle-text').textContent = I18N[currentLang]["analytics-desc"];
@@ -1971,7 +1985,7 @@
 
                 document.getElementById('stat-label-1').textContent = I18N[currentLang]["stat-total-qrs"];
                 document.getElementById('stat-codes-count').textContent = data.total_codes || activeQRs.length || 0;
-                document.getElementById('stat-codes-count').className = "text-2xl sm:text-3xl font-black text-white mt-1";
+                document.getElementById('stat-codes-count').className = "text-3xl font-black text-white mt-1.5";
 
                 document.getElementById('stat-label-2').textContent = I18N[currentLang]["stat-total-scans"];
                 document.getElementById('stat-scans-count').textContent = effectiveTotal;
@@ -1981,7 +1995,7 @@
 
                 document.getElementById('stat-label-4').textContent = I18N[currentLang]["stat-avg-scans"];
                 document.getElementById('stat-avg-count').textContent = effectiveAvg;
-                document.getElementById('stat-avg-count').className = "text-2xl sm:text-3xl font-black text-emerald-400 mt-1";
+                document.getElementById('stat-avg-count').className = "text-3xl font-black text-emerald-400 mt-1.5";
 
                 document.getElementById('chart-1-title').textContent = I18N[currentLang]["chart-campaigns-title"];
                 document.getElementById('chart-2-title').textContent = I18N[currentLang]["chart-devices-title"];
@@ -1996,7 +2010,7 @@
             }
             lastRenderMode = currentMode;
 
-            // 1. Chart 1: Bar Chart (Top QRs or Daily Trend)
+            // 1. Chart 1: Bar Chart
             let chartLabels = [];
             let chartDataValues = [];
             let chartColors = [];
@@ -2005,12 +2019,12 @@
                 const dateLogs = (data.scans_by_date && data.scans_by_date.length > 0) ? data.scans_by_date : [];
                 chartLabels = dateLogs.map(d => d.scan_date.slice(5));
                 chartDataValues = dateLogs.map(d => d.count);
-                chartColors = chartDataValues.map((_, i) => i % 2 === 0 ? '#f68a32' : '#00f2fe');
+                chartColors = chartDataValues.map((_, i) => i % 2 === 0 ? '#00f0ff' : '#f68a32');
                 const totalSingle = (data.total_scans !== undefined && data.total_scans > 0) ? data.total_scans : (qr.scan_count || 0);
                 if (chartLabels.length === 0 || chartDataValues.every(v => v === 0)) {
                     chartLabels = ['Today'];
                     chartDataValues = [totalSingle || 1];
-                    chartColors = ['#f68a32'];
+                    chartColors = ['#00f0ff'];
                 }
             } else {
                 let topQrs = (data.top_qrs && data.top_qrs.length > 0) ? data.top_qrs : [];
@@ -2019,7 +2033,7 @@
                 }
                 chartLabels = topQrs.map(q => q.label.length > 15 ? q.label.slice(0, 15) + '…' : q.label);
                 chartDataValues = topQrs.map(q => q.scan_count || 0);
-                chartColors = chartDataValues.map((_, i) => i % 2 === 0 ? '#f68a32' : '#00f2fe');
+                chartColors = chartDataValues.map((_, i) => i % 2 === 0 ? '#00f0ff' : '#f68a32');
             }
 
             if (chartTopQrs) {
@@ -2037,7 +2051,7 @@
                             label: isSingle ? 'Scans per Day' : 'Total Scans',
                             data: chartDataValues,
                             backgroundColor: chartColors,
-                            borderRadius: 8,
+                            borderRadius: 6,
                             maxBarThickness: 28
                         }]
                     },
@@ -2047,26 +2061,26 @@
                         plugins: {
                             legend: { display: false },
                             tooltip: {
-                                backgroundColor: 'rgba(15, 14, 13, 0.95)',
-                                titleColor: '#fff',
-                                bodyColor: '#f68a32',
-                                borderColor: 'rgba(255,255,255,0.2)',
+                                backgroundColor: 'rgba(8, 12, 20, 0.95)',
+                                titleColor: '#00f0ff',
+                                bodyColor: '#ffffff',
+                                borderColor: 'rgba(0, 240, 255, 0.3)',
                                 borderWidth: 1,
                                 callbacks: {
-                                    title: ctx => isSingle ? `📅 ${ctx[0].label}` : `📌 ${ctx[0].label}`,
-                                    label: ctx => ` ${ctx.raw} Scans`
+                                    title: ctx => isSingle ? `DATE: ${ctx[0].label}` : `CAMPAIGN: ${ctx[0].label}`,
+                                    label: ctx => ` SCANS: ${ctx.raw}`
                                 }
                             }
                         },
                         scales: {
-                            x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.6)', font: { size: 10 } } },
-                            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { precision: 0, color: 'rgba(255,255,255,0.6)', font: { size: 10 } } }
+                            x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.5)', font: { family: "'JetBrains Mono', monospace", size: 10 } } },
+                            y: { beginAtZero: true, grid: { color: 'rgba(0, 240, 255, 0.08)' }, ticks: { precision: 0, color: 'rgba(255,255,255,0.5)', font: { family: "'JetBrains Mono', monospace", size: 10 } } }
                         }
                     }
                 });
             }
 
-            // 2. Chart 2: Doughnut Chart (Devices)
+            // 2. Chart 2: Doughnut Chart
             let devices = (data.device_breakdown && data.device_breakdown.length > 0) ? data.device_breakdown : [];
             let devLabels = devices.map(d => d.device || 'Other');
             let devCounts = devices.map(d => d.count || 0);
@@ -2080,7 +2094,7 @@
                     devLabels = ['Mobile (iOS)', 'Mobile (Android)', 'Desktop'];
                     devCounts = [Math.max(1, Math.round(totalRef * 0.6)), Math.round(totalRef * 0.3), Math.round(totalRef * 0.1)];
                 } else {
-                    devLabels = ['No data'];
+                    devLabels = ['Awaiting Data'];
                     devCounts = [1];
                 }
             }
@@ -2096,19 +2110,19 @@
                         labels: devLabels.length ? devLabels : ['Mobile', 'Desktop', 'Tablet'],
                         datasets: [{
                             data: devCounts.length ? devCounts : [1, 0, 0],
-                            backgroundColor: ['#f68a32', '#00f2fe', '#10b981', '#a855f7', '#64748b'],
+                            backgroundColor: ['#00f0ff', '#f68a32', '#00ff88', '#b026ff', '#64748b'],
                             borderWidth: 2,
-                            borderColor: '#090807'
+                            borderColor: '#06080d'
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: { position: 'right', labels: { boxWidth: 12, color: 'rgba(255,255,255,0.7)', font: { size: 10 } } },
+                            legend: { position: 'right', labels: { boxWidth: 12, color: 'rgba(255,255,255,0.7)', font: { family: "'JetBrains Mono', monospace", size: 10 } } },
                             tooltip: {
-                                backgroundColor: 'rgba(15, 14, 13, 0.95)',
-                                borderColor: 'rgba(255,255,255,0.2)',
+                                backgroundColor: 'rgba(8, 12, 20, 0.95)',
+                                borderColor: 'rgba(0, 240, 255, 0.3)',
                                 borderWidth: 1
                             }
                         }
@@ -2136,85 +2150,86 @@
 
             const domain = getEffectiveDomain();
 
-            list.forEach(item => {
+            list.forEach((item, idx) => {
                 const row = document.createElement('article');
                 const isSelected = selectedQrId === item.id;
-                row.className = `record py-4 transition-all ${isSelected ? 'p-3 rounded-2xl bg-white/5 border border-white/20' : ''}`;
+                row.className = `record py-3.5 px-3 transition-all ${isSelected ? 'rounded-lg bg-cyan-950/20 border border-cyan-500/40' : 'hover:bg-white/[0.02]'}`;
                 row.dataset.id = item.id;
 
                 const trackingUrl = item.qr_type === 'dynamic' ? `${domain}/r/${item.short_code}` : item.destination_url;
                 const formattedDate = item.created_at ? new Date(item.created_at).toLocaleDateString() : '';
 
                 row.innerHTML = `
-                    <div class="flex flex-wrap justify-between items-start gap-3">
-                        <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap justify-between items-start gap-3 font-mono">
+                        <div class="min-w-0 flex-1 space-y-1">
                             <div class="flex items-center gap-2">
-                                <h3 class="font-bold text-white text-sm break-words">${item.label || 'Untitled QR'}</h3>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${item.qr_type === 'dynamic' ? 'bg-[#f68a32]/20 text-[#f68a32] border border-[#f68a32]/30' : 'bg-white/10 text-white/70'}">
-                                    ${item.qr_type === 'dynamic' ? 'Dynamic' : 'Static'}
+                                <span class="text-white/30 text-[11px]">[0x${(idx + 1).toString(16).padStart(2, '0')}]</span>
+                                <h3 class="font-bold text-white text-sm break-words">${item.label || 'UNTITLED_NODE'}</h3>
+                                <span class="px-1.5 py-0.2 rounded text-[10px] font-bold ${item.qr_type === 'dynamic' ? 'bg-[#00f0ff]/10 text-[#00f0ff] border border-[#00f0ff]/30' : 'bg-white/10 text-white/60'}">
+                                    ${item.qr_type === 'dynamic' ? 'DYNAMIC' : 'STATIC'}
                                 </span>
-                                ${isSelected ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#00f2fe]/20 text-[#00f2fe] border border-[#00f2fe]/40">Active View</span>' : ''}
+                                ${isSelected ? '<span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-[#f68a32]/20 text-[#f68a32] border border-[#f68a32]/40">INSPECTING</span>' : ''}
                             </div>
-                            <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-                                <span class="text-[#00f2fe] font-mono break-all bg-white/5 px-2.5 py-0.5 rounded-md border border-white/10">
-                                    🔗 ${trackingUrl}
+                            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                                <span class="text-[#00f0ff] break-all bg-black/40 px-2 py-0.5 rounded border border-white/10">
+                                    ${trackingUrl}
                                 </span>
                                 <button type="button" class="btn-copy-link text-[11px] font-bold text-[#f68a32] hover:underline" data-url="${trackingUrl}">
-                                    Copy Link
+                                    [COPY]
                                 </button>
                             </div>
-                            <p class="text-[11px] text-white/50 mt-1.5">
-                                🎯 Destination: <a href="${item.destination_url}" target="_blank" class="underline hover:text-[#f68a32] break-all">${item.destination_url}</a>
-                                <span class="mx-1">·</span> 📅 ${formattedDate}
+                            <p class="text-[11px] text-white/40">
+                                &gt; TARGET: <a href="${item.destination_url}" target="_blank" class="underline hover:text-[#00f0ff] break-all">${item.destination_url}</a>
+                                <span class="mx-1">·</span> CREATED: ${formattedDate}
                             </p>
                         </div>
-                        <div class="text-right flex-shrink-0">
-                            <span class="block text-2xl font-black text-[#f68a32]">${item.scan_count || 0}</span>
-                            <span class="text-[10px] uppercase font-bold text-white/40">Scans</span>
+                        <div class="text-right flex-shrink-0 font-mono">
+                            <span class="block text-2xl font-black text-[#00f0ff]">${item.scan_count || 0}</span>
+                            <span class="text-[10px] uppercase text-white/40">SCANS</span>
                         </div>
                     </div>
 
                     <!-- Row Action Buttons -->
-                    <div class="flex flex-wrap items-center gap-2 mt-3.5">
-                        <button type="button" data-action="view-dashboard" data-id="${item.id}" class="btn-portal-white py-1.5 px-3 text-xs">
-                            <i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i>
-                            <span>${isSelected ? 'ກຳລັງເບິ່ງ Dashboard' : '📊 Dashboard'}</span>
+                    <div class="flex flex-wrap items-center gap-2 mt-2.5 font-mono">
+                        <button type="button" data-action="view-dashboard" data-id="${item.id}" class="btn-cyber-primary py-1 px-2.5 text-[11px]">
+                            <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+                            <span>${isSelected ? 'ACTIVE_DASH' : 'TELEMETRY'}</span>
                         </button>
 
-                        <button type="button" data-action="export-qr-csv" data-id="${item.id}" class="btn-portal-glass py-1.5 px-2.5 text-xs" title="ດຶງຂໍ້ມູນ CSV">
-                            <i data-lucide="download" class="w-3.5 h-3.5 text-[#f68a32]"></i>
+                        <button type="button" data-action="export-qr-csv" data-id="${item.id}" class="btn-cyber-ghost py-1 px-2 text-[11px]" title="Export CSV">
+                            <i data-lucide="download" class="w-3 h-3 text-[#f68a32]"></i>
                             <span>CSV</span>
                         </button>
 
-                        <button type="button" data-action="test-scan" data-code="${item.short_code}" class="btn-portal-glass py-1.5 px-2.5 text-xs">
-                            <i data-lucide="scan" class="w-3.5 h-3.5 text-[#f68a32]"></i>
-                            <span>Test Scan</span>
+                        <button type="button" data-action="test-scan" data-code="${item.short_code}" class="btn-cyber-ghost py-1 px-2 text-[11px]">
+                            <i data-lucide="scan" class="w-3 h-3 text-[#00f0ff]"></i>
+                            <span>TEST_SCAN</span>
                         </button>
 
-                        <button type="button" data-action="preview" data-id="${item.id}" class="btn-portal-glass py-1.5 px-2.5 text-xs">
-                            <i data-lucide="eye" class="w-3.5 h-3.5 text-white/80"></i>
-                            <span>Preview</span>
+                        <button type="button" data-action="preview" data-id="${item.id}" class="btn-cyber-ghost py-1 px-2 text-[11px]">
+                            <i data-lucide="eye" class="w-3 h-3"></i>
+                            <span>PREVIEW</span>
                         </button>
 
                         ${item.qr_type === 'dynamic' ? `
-                        <button type="button" data-action="edit" data-id="${item.id}" class="btn-portal-glass py-1.5 px-2.5 text-xs">
-                            <i data-lucide="pencil" class="w-3.5 h-3.5 text-white/80"></i>
-                            <span>Edit URL</span>
+                        <button type="button" data-action="edit" data-id="${item.id}" class="btn-cyber-ghost py-1 px-2 text-[11px]">
+                            <i data-lucide="pencil" class="w-3 h-3"></i>
+                            <span>EDIT</span>
                         </button>` : ''}
 
-                        <button type="button" data-action="delete" data-id="${item.id}" class="btn-portal-glass py-1.5 px-2.5 text-xs text-rose-400 hover:text-rose-300">
-                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                            <span>Delete</span>
+                        <button type="button" data-action="delete" data-id="${item.id}" class="btn-cyber-ghost py-1 px-2 text-[11px] text-rose-400 hover:text-rose-300">
+                            <i data-lucide="trash-2" class="w-3 h-3"></i>
+                            <span>DROP</span>
                         </button>
                     </div>
 
                     <!-- Inline Edit Form -->
-                    <form class="edit-url-form mt-3 p-3 rounded-2xl glass-card space-y-2 hidden">
-                        <label class="block text-[11px] font-bold text-white/80">ປ່ຽນລິ້ງປາຍທາງໃໝ່ (New Destination URL):</label>
-                        <input type="url" class="portal-input edit-dest-input text-xs" value="${item.destination_url}" required>
+                    <form class="edit-url-form mt-2.5 p-3 rounded-lg bg-black/60 border border-white/10 space-y-2 hidden font-mono">
+                        <label class="block text-[11px] text-white/70">UPDATE_TARGET_URL:</label>
+                        <input type="url" class="cyber-input edit-dest-input text-xs" value="${item.destination_url}" required>
                         <div class="flex gap-2">
-                            <button type="submit" class="btn-portal-amber px-3 py-1.5 text-xs font-bold">Save URL</button>
-                            <button type="button" class="btn-cancel-edit btn-portal-glass px-3 py-1.5 text-xs font-semibold">Cancel</button>
+                            <button type="submit" class="btn-cyber-amber px-3 py-1 text-xs">COMMIT_CHANGE</button>
+                            <button type="button" class="btn-cancel-edit btn-cyber-ghost px-3 py-1 text-xs">ABORT</button>
                         </div>
                     </form>
                 `;
@@ -2228,18 +2243,16 @@
         }
 
         function bindRecordActions() {
-            // Copy Link
             document.querySelectorAll('.btn-copy-link').forEach(btn => {
                 btn.onclick = () => {
                     const url = btn.dataset.url;
                     navigator.clipboard.writeText(url);
                     const orig = btn.textContent;
-                    btn.textContent = 'Copied! ✅';
+                    btn.textContent = '[COPIED]';
                     setTimeout(() => btn.textContent = orig, 1800);
                 };
             });
 
-            // Action Buttons delegation
             document.querySelectorAll('[data-action]').forEach(btn => {
                 btn.onclick = async () => {
                     const action = btn.dataset.action;
@@ -2265,7 +2278,7 @@
                             const resData = await res.json();
                             if (resData.success) {
                                 await refreshAllData();
-                                alert(`🎉 Test Scan ບັນທຶກສຳເລັດ!\nRedirect ໄປທີ່: ${resData.destination_url}`);
+                                alert(`🎉 TEST_SCAN_RECORDED!\nRedirect destination: ${resData.destination_url}`);
                             }
                         } catch (e) {
                             alert("Scan test failed: " + e.message);
@@ -2284,7 +2297,7 @@
                         const editForm = row.querySelector('.edit-url-form');
                         editForm.classList.toggle('hidden');
                     } else if (action === 'delete') {
-                        if (!confirm(currentLang === 'lo' ? '⚠️ ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ QR Code ນີ້?' : '⚠️ Are you sure you want to delete this QR Code?')) return;
+                        if (!confirm(currentLang === 'lo' ? '⚠️ ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ QR Code ນີ້?' : '⚠️ Are you sure you want to drop this campaign?')) return;
                         const apiBase = getApiBase();
                         if (isServerOnline || apiBase) {
                             try {
@@ -2299,7 +2312,6 @@
                 };
             });
 
-            // Inline Edit Form submission
             document.querySelectorAll('.edit-url-form').forEach(form => {
                 form.onsubmit = async (e) => {
                     e.preventDefault();
@@ -2326,7 +2338,7 @@
                     }
                     form.classList.add('hidden');
                     refreshAllData();
-                    alert(currentLang === 'lo' ? '✅ ອັບເດດ URL ປາຍທາງຮຽບຮ້ອຍແລ້ວ!' : '✅ Destination URL updated successfully!');
+                    alert(currentLang === 'lo' ? '✅ ອັບເດດ URL ປາຍທາງຮຽບຮ້ອຍແລ້ວ!' : '✅ Target URL updated!');
                 };
 
                 const cancelBtn = form.querySelector('.btn-cancel-edit');
@@ -2340,33 +2352,33 @@
         function renderLiveLogs(logs) {
             const feedContainer = document.getElementById('live-feed-list');
             if (!logs || logs.length === 0) {
-                feedContainer.innerHTML = `<p class="text-xs text-white/40 py-6 text-center" data-lang="no-scans-yet">${I18N[currentLang]["no-scans-yet"]}</p>`;
+                feedContainer.innerHTML = `<p class="font-mono text-xs text-white/40 py-6 text-center" data-lang="no-scans-yet">${I18N[currentLang]["no-scans-yet"]}</p>`;
                 return;
             }
 
             feedContainer.innerHTML = '';
             logs.forEach(l => {
                 const item = document.createElement('div');
-                item.className = 'p-3 rounded-2xl glass-card flex flex-wrap justify-between items-center gap-2 text-xs';
+                item.className = 'p-2.5 rounded-lg bg-black/50 border border-white/5 flex flex-wrap justify-between items-center gap-2 font-mono text-xs';
                 
                 const timeAgo = formatTimeAgo(new Date(l.scanned_at));
                 const shortDomain = l.short_code ? `/r/${l.short_code}` : '';
 
                 item.innerHTML = `
                     <div class="flex items-center gap-2.5 min-w-0">
-                        <span class="live-dot flex-shrink-0"></span>
+                        <span class="status-dot-active flex-shrink-0"></span>
                         <div class="min-w-0">
                             <div class="flex items-center gap-2">
-                                <span class="font-bold text-white truncate">${l.qr_label || 'Direct Scan'}</span>
-                                <span class="font-mono text-[10px] text-[#f68a32] bg-white/5 px-2 py-0.5 rounded border border-white/10">${shortDomain}</span>
+                                <span class="font-bold text-[#00f0ff] truncate">${l.qr_label || 'DIRECT_HIT'}</span>
+                                <span class="text-[10px] text-[#f68a32] bg-white/5 px-1.5 py-0.2 rounded border border-white/10">${shortDomain}</span>
                             </div>
-                            <p class="text-[11px] text-white/50 mt-0.5">
-                                ${l.device || 'Mobile'} · ${l.os || 'OS'} · ${l.browser || 'Browser'} · IP: ${l.ip_address || '127.0.0.1'}
+                            <p class="text-[10px] text-white/50 mt-0.5">
+                                [CLIENT: ${l.device || 'Mobile'} | OS: ${l.os || 'OS'} | IP: ${l.ip_address || '127.0.0.1'}]
                             </p>
                         </div>
                     </div>
-                    <div class="text-right flex-shrink-0">
-                        <span class="text-[10px] text-white/60">${timeAgo}</span>
+                    <div class="text-right flex-shrink-0 text-[10px] text-white/50">
+                        ${timeAgo}
                     </div>
                 `;
                 feedContainer.appendChild(item);
@@ -2454,7 +2466,7 @@
                 );
             } catch (err) {
                 console.error("Camera error:", err);
-                alert("ກະລຸນາອະນຸຍາດການໃຊ້ງານກ້ອງ (Camera Permission Required): " + err);
+                alert("CAMERA_PERMISSION_DENIED: " + err);
                 startCameraBtn.disabled = false;
                 stopCameraBtn.disabled = true;
             }
@@ -2479,7 +2491,6 @@
             resultText.textContent = decodedText;
             openLink.href = decodedText;
 
-            // If it's a dynamic redirect URL on this host or Render, test-scan it
             if (decodedText.includes('/r/')) {
                 const parts = decodedText.split('/r/');
                 const shortCode = parts[1].split('?')[0].split('#')[0];
@@ -2501,7 +2512,7 @@
                 const result = await cameraScanner.scanFile(file, true);
                 onScanSuccess(result);
             } catch (err) {
-                alert("ບໍ່ພົບ QR Code ໃນຮູບນີ້: " + err);
+                alert("NO_OPTICAL_CODE_FOUND: " + err);
             }
         });
 
@@ -2512,14 +2523,11 @@
             await checkServerStatus();
             await refreshAllData();
 
-            // Set default domain in generator
             populateDomainOptions();
 
-            // Trigger hash routing if any
             const hash = window.location.hash.replace('#', '');
             if (hash === 'dashboard') switchPage('dashboard');
 
-            // Setup auto-polling for analytics & logs every 30s
             setInterval(() => {
                 if (isServerOnline) refreshAllData();
             }, 30000);
