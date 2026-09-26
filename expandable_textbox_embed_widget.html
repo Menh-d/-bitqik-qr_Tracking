@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expandable Text Box — Embed Widget</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --collapsed-height: 90px;
+      --card-bg: #ffffff;
+      --gradient-height: 48px;
+      --accent-color: #4f46e5;
+    }
+
+    body {
+      font-family: 'Noto Sans Lao', system-ui, -apple-system, sans-serif;
+      background: #f8fafc;
+      color: #334155;
+      padding: 16px;
+      min-height: 100vh;
+    }
+
+    /* ============================== */
+    /* TEXTAREA INPUT AREA            */
+    /* ============================== */
+    .widget-input-section {
+      margin-bottom: 16px;
+    }
+
+    .widget-input-section label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+
+    .widget-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px 14px;
+      font-family: 'Noto Sans Lao', system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #334155;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .widget-textarea:focus {
+      border-color: #818cf8;
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+    }
+
+    .widget-textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    .widget-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .widget-divider::before,
+    .widget-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    /* ============================== */
+    /* PURE CSS EXPANDABLE BOX        */
+    /* ============================== */
+    .expand-checkbox {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .expandable-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 14px;
+      border: 1.5px solid #e2e8f0;
+    }
+
+    .expandable-box {
+      position: relative;
+      max-height: var(--collapsed-height);
+      overflow: hidden;
+      line-height: 1.7;
+      color: #334155;
+      font-size: 14px;
+      transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .expandable-box::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--gradient-height);
+      background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, var(--card-bg) 95%);
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    .expand-checkbox:checked ~ .expandable-box {
+      max-height: 5000px;
+    }
+
+    .expand-checkbox:checked ~ .expandable-box::after {
+      opacity: 0;
+    }
+
+    .expand-label .lbl-collapse {
+      display: none;
+    }
+
+    .expand-checkbox:checked ~ .expand-label .lbl-expand {
+      display: none;
+    }
+
+    .expand-checkbox:checked ~ .expand-label .lbl-collapse {
+      display: inline;
+    }
+
+    .expand-checkbox:checked ~ .expand-label .chevron-icon {
+      transform: rotate(180deg);
+    }
+
+    .expand-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      color: var(--accent-color);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .expand-label:hover {
+      text-decoration: underline;
+    }
+
+    .chevron-icon {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.3s ease;
+    }
+
+    /* Placeholder state */
+    .placeholder-text {
+      color: #94a3b8;
+      font-style: italic;
+    }
+
+    /* Scrollbar styling */
+    .widget-textarea::-webkit-scrollbar {
+      width: 6px;
+    }
+    .widget-textarea::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    /* Footer branding */
+    .widget-footer {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+    .widget-footer a {
+      color: #6366f1;
+      text-decoration: none;
+    }
+    .widget-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- INPUT AREA: ຜູ້ໃຊ້ພິມ/ວາງ text ໄດ້ -->
+  <div class="widget-input-section">
+    <label for="userTextInput">📝 ພິມ ຫຼື ວາງຂໍ້ຄວາມລົງນີ້:</label>
+    <textarea
+      id="userTextInput"
+      class="widget-textarea"
+      placeholder="ວາງ ຫຼື ພິມຂໍ້ຄວາມຍາວໆຂອງທ່ານລົງນີ້... &#10;ກ່ອງຂ້າງລຸ່ມຈະສະແດງຜົນແບບ expandable ໃຫ້ທັນທີ"
+    ></textarea>
+  </div>
+
+  <div class="widget-divider">ຜົນການສະແດງ (Live Preview)</div>
+
+  <!-- EXPANDABLE TEXT BOX (Pure CSS) -->
+  <div class="expandable-card">
+
+    <input type="checkbox" id="embedToggle1" class="expand-checkbox">
+
+    <div id="expandContent" class="expandable-box">
+      <p class="placeholder-text">ຂໍ້ຄວາມຈະປະກົດຢູ່ນີ້ເມື່ອທ່ານພິມຢູ່ດ້ານເທິງ...</p>
+    </div>
+
+    <label for="embedToggle1" class="expand-label" id="toggleLabel" style="display: none;">
+      <span class="lbl-expand">ອ່ານເພີ່ມເຕີມ ▼</span>
+      <span class="lbl-collapse">ຫຍໍ້ເຂົ້າ ▲</span>
+      <svg class="chevron-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </label>
+
+  </div>
+
+  <div class="widget-footer">
+    Powered by <strong>Pure CSS Expandable Text Box</strong>
+  </div>
+
+  <script>
+    const userInput = document.getElementById('userTextInput');
+    const expandContent = document.getElementById('expandContent');
+    const toggleLabel = document.getElementById('toggleLabel');
+    const expandCheckbox = document.getElementById('embedToggle1');
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g,
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+
+    function formatTextToHTML(text) {
+      if (!text.trim()) {
+        return '<p class="placeholder-text">ຂໍ້ຄວາມຈະປະກົດຢູ່ນີ້ເມື່ອທ່ານພິມຢູ່ດ້ານເທິງ...</p>';
+      }
+      return text
+        .split('\n\n')
+        .filter(p => p.trim().length > 0)
+        .map(p => `<p>${escapeHTML(p).replace(/\n/g, '<br>')}</p>`)
+        .join('\n');
+    }
+
+    function updatePreview() {
+      const text = userInput.value;
+      expandContent.innerHTML = formatTextToHTML(text);
+
+      // Reset checkbox when text changes
+      expandCheckbox.checked = false;
+
+      // Show/hide toggle button based on whether content overflows
+      if (text.trim().length > 0) {
+        // Small delay to let DOM render, then check if content overflows
+        requestAnimationFrame(() => {
+          const scrollH = expandContent.scrollHeight;
+          const maxH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--collapsed-height'));
+          if (scrollH > maxH) {
+            toggleLabel.style.display = 'inline-flex';
+          } else {
+            toggleLabel.style.display = 'none';
+          }
+        });
+      } else {
+        toggleLabel.style.display = 'none';
+      }
+    }
+
+    userInput.addEventListener('input', updatePreview);
+
+    // Also handle paste events
+    userInput.addEventListener('paste', () => {
+      setTimeout(updatePreview, 50);
+    });
+
+    // Initial render
+    updatePreview();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="lo" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pure CSS Expandable Text Box Generator</title>
+  <!-- Google Fonts: Noto Sans Lao -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      --collapsed-height: 90px;
+      --card-bg: #ffffff;
+      --gradient-height: 48px;
+      --accent-color: #4f46e5;
+    }
+
+    body {
+      font-family: 'Noto Sans Lao', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* PURE CSS EXPANDABLE LOGIC */
+    .pure-css-checkbox {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* The collapsible wrapper */
+    .pure-css-content {
+      position: relative;
+      max-height: var(--collapsed-height);
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Bottom fade gradient overlay */
+    .pure-css-content::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--gradient-height);
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, var(--card-bg) 95%);
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Checkbox:checked State (Pure CSS sibling combinator) */
+    .pure-css-checkbox:checked ~ .pure-css-content {
+      max-height: 2000px; /* High ceiling to reveal all content smoothly */
+    }
+
+    .pure-css-checkbox:checked ~ .pure-css-content::after {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Toggle button labels switch */
+    .btn-lbl-collapse {
+      display: none;
+    }
+
+    .pure-css-checkbox:checked ~ .pure-css-trigger .btn-lbl-expand {
+      display: none;
+    }
+
+    .pure-css-checkbox:checked ~ .pure-css-trigger .btn-lbl-collapse {
+      display: inline-flex;
+    }
+
+    /* Rotate chevron icon */
+    .pure-css-checkbox:checked ~ .pure-css-trigger .pure-css-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* Custom scrollbars */
+    textarea::-webkit-scrollbar, pre::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    textarea::-webkit-scrollbar-thumb, pre::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-100 text-slate-800 min-h-full flex flex-col antialiased">
+  
+  <!-- Header Navbar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-sm shadow-indigo-200">
+          CSS
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+            Pure CSS Expandable Text Box
+          </h1>
+          <p class="text-xs text-slate-500">
+            ລະບົບກ່ອງຂໍ້ຄວາມຍືດຫຍໍ້ດ້ວຍ Pure CSS (Checkbox Hack) ບໍ່ໃຊ້ JavaScript ໃນການ Expand
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Pure CSS
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- LEFT COLUMN: Editor & Controls (5 Cols) -->
+    <div class="lg:col-span-5 space-y-5">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-5">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+            ປ້ອນຂໍ້ຄວາມ ແລະ ຕັ້ງຄ່າ
+          </h2>
+          <button id="resetSampleBtn" type="button" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium transition-colors">
+            ໂຫຼດຂໍ້ຄວາມຕົວຢ່າງ
+          </button>
+        </div>
+
+        <!-- Text Input Area -->
+        <div>
+          <label for="customTextInput" class="block text-xs font-semibold text-slate-700 mb-1.5">
+            ເນື້ອຫາຂໍ້ຄວາມທີ່ຕ້ອງການທົດສອບ (ພິມ ຫຼື ວາງລົງນີ້ໄດ້ເລີຍ):
+          </label>
+          <textarea 
+            id="customTextInput" 
+            rows="6" 
+            class="w-full px-3.5 py-2.5 text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all leading-relaxed"
+            placeholder="ພິມຂໍ້ຄວາມຍາວໆຢູ່ນີ້..."
+          ></textarea>
+        </div>
+
+        <!-- Customization Sliders -->
+        <div class="space-y-4 pt-2 border-t border-slate-100 text-xs">
+          <!-- Collapsed Height Slider -->
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-semibold text-slate-700">ຄວາມສູງຕອນຫຍໍ້ (Collapsed Height):</span>
+              <span id="heightValueBadge" class="font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">90px</span>
+            </div>
+            <input 
+              id="heightSlider" 
+              type="range" 
+              min="50" 
+              max="240" 
+              value="90" 
+              step="5"
+              class="w-full accent-indigo-600 cursor-pointer"
+            >
+          </div>
+
+          <!-- Gradient Height Slider -->
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-semibold text-slate-700">ຄວາມສູງເງົາ Gradient Fade:</span>
+              <span id="fadeValueBadge" class="font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">48px</span>
+            </div>
+            <input 
+              id="fadeSlider" 
+              type="range" 
+              min="20" 
+              max="90" 
+              value="48" 
+              step="2"
+              class="w-full accent-indigo-600 cursor-pointer"
+            >
+          </div>
+
+          <!-- Color & Width Options -->
+          <div class="grid grid-cols-2 gap-3 pt-1">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">ສີພື້ນຫຼັງກ່ອງ:</label>
+              <div class="flex items-center gap-2">
+                <input id="bgColorInput" type="color" value="#ffffff" class="w-8 h-8 rounded border border-slate-200 cursor-pointer p-0.5">
+                <span id="bgHexLabel" class="font-mono text-slate-600">#FFFFFF</span>
+              </div>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">ສີປຸ່ມກົດ:</label>
+              <div class="flex items-center gap-2">
+                <input id="accentColorInput" type="color" value="#4f46e5" class="w-8 h-8 rounded border border-slate-200 cursor-pointer p-0.5">
+                <span id="accentHexLabel" class="font-mono text-slate-600">#4F46E5</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Explanation Callout -->
+      <div class="bg-indigo-50/70 border border-indigo-100 rounded-2xl p-4 text-xs text-indigo-900 leading-relaxed space-y-1.5">
+        <div class="font-bold flex items-center gap-1.5 text-indigo-700">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          ຫຼັກການເຮັດວຽກຂອງ Pure CSS Checkbox Hack:
+        </div>
+        <p>1. ໃຊ້ <code>&lt;input type="checkbox"&gt;</code> ທີ່ຖືກເຊື່ອງໄວ້ດ້ວຍ <code>opacity: 0</code>.</p>
+        <p>2. ປຸ່ມກົດແມ່ນ <code>&lt;label for="..."&gt;</code> ເຊິ່ງເມື່ອກົດແລ້ວຈະ toggle ສະຖານະ checked ຂອງ checkbox ໂດຍອັດຕະໂນມັດ.</p>
+        <p>3. ໃຊ້ CSS selector <code>:checked ~ .pure-css-content</code> ເພື່ອຂະຫຍາຍ <code>max-height</code> ແລະ ເຊື່ອງ Gradient Fade.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Live Interactive Demo + Code Export (7 Cols) -->
+    <div class="lg:col-span-7 space-y-5">
+      
+      <!-- Live Preview Card -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800">
+              ຕົວຢ່າງການສະແດງຜົນຈິງ (Live Preview)
+            </h2>
+          </div>
+          <span class="text-xs text-slate-400">ກົດປຸ່ມເພື່ອທົດສອບການຂະຫຍາຍ</span>
+        </div>
+
+        <!-- The actual Pure CSS expandable component container -->
+        <div id="previewCard" class="border border-slate-200 rounded-2xl p-5 md:p-6 transition-all duration-300" style="background-color: var(--card-bg);">
+          
+          <!-- Title / Meta in card -->
+          <div class="flex items-center justify-between gap-3 mb-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
+                ຂ່າວ
+              </div>
+              <div>
+                <h3 class="font-semibold text-slate-900 text-sm md:text-base leading-tight">ລາຍລະອຽດເນື້ອຫາ / ບົດຄວາມ</h3>
+                <span class="text-[11px] text-slate-400">ອັບເດດລ່າສຸດ: ມື້ນີ້</span>
+              </div>
+            </div>
+            <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-medium">Pure CSS</span>
+          </div>
+
+          <!-- COMPONENT CORE: Checkbox input -->
+          <input type="checkbox" id="expandToggleLive" class="pure-css-checkbox">
+
+          <!-- COMPONENT CORE: Collapsible text container -->
+          <div id="liveTextContainer" class="pure-css-content text-slate-600 text-sm md:text-base leading-relaxed space-y-3 font-normal">
+            <!-- Dynamic text injected by JS for playground preview -->
+          </div>
+
+          <!-- COMPONENT CORE: Label toggle button -->
+          <label for="expandToggleLive" id="liveToggleBtn" class="pure-css-trigger mt-3.5 inline-flex items-center gap-1.5 text-sm font-semibold cursor-pointer select-none transition-all group" style="color: var(--accent-color);">
+            <span class="btn-lbl-expand group-hover:underline">ອ່ານເພີ່ມເຕີມ</span>
+            <span class="btn-lbl-collapse group-hover:underline">ຫຍໍ້ເຂົ້າ</span>
+            <svg class="pure-css-chevron w-4 h-4 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+            </svg>
+          </label>
+        </div>
+      </div>
+
+      <!-- Generated Ready-to-Copy Code Tabs -->
+      <div class="bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-800 text-slate-200 space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+              HTML + CSS Embed Code
+            </span>
+            <span class="text-xs text-slate-400">ພ້ອມກັອບປີ້ໄປວາງໃສ່ເວັບໄຊໄດ້ທັນທີ</span>
+          </div>
+          <button 
+            id="copyCodeBtn"
+            type="button" 
+            class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg transition-all active:scale-95 shadow-sm shadow-indigo-600/40 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <span id="copyBtnText">ກັອບປີ້ໂຄ້ດ (Copy)</span>
+          </button>
+        </div>
+
+        <p class="text-xs text-slate-400">
+          ໂຄ້ດຂ້າງລຸ່ມນີ້ຈະອັບເດດຕາມຂໍ້ຄວາມ ແລະ ຄ່າທີ່ທ່ານປັບປ່ຽນຢູ່ດ້ານຊ້າຍແບບ Realtime:
+        </p>
+
+        <div class="relative">
+          <pre class="overflow-x-auto p-4 bg-slate-950/80 rounded-xl text-xs font-mono text-emerald-400 leading-relaxed border border-slate-800 max-h-72"><code id="codeOutputBox"></code></pre>
+        </div>
+      </div>
+
+      <!-- IFRAME EMBED CODE SECTION -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+              &lt;iframe&gt; Embed Code
+            </span>
+            <span class="text-xs text-slate-400">ກັອບປີ້ iframe ໄປວາງໃສ່ເວັບໄຊອື່ນ</span>
+          </div>
+          <button 
+            id="copyIframeBtn"
+            type="button" 
+            class="inline-flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg transition-all active:scale-95 shadow-sm shadow-amber-600/40 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <span id="copyIframeBtnText">ກັອບປີ້ Embed Code</span>
+          </button>
+        </div>
+
+        <div class="space-y-2">
+          <p class="text-xs text-slate-500 leading-relaxed">
+            📋 <strong>ວິທີໃຊ້:</strong> ກັອບປີ້ iframe code ຂ້າງລຸ່ມ → ວາງໃສ່ HTML ຂອງເວັບໄຊຂອງທ່ານ. ຜູ້ເຂົ້າຊົມເວັບຈະສາມາດ <strong>ພິມ ຫຼື ວາງ text</strong> ໃສ່ກ່ອງ ແລ້ວເຫັນ expandable box ແບບ realtime ໄດ້ເລີຍ.
+          </p>
+          
+          <!-- Size controls -->
+          <div class="flex items-center gap-3 text-xs">
+            <label class="font-semibold text-slate-600">ຂະໜາດ iframe:</label>
+            <div class="flex items-center gap-1.5">
+              <span class="text-slate-500">Width:</span>
+              <input id="iframeWidth" type="text" value="100%" class="w-16 px-2 py-1 border border-slate-200 rounded-md text-xs font-mono focus:outline-none focus:ring-1 focus:ring-amber-500">
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-slate-500">Height:</span>
+              <input id="iframeHeight" type="text" value="420px" class="w-16 px-2 py-1 border border-slate-200 rounded-md text-xs font-mono focus:outline-none focus:ring-1 focus:ring-amber-500">
+            </div>
+          </div>
+        </div>
+
+        <div class="relative">
+          <pre class="overflow-x-auto p-4 bg-slate-50 rounded-xl text-xs font-mono text-amber-800 leading-relaxed border border-slate-200 max-h-44"><code id="iframeCodeBox"></code></pre>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xl border border-slate-700 flex items-center gap-2 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 z-50">
+    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+    </svg>
+    <span>ກັອບປີ້ໂຄ້ດສຳເລັດແລ້ວ!</span>
+  </div>
+
+  <script>
+    // Default Lao sample text
+    const defaultSampleText = `ການພັດທະນາເວັບໄຊໃນຍຸກປັດຈຸບັນ ຮຽກຮ້ອງໃຫ້ມີຄວາມຍືດຍຸ່ນ ແລະ ປະຢັດພື້ນທີ່ໃນໜ້າຈໍສະແດງຜົນ, ໂດຍສະເພາະແມ່ນການສະແດງຜົນເທິງໂທລະສັບມືຖື (Mobile Devices). ເມື່ອພວກເຮົາມີບົດຄວາມ, ລາຍລະອຽດສິນຄ້າ, ຫຼື ຂໍ້ຄວາມທີ່ຍາວຫຼາຍ, ວິທີການທີ່ດີທີ່ສຸດແມ່ນການຫຍໍ້ໃຫ້ເຫຼືອພຽງຂະໜາດນ້ອຍພໍດີອ່ານ.
+
+ເມື່ອຜູ້ອ່ານຕ້ອງການອ່ານລາຍລະອຽດເພີ່ມເຕີມ, ພວກເຂົາພຽງແຕ່ກົດປຸ່ມ "ອ່ານເພີ່ມເຕີມ", ກ່ອງຂໍ້ຄວາມຈະຂະຫຍາຍອອກມາໃຫ້ເຫັນທັງໝົດຢ່າງລ່ຽນໄຫຼ ແລະ ນຸ້ມນວນ.
+
+ຈຸດເດັ່ນຂອງວິທີນີ້ແມ່ນການໃຊ້ເຕັກນິກ "Pure CSS Checkbox Hack" ເຊິ່ງບໍ່ຈຳເປັນຕ້ອງຂຽນ JavaScript ເພື່ອຄວບຄຸມການເປີດ-ປິດເລີຍ! ລະບົບເຮັດວຽກໄດ້ວ່ອງໄວ, ໂຫຼດງ່າຍ, ແລະ ບໍ່ມີບັນຫາເລື່ອງ script error.`;
+
+    // DOM Elements
+    const customTextInput = document.getElementById('customTextInput');
+    const heightSlider = document.getElementById('heightSlider');
+    const heightValueBadge = document.getElementById('heightValueBadge');
+    const fadeSlider = document.getElementById('fadeSlider');
+    const fadeValueBadge = document.getElementById('fadeValueBadge');
+    const bgColorInput = document.getElementById('bgColorInput');
+    const bgHexLabel = document.getElementById('bgHexLabel');
+    const accentColorInput = document.getElementById('accentColorInput');
+    const accentHexLabel = document.getElementById('accentHexLabel');
+    const resetSampleBtn = document.getElementById('resetSampleBtn');
+
+    const liveTextContainer = document.getElementById('liveTextContainer');
+    const previewCard = document.getElementById('previewCard');
+    const liveToggleBtn = document.getElementById('liveToggleBtn');
+    const codeOutputBox = document.getElementById('codeOutputBox');
+    const copyCodeBtn = document.getElementById('copyCodeBtn');
+    const copyBtnText = document.getElementById('copyBtnText');
+    const toastNotification = document.getElementById('toastNotification');
+    const iframeCodeBox = document.getElementById('iframeCodeBox');
+    const copyIframeBtn = document.getElementById('copyIframeBtn');
+    const copyIframeBtnText = document.getElementById('copyIframeBtnText');
+    const iframeWidthInput = document.getElementById('iframeWidth');
+    const iframeHeightInput = document.getElementById('iframeHeight');
+
+    // Initialize with sample text
+    customTextInput.value = defaultSampleText;
+
+    // Convert plain text with line breaks into HTML paragraphs
+    function formatTextToHTML(text) {
+      if (!text.trim()) {
+        return '<p class="text-slate-400 italic">ກະລຸນາພິມຂໍ້ຄວາມຢູ່ດ້ານຊ້າຍ...</p>';
+      }
+      return text
+        .split('\n\n')
+        .filter(p => p.trim().length > 0)
+        .map(p => `<p>${escapeHTML(p).replace(/\n/g, '<br>')}</p>`)
+        .join('\n');
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+
+    // Update the live preview and dynamic code generator
+    function updatePlayground() {
+      const text = customTextInput.value;
+      const height = heightSlider.value;
+      const fade = fadeSlider.value;
+      const bgColor = bgColorInput.value;
+      const accentColor = accentColorInput.value;
+
+      // Update CSS variables
+      document.documentElement.style.setProperty('--collapsed-height', `${height}px`);
+      document.documentElement.style.setProperty('--gradient-height', `${fade}px`);
+      document.documentElement.style.setProperty('--card-bg', bgColor);
+      document.documentElement.style.setProperty('--accent-color', accentColor);
+
+      // Update badges & labels
+      heightValueBadge.textContent = `${height}px`;
+      fadeValueBadge.textContent = `${fade}px`;
+      bgHexLabel.textContent = bgColor.toUpperCase();
+      accentHexLabel.textContent = accentColor.toUpperCase();
+
+      // Update Live Preview content
+      liveTextContainer.innerHTML = formatTextToHTML(text);
+      previewCard.style.backgroundColor = bgColor;
+      liveToggleBtn.style.color = accentColor;
+
+      // Generate clean standalone embed code
+      generateEmbedCode(text, height, fade, bgColor, accentColor);
+    }
+
+    // Generate standalone, dependency-free CSS + HTML code snippet
+    function generateEmbedCode(text, height, fade, bg, accent) {
+      const formattedHTML = formatTextToHTML(text);
+
+      const codeTemplate = `<!-- ========================================== -->
+<!-- 1. CSS STYLES (ໃສ່ໃນ <head> ຫຼື ໄຟລ໌ .css) -->
+<!-- ========================================== -->
+<style>
+  /* ຕົວຄວບຄຸມສະຖານະ (ເຊື່ອງ checkbox ໄວ້) */
+  .expand-checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ກ່ອງບັນຈຸຂໍ້ຄວາມທີ່ຖືກຕັດໃຫ້ສັ້ນ */
+  .expandable-box {
+    position: relative;
+    max-height: ${height}px; /* ຄວາມສູງຕອນຫຍໍ້ */
+    overflow: hidden;
+    line-height: 1.6;
+    color: #334155;
+    transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Gradient Fade ຈາງລົງຢູ່ດ້ານລຸ່ມ */
+  .expandable-box::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: ${fade}px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, ${bg} 95%);
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  /* ເມື່ອກົດເລືອກ (Checked): ຂະຫຍາຍຄວາມສູງອອກ */
+  .expand-checkbox:checked ~ .expandable-box {
+    max-height: 2500px; /* ຂະຫຍາຍອອກໃຫ້ເຫັນທັງໝົດ */
+  }
+
+  /* ເມື່ອຂະຫຍາຍແລ້ວ: ເຊື່ອງເງົາ Fade */
+  .expand-checkbox:checked ~ .expandable-box::after {
+    opacity: 0;
+  }
+
+  /* ປ່ຽນປ້າຍປຸ່ມ "ອ່ານເພີ່ມເຕີມ" -> "ຫຍໍ້ເຂົ້າ" */
+  .expand-label .lbl-collapse {
+    display: none;
+  }
+  .expand-checkbox:checked ~ .expand-label .lbl-expand {
+    display: none;
+  }
+  .expand-checkbox:checked ~ .expand-label .lbl-collapse {
+    display: inline;
+  }
+
+  /* ໝູນໄອຄອນລູກສອນ */
+  .expand-checkbox:checked ~ .expand-label .chevron-svg {
+    transform: rotate(180deg);
+  }
+
+  /* ຮູບແບບປຸ່ມກົດ */
+  .expand-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    color: ${accent};
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .expand-label:hover {
+    text-decoration: underline;
+  }
+  .chevron-svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+  }
+</style>
+
+<!-- ========================================== -->
+<!-- 2. HTML STRUCTURE (ໃສ່ໃນຕຳແໜ່ງທີ່ຕ້ອງການສະແດງ) -->
+<!-- ========================================== -->
+<div style="background-color: ${bg}; padding: 20px; border-radius: 14px; border: 1px solid #e2e8f0; font-family: 'Noto Sans Lao', sans-serif;">
+  
+  <!-- Checkbox ສຳລັບຄວບຄຸມສະຖານະ (Pure CSS) -->
+  <input type="checkbox" id="boxToggle1" class="expand-checkbox">
+
+  <!-- ກ່ອງເນື້ອຫາຂໍ້ຄວາມ -->
+  <div class="expandable-box">
+${formattedHTML.split('\n').map(l => '    ' + l).join('\n')}
+  </div>
+
+  <!-- ປຸ່ມກົດເປີດ-ປິດ ຜ່ານ Label -->
+  <label for="boxToggle1" class="expand-label">
+    <span class="lbl-expand">ອ່ານເພີ່ມເຕີມ</span>
+    <span class="lbl-collapse">ຫຍໍ້ເຂົ້າ</span>
+    <svg class="chevron-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </label>
+
+</div>`;
+
+      codeOutputBox.textContent = codeTemplate;
+    }
+
+    // Generate self-contained iframe embed code (srcdoc approach)
+    function generateIframeCode() {
+      const w = iframeWidthInput.value || '100%';
+      const h = iframeHeightInput.value || '420px';
+
+      const iframeSrcdoc = `<!DOCTYPE html><html lang='lo'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1.0'><link href='https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;600&display=swap' rel='stylesheet'><style>*{box-sizing:border-box;margin:0;padding:0}:root{--ch:90px;--bg:#fff;--gh:48px;--ac:#4f46e5}body{font-family:'Noto Sans Lao',system-ui,sans-serif;background:#f8fafc;color:#334155;padding:14px}label.inp-lbl{display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:6px}.ta{width:100%;min-height:90px;padding:10px 12px;font-family:inherit;font-size:14px;line-height:1.6;color:#334155;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;resize:vertical;outline:none;transition:border .2s,box-shadow .2s}.ta:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,.15)}.ta::placeholder{color:#94a3b8}.dv{display:flex;align-items:center;gap:8px;margin:12px 0;font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em}.dv::before,.dv::after{content:'';flex:1;height:1px;background:#e2e8f0}.ec{position:absolute;opacity:0;pointer-events:none}.card{background:var(--bg);padding:16px;border-radius:12px;border:1.5px solid #e2e8f0}.eb{position:relative;max-height:var(--ch);overflow:hidden;line-height:1.7;font-size:14px;transition:max-height .45s cubic-bezier(.16,1,.3,1)}.eb::after{content:'';position:absolute;left:0;right:0;bottom:0;height:var(--gh);background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,var(--bg) 95%);pointer-events:none;opacity:1;transition:opacity .3s}.ec:checked~.eb{max-height:5000px}.ec:checked~.eb::after{opacity:0}.el .lc{display:none}.ec:checked~.el .le{display:none}.ec:checked~.el .lc{display:inline}.ec:checked~.el .ci{transform:rotate(180deg)}.el{display:inline-flex;align-items:center;gap:5px;margin-top:10px;color:var(--ac);font-weight:600;font-size:14px;cursor:pointer;user-select:none}.el:hover{text-decoration:underline}.ci{width:16px;height:16px;transition:transform .3s}.ph{color:#94a3b8;font-style:italic}</style></head><body><div><label class='inp-lbl' for='ti'>📝 ພິມ ຫຼື ວາງຂໍ້ຄວາມລົງນີ້:</label><textarea id='ti' class='ta' placeholder='ວາງ ຫຼື ພິມຂໍ້ຄວາມຍາວໆລົງນີ້...'></textarea></div><div class='dv'>ຜົນການສະແດງ</div><div class='card'><input type='checkbox' id='t1' class='ec'><div id='ec' class='eb'><p class='ph'>ຂໍ້ຄວາມຈະປະກົດຢູ່ນີ້...</p></div><label for='t1' class='el' id='tl' style='display:none'><span class='le'>ອ່ານເພີ່ມເຕີມ</span><span class='lc'>ຫຍໍ້ເຂົ້າ</span><svg class='ci' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'/></svg></label></div><script>const ti=document.getElementById('ti'),ec=document.getElementById('ec'),tl=document.getElementById('tl'),cb=document.getElementById('t1');function esc(s){return s.replace(/[&<>'"]/g,t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":"&#39;",'"':'&quot;'}[t]||t))}function fmt(t){if(!t.trim())return'<p class=\"ph\">ຂໍ້ຄວາມຈະປະກົດຢູ່ນີ້...</p>';return t.split('\\n\\n').filter(p=>p.trim()).map(p=>'<p>'+esc(p).replace(/\\n/g,'<br>')+'</p>').join('')}function upd(){ec.innerHTML=fmt(ti.value);cb.checked=false;if(ti.value.trim()){requestAnimationFrame(()=>{tl.style.display=ec.scrollHeight>90?'inline-flex':'none'})}else{tl.style.display='none'}}ti.addEventListener('input',upd);ti.addEventListener('paste',()=>setTimeout(upd,50));upd()<\/script></body></html>`;
+
+      // Use srcdoc for a fully self-contained embed
+      const iframeCode = `<!-- Expandable Text Box Widget - Embed Code -->
+<iframe
+  srcdoc="${iframeSrcdoc.replace(/"/g, '&quot;')}"
+  width="${w}"
+  height="${h}"
+  style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;"
+  sandbox="allow-scripts"
+  title="Expandable Text Box Widget"
+></iframe>`;
+
+      iframeCodeBox.textContent = iframeCode;
+    }
+
+    // Event Listeners for Live Updates
+    customTextInput.addEventListener('input', updatePlayground);
+    heightSlider.addEventListener('input', updatePlayground);
+    fadeSlider.addEventListener('input', updatePlayground);
+    bgColorInput.addEventListener('input', updatePlayground);
+    accentColorInput.addEventListener('input', updatePlayground);
+
+    resetSampleBtn.addEventListener('click', () => {
+      customTextInput.value = defaultSampleText;
+      heightSlider.value = 90;
+      fadeSlider.value = 48;
+      bgColorInput.value = '#ffffff';
+      accentColorInput.value = '#4f46e5';
+      updatePlayground();
+    });
+
+    // Copy to Clipboard (using document.execCommand fallback compliant with iframe guidelines)
+    copyCodeBtn.addEventListener('click', () => {
+      const codeText = codeOutputBox.textContent;
+      const tempTextArea = document.createElement('textarea');
+      tempTextArea.value = codeText;
+      tempTextArea.style.position = 'fixed';
+      tempTextArea.style.opacity = '0';
+      document.body.appendChild(tempTextArea);
+      tempTextArea.focus();
+      tempTextArea.select();
+
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showToast();
+          copyBtnText.textContent = "ກັອບປີ້ແລ້ວ! (Copied)";
+          setTimeout(() => {
+            copyBtnText.textContent = "ກັອບປີ້ໂຄ້ດ (Copy)";
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Failed to copy code: ', err);
+      }
+      document.body.removeChild(tempTextArea);
+    });
+
+    // Copy iframe embed code to clipboard
+    copyIframeBtn.addEventListener('click', () => {
+      const codeText = iframeCodeBox.textContent;
+      const tempTextArea = document.createElement('textarea');
+      tempTextArea.value = codeText;
+      tempTextArea.style.position = 'fixed';
+      tempTextArea.style.opacity = '0';
+      document.body.appendChild(tempTextArea);
+      tempTextArea.focus();
+      tempTextArea.select();
+
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showToast();
+          copyIframeBtnText.textContent = "ກັອບປີ້ແລ້ວ! (Copied)";
+          setTimeout(() => {
+            copyIframeBtnText.textContent = "ກັອບປີ້ Embed Code";
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Failed to copy iframe code: ', err);
+      }
+      document.body.removeChild(tempTextArea);
+    });
+
+    // Update iframe code when width/height changes
+    iframeWidthInput.addEventListener('input', generateIframeCode);
+    iframeHeightInput.addEventListener('input', generateIframeCode);
+
+    function showToast() {
+      toastNotification.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      toastNotification.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toastNotification.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+        toastNotification.classList.remove('translate-y-0', 'opacity-100');
+      }, 2500);
+    }
+
+    // Initial render
+    updatePlayground();
+    generateIframeCode();
+  </script>
+</body>
+</html>
